@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SufraX.UI", "SufraX\SufraX.UI.csproj", "{B79D7CB2-3B14-4DDF-8724-6F0363677321}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SufraX.Core", "SufraX.Core\SufraX.Core.csproj", "{F70AC4A2-7D4A-45DF-8345-9462A0902FA5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SufraX.Infrastructure", "SufraX.Infrastructure\SufraX.Infrastructure.csproj", "{4FB448E4-F330-4332-AAEC-34760AFE3CC0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurfraX.UI", "SurfraX.UI\SurfraX.UI.csproj", "{19B7FA96-DDB6-4387-ABDB-F10E8D426702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -14,10 +14,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B79D7CB2-3B14-4DDF-8724-6F0363677321}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B79D7CB2-3B14-4DDF-8724-6F0363677321}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B79D7CB2-3B14-4DDF-8724-6F0363677321}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B79D7CB2-3B14-4DDF-8724-6F0363677321}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F70AC4A2-7D4A-45DF-8345-9462A0902FA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F70AC4A2-7D4A-45DF-8345-9462A0902FA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F70AC4A2-7D4A-45DF-8345-9462A0902FA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -26,6 +22,10 @@ Global
 		{4FB448E4-F330-4332-AAEC-34760AFE3CC0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4FB448E4-F330-4332-AAEC-34760AFE3CC0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4FB448E4-F330-4332-AAEC-34760AFE3CC0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
