@@ -1,0 +1,12 @@
+E:\aspnetcore\code\SufraX\SufraX.Core\bin\Debug\net8.0\SufraX.Core.deps.json
+E:\aspnetcore\code\SufraX\SufraX.Core\bin\Debug\net8.0\SufraX.Core.dll
+E:\aspnetcore\code\SufraX\SufraX.Core\bin\Debug\net8.0\SufraX.Core.pdb
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.csproj.AssemblyReference.cache
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.GeneratedMSBuildEditorConfig.editorconfig
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.AssemblyInfoInputs.cache
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.AssemblyInfo.cs
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.csproj.CoreCompileInputs.cache
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.dll
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\refint\SufraX.Core.dll
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\SufraX.Core.pdb
+E:\aspnetcore\code\SufraX\SufraX.Core\obj\Debug\net8.0\ref\SufraX.Core.dll

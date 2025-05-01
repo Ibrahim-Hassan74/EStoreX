@@ -1,0 +1,20 @@
+{
+  "Version": 1,
+  "Hash": "LFThFX4MovLlga7jjLWm5xRY9CH4vMyudmHxNWXBeMY=",
+  "Source": "SufraX.UI",
+  "BasePath": "_content/SufraX.UI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "SufraX.UI\\wwwroot",
+      "Source": "SufraX.UI",
+      "ContentRoot": "E:\\aspnetcore\\code\\SufraX\\SufraX\\wwwroot\\",
+      "BasePath": "_content/SufraX.UI",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": [],
+  "Endpoints": []
+}

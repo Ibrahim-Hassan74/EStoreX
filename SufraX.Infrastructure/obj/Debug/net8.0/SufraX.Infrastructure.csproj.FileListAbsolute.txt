@@ -1,0 +1,17 @@
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\bin\Debug\net8.0\SufraX.Infrastructure.deps.json
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\bin\Debug\net8.0\SufraX.Infrastructure.runtimeconfig.json
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\bin\Debug\net8.0\SufraX.Infrastructure.dll
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\bin\Debug\net8.0\SufraX.Infrastructure.pdb
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\bin\Debug\net8.0\SufraX.Core.dll
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\bin\Debug\net8.0\SufraX.Core.pdb
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.csproj.AssemblyReference.cache
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.AssemblyInfoInputs.cache
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.AssemblyInfo.cs
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.csproj.CoreCompileInputs.cache
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.I.AAF6AE94.Up2Date
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.dll
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\refint\SufraX.Infrastructure.dll
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.pdb
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\SufraX.Infrastructure.genruntimeconfig.cache
+E:\aspnetcore\code\SufraX\SufraX.Infrastructure\obj\Debug\net8.0\ref\SufraX.Infrastructure.dll

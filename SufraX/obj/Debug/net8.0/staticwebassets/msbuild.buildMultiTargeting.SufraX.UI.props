@@ -1,0 +1,3 @@
+﻿<Project>
+  <Import Project="..\build\SufraX.UI.props" />
+</Project>
