@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="8.0.15" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.15">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\E-StoreX.Core\E-StoreX.Core.csproj" />
+    <ProjectReference Include="..\E-StoreX.Infrastructure\E-StoreX.Infrastructure.csproj" />
+    <ProjectReference Include="..\E-StoreX.Core\E-StoreX.Core.csproj" />
+    <ProjectReference Include="..\E-StoreX.Infrastructure\E-StoreX.Infrastructure.csproj" />
+  </ItemGroup>
+
+</Project>

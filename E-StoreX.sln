@@ -2,11 +2,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.Core", "SufraX.Core\E-StoreX.Core.csproj", "{F70AC4A2-7D4A-45DF-8345-9462A0902FA5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.Core", "E-StoreX.Core\E-StoreX.Core.csproj", "{F70AC4A2-7D4A-45DF-8345-9462A0902FA5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.Infrastructure", "SufraX.Infrastructure\E-StoreX.Infrastructure.csproj", "{4FB448E4-F330-4332-AAEC-34760AFE3CC0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.Infrastructure", "E-StoreX.Infrastructure\E-StoreX.Infrastructure.csproj", "{4FB448E4-F330-4332-AAEC-34760AFE3CC0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.UI", "SurfraX.UI\E-StoreX.UI.csproj", "{19B7FA96-DDB6-4387-ABDB-F10E8D426702}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.UI", "E-StoreX.UI\E-StoreX.UI.csproj", "{19B7FA96-DDB6-4387-ABDB-F10E8D426702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
