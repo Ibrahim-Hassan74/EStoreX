@@ -1,10 +1,5 @@
 ﻿using EStoreX.Core.RepositoryContracts;
-using EStoreX.Infrastructure.DbContext;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EStoreX.Infrastructure.Data;
 
 namespace EStoreX.Infrastructure.Repository
 {

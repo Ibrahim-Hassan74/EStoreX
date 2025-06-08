@@ -1,5 +1,5 @@
 ﻿using EStoreX.Core.RepositoryContracts;
-using EStoreX.Infrastructure.DbContext;
+using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

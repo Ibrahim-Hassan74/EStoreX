@@ -1,6 +1,6 @@
 ﻿using Domain.Entities.Product;
 using EStoreX.Core.RepositoryContracts;
-using EStoreX.Infrastructure.DbContext;
+using EStoreX.Infrastructure.Data;
 
 namespace EStoreX.Infrastructure.Repository
 {

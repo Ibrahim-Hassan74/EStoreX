@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.Domain.IdentityEntities;
-using EStoreX.Infrastructure.DbContext;
+using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using EStoreX.Core.Domain.Options;
 using Microsoft.AspNetCore.Authorization;
