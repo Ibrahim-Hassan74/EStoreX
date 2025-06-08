@@ -18,6 +18,10 @@ namespace EStoreX.Infrastructure.Repository
 
         public async Task<TModel> AddAsync(TModel entity)
         {
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
+            }
             await _db.AddAsync(entity);
             await _context.SaveChangesAsync();
             return entity;
@@ -25,6 +29,10 @@ namespace EStoreX.Infrastructure.Repository
 
         public async Task<bool> DeleteAsync(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Id cannot be empty", nameof(id));
+            }
             var entity = await _db.FindAsync(id);
             if (entity == null)
             {
@@ -42,6 +50,14 @@ namespace EStoreX.Infrastructure.Repository
 
         public async Task<IEnumerable<TModel>> GetAllAsync(params Expression<Func<TModel, object>>[] includes)
         {
+            if (includes == null)
+            {
+                throw new ArgumentNullException(nameof(includes), "Includes cannot be null");
+            }
+            if (includes.Length == 0)
+            {
+                return await GetAllAsync();
+            }
             IQueryable<TModel> query = _db;
             foreach (var include in includes)
             {
