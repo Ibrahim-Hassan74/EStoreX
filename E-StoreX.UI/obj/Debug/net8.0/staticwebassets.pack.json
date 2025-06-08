@@ -5,6 +5,10 @@
       "PackagePath": "staticwebassets\\E-StoreX.UI.syifbr2g68.bundle.scp.css"
     },
     {
+      "Id": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\HeadPhone.png",
+      "PackagePath": "staticwebassets\\HeadPhone.png"
+    },
+    {
       "Id": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\css\\site.css",
       "PackagePath": "staticwebassets\\css\\site.css"
     },

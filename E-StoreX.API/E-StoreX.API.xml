@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>E-StoreX.API</name>
+    </assembly>
+    <members>
+        <member name="M:E_StoreX.API.Controllers.WeatherForecastController.Get">
+            <summary>
+            Gets the weather forecast for the next 5 days.
+            </summary>
+            <returns>List of weather forecast for next 5 days</returns>
+        </member>
+    </members>
+</doc>

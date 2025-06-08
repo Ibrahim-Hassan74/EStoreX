@@ -1,32 +1,33 @@
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.UI.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EStoreX.UI.Controllers
 {
+    [Route("[controller]/[action]")]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
-
+        [Route("/")]
+        [AllowAnonymous]
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult About()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Contact()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            return View();
+        }
+
+        public IActionResult Blog()
+        {
+            return View();
         }
     }
 }

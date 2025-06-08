@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "FlzmJb8lPOFzqahwgkVRbipustzVx9mPP1015DVcXMg=",
+  "Hash": "//H8NKuZk+T/0W605vUJq2f++csLFjmR12QoYH07O3s=",
   "Source": "E-StoreX.UI",
   "BasePath": "_content/E-StoreX.UI",
   "Mode": "Default",
@@ -73,8 +73,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "c2tiyv64ts",
-      "Integrity": "pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0=",
+      "Fingerprint": "t3k9zqc25n",
+      "Integrity": "90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
@@ -99,6 +99,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\favicon.ico"
+    },
+    {
+      "Identity": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\HeadPhone.png",
+      "SourceId": "E-StoreX.UI",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\",
+      "BasePath": "_content/E-StoreX.UI",
+      "RelativePath": "HeadPhone#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "840du5wxkk",
+      "Integrity": "KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\HeadPhone.png"
     },
     {
       "Identity": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\js\\site.js",
@@ -1321,51 +1342,6 @@
   ],
   "Endpoints": [
     {
-      "Route": "css/site.c2tiyv64ts.css",
-      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\css\\site.css",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "362"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 01 May 2025 12:23:34 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "c2tiyv64ts"
-        },
-        {
-          "Name": "label",
-          "Value": "css/site.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0="
-        }
-      ]
-    },
-    {
       "Route": "css/site.css",
       "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\css\\site.css",
       "Selectors": [],
@@ -1376,7 +1352,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "362"
+          "Value": "437"
         },
         {
           "Name": "Content-Type",
@@ -1384,11 +1360,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0=\""
+          "Value": "\"90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 01 May 2025 12:23:34 GMT"
+          "Value": "Tue, 27 May 2025 15:27:06 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -1398,7 +1374,52 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0="
+          "Value": "sha256-90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.t3k9zqc25n.css",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\css\\site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "437"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 May 2025 15:27:06 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t3k9zqc25n"
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg="
         }
       ]
     },
@@ -1645,6 +1666,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-Jtxf9L+5ITKRc1gIRl4VbUpGkRNfOBXjYTdhJD4facM="
+        }
+      ]
+    },
+    {
+      "Route": "HeadPhone.840du5wxkk.png",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\HeadPhone.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "66625"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 02 May 2025 18:11:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "840du5wxkk"
+        },
+        {
+          "Name": "label",
+          "Value": "HeadPhone.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU="
+        }
+      ]
+    },
+    {
+      "Route": "HeadPhone.png",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.UI\\wwwroot\\HeadPhone.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "66625"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 02 May 2025 18:11:22 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU="
         }
       ]
     },

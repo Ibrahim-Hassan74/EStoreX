@@ -11,6 +11,7 @@ using EStoreX.Core.ServiceContracts;
 
 namespace EStoreX.UI.Controllers
 {
+    [Route("[controller]/[action]")]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

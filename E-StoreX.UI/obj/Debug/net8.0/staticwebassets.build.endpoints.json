@@ -85,8 +85,8 @@
       ]
     },
     {
-      "Route": "css/site.c2tiyv64ts.css",
-      "AssetFile": "css/site.css",
+      "Route": "HeadPhone.840du5wxkk.png",
+      "AssetFile": "HeadPhone.png",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -99,33 +99,70 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "362"
+          "Value": "66625"
         },
         {
           "Name": "Content-Type",
-          "Value": "text/css"
+          "Value": "image/png"
         },
         {
           "Name": "ETag",
-          "Value": "\"pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0=\""
+          "Value": "\"KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 01 May 2025 12:23:34 GMT"
+          "Value": "Fri, 02 May 2025 18:11:22 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "c2tiyv64ts"
+          "Value": "840du5wxkk"
         },
         {
           "Name": "integrity",
-          "Value": "sha256-pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0="
+          "Value": "sha256-KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU="
         },
         {
           "Name": "label",
-          "Value": "css/site.css"
+          "Value": "HeadPhone.png"
+        }
+      ]
+    },
+    {
+      "Route": "HeadPhone.png",
+      "AssetFile": "HeadPhone.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "66625"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Fri, 02 May 2025 18:11:22 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-KGykEjVx8iid0Vx/PGPF+5MxDUuYszMCh9jBr0XqPrU="
         }
       ]
     },
@@ -144,7 +181,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "362"
+          "Value": "437"
         },
         {
           "Name": "Content-Type",
@@ -152,17 +189,62 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0=\""
+          "Value": "\"90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 01 May 2025 12:23:34 GMT"
+          "Value": "Tue, 27 May 2025 15:27:06 GMT"
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-pAGv4ietcJNk/EwsQZ5BN9+K4MuNYS2a9wl4Jw+q9D0="
+          "Value": "sha256-90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg="
+        }
+      ]
+    },
+    {
+      "Route": "css/site.t3k9zqc25n.css",
+      "AssetFile": "css/site.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "437"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 27 May 2025 15:27:06 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t3k9zqc25n"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-90YxRzk+QkL39Xao/Motm/x2Vh/UQT/DgwD/dl1UMpg="
+        },
+        {
+          "Name": "label",
+          "Value": "css/site.css"
         }
       ]
     },

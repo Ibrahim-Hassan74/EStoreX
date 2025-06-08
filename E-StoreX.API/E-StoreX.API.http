@@ -1,0 +1,6 @@
+@E_StoreX.API_HostAddress = http://localhost:5064
+
+GET {{E_StoreX.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

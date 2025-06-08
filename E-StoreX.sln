@@ -8,6 +8,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.UI", "E-StoreX.UI\E-StoreX.UI.csproj", "{19B7FA96-DDB6-4387-ABDB-F10E8D426702}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "E-StoreX.API", "E-StoreX.API\E-StoreX.API.csproj", "{6E1020DE-8147-4915-8E6C-493D492570B7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +30,19 @@ Global
 		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{19B7FA96-DDB6-4387-ABDB-F10E8D426702}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E1020DE-8147-4915-8E6C-493D492570B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E1020DE-8147-4915-8E6C-493D492570B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E1020DE-8147-4915-8E6C-493D492570B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E1020DE-8147-4915-8E6C-493D492570B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F70AC4A2-7D4A-45DF-8345-9462A0902FA5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{4FB448E4-F330-4332-AAEC-34760AFE3CC0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{19B7FA96-DDB6-4387-ABDB-F10E8D426702} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{6E1020DE-8147-4915-8E6C-493D492570B7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {2FD5A84F-F431-4AB7-A87B-430858B9D69C}

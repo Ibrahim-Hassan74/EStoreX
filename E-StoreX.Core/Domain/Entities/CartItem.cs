@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using Domain.Entities.Product;
 
 namespace EStoreX.Core.Domain.Entities
 {

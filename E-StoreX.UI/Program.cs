@@ -1,4 +1,4 @@
-using EStoreX.UI.StartupExtensions;
+﻿using EStoreX.UI.StartupExtensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,10 +20,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.MapControllers();
+app.MapControllers();
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();

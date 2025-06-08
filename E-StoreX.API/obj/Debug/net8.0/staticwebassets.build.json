@@ -1,0 +1,12 @@
+{
+  "Version": 1,
+  "Hash": "o0y52V8QQc6x24sy5HdoKR60AnIqeXlY7zdBGn4Hrdg=",
+  "Source": "E-StoreX.API",
+  "BasePath": "_content/E-StoreX.API",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": [],
+  "Endpoints": []
+}
