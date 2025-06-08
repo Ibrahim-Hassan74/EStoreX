@@ -1,12 +1,7 @@
 ﻿using EStoreX.Core.RepositoryContracts;
 using EStoreX.Infrastructure.DbContext;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EStoreX.Infrastructure.Repository
 {
@@ -14,7 +9,7 @@ namespace EStoreX.Infrastructure.Repository
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<TModel> _db;
-
+        
         public GenericRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -62,6 +57,18 @@ namespace EStoreX.Infrastructure.Repository
 
         public async Task<TModel?> GetByIdAsync(Guid id, params Expression<Func<TModel, object>>[] includes)
         {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException("Id cannot be empty", nameof(id));
+            }
+            if (includes == null )
+            {
+                throw new ArgumentNullException(nameof(includes), "Includes cannot be null");
+            }
+            if (includes.Length == 0)
+            {
+                return await GetByIdAsync(id);
+            }
             IQueryable<TModel> query = _db;
             foreach (var include in includes)
             {
@@ -70,12 +77,15 @@ namespace EStoreX.Infrastructure.Repository
             return await query.FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
         }
 
-        public Task<TModel> UpdateAsync(TModel entity)
+        public async Task<TModel> UpdateAsync(TModel entity)
         {
-            _db.Update(entity);
+            if (entity == null)
+            {
+                throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
+            }
             _context.Entry(entity).State = EntityState.Modified;
-            _context.SaveChanges();
-            return Task.FromResult(entity);
+            int res = await _context.SaveChangesAsync();
+            return entity;
         }
     }
 }
