@@ -24,4 +24,8 @@
     <ProjectReference Include="..\E-StoreX.Core\E-StoreX.Core.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Repository\" />
+  </ItemGroup>
+
 </Project>

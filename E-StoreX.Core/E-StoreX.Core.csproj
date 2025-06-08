@@ -11,4 +11,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="RepositoryContracts\" />
+  </ItemGroup>
+
 </Project>
