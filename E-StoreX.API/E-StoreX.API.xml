@@ -4,11 +4,33 @@
         <name>E-StoreX.API</name>
     </assembly>
     <members>
-        <member name="M:E_StoreX.API.Controllers.WeatherForecastController.Get">
+        <member name="T:E_StoreX.API.Controllers.CategoriesController">
             <summary>
-            Gets the weather forecast for the next 5 days.
+            Controller for managing product categories in the E-StoreX application.
             </summary>
-            <returns>List of weather forecast for next 5 days</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.#ctor(EStoreX.Core.RepositoryContracts.IUnitOfWork)">
+            <summary>
+            Constructor for CategoriesController.
+            </summary>
+            <param name="unitOfWork"></param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.GetCategories">
+            <summary>
+            Retrieves all product categories from the database.
+            </summary>
+            <returns>return </returns>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.CustomControllerBase">
+            <summary>
+            Base controller for the E-StoreX API, providing common functionality for all controllers.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CustomControllerBase.#ctor(EStoreX.Core.RepositoryContracts.IUnitOfWork)">
+            <summary>
+            Constructor for CustomControllerBase, initializing the unit of work.
+            </summary>
+            <param name="unitOfWork"></param>
         </member>
     </members>
 </doc>
