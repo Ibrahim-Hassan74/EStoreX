@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace EStoreX.Infrastructure
 {
-    public static class InfrastructureRegisteration
+    public static class InfrastructureServiceRegistration
     {
-        public static IServiceCollection InfrastructureConfiguration(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ConfigureInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             //services.AddScoped<ICategoryRepository, CategoryRepository>();

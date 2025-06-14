@@ -17,13 +17,47 @@
         </member>
         <member name="M:E_StoreX.API.Controllers.CategoriesController.GetCategories">
             <summary>
-            Retrieves all product categories from the database.
+            Retrieves all categories from the database.
             </summary>
             <returns>return </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.GetCategoryById(System.Guid)">
+            <summary>
+            Retrieve category with specific Id 
+            </summary>
+            <param name="Id">Category Id</param>
+            <returns>Category with Id or BadRequest</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.CreateCategory(EStoreX.Core.DTO.CategoryDTO)">
+            <summary>
+            Creates a new category in the database.
+            </summary>
+            <param name="categoryDTO">categoryDTO object</param>
+            <returns>Category created</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.UpdateCategory(System.Guid,EStoreX.Core.DTO.UpdateCategoryDTO)">
+            <summary>
+            Updates an existing category in the database.
+            </summary>
+            <param name="Id">category Id</param>
+            <param name="categoryDTO">the new value for category object</param>
+            <returns></returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.DeleteCategory(System.Guid)">
+            <summary>
+            Deletes a category with the specified Id from the database.
+            </summary>
+            <param name="Id">Category Id</param>
+            <returns></returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.CustomControllerBase">
             <summary>
             Base controller for the E-StoreX API, providing common functionality for all controllers.
+            </summary>
+        </member>
+        <member name="F:E_StoreX.API.Controllers.CustomControllerBase._unitOfWork">
+            <summary>
+            Unit of Work instance for managing database transactions and repositories.
             </summary>
         </member>
         <member name="M:E_StoreX.API.Controllers.CustomControllerBase.#ctor(EStoreX.Core.RepositoryContracts.IUnitOfWork)">
