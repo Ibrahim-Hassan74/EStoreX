@@ -2,7 +2,7 @@
 
 namespace EStoreX.Core.Helper
 {
-    public class VaildationHelper
+    public class ValidationHelper
     {
         internal static void ModelValidation(object obj)
         {

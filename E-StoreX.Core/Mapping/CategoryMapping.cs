@@ -8,7 +8,9 @@ namespace EStoreX.Core.Mapping
     {
         public CategoryMapping()
         {
-            CreateMap<CategoryDTO, Category>().ReverseMap();
+            CreateMap<CategoryRequest, Category>();
+            CreateMap<Category, CategoryResponse>();
+            CreateMap<UpdateCategoryDTO, Category>();
         }
     }
 }

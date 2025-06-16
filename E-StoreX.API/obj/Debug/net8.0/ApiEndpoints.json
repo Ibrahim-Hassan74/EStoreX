@@ -19,7 +19,7 @@
     "Parameters": [
       {
         "Name": "categoryDTO",
-        "Type": "EStoreX.Core.DTO.CategoryDTO",
+        "Type": "EStoreX.Core.DTO.CategoryRequest",
         "IsRequired": true
       }
     ],

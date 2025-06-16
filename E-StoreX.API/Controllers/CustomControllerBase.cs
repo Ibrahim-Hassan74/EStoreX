@@ -14,15 +14,15 @@ namespace E_StoreX.API.Controllers
         /// <summary>
         /// Unit of Work instance for managing database transactions and repositories.
         /// </summary>
-        protected readonly IUnitOfWork _unitOfWork;
+        //protected readonly IUnitOfWork _unitOfWork;
         /// <summary>
         /// Constructor for CustomControllerBase, initializing the unit of work.
         /// </summary>
         /// <param name="unitOfWork"></param>
 
-        public CustomControllerBase(IUnitOfWork unitOfWork)
+        public CustomControllerBase(/*IUnitOfWork unitOfWork*/)
         {
-            _unitOfWork = unitOfWork;
+            //_unitOfWork = unitOfWork;
         }
     }
 }

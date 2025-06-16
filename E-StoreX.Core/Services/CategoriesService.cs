@@ -15,43 +15,44 @@ namespace EStoreX.Core.Services
             _categoryRepository = _unitOfWork.CategoryRepository;
         }
 
-        public async Task<CategoryDTO> CreateCategoryAsync(CategoryDTO categoryDto)
+        public async Task<CategoryResponse> CreateCategoryAsync(CategoryRequest categoryRequest)
         {
-            if (categoryDto == null)
-                throw new ArgumentNullException(nameof(categoryDto), "Category cannot be null");
+            if (categoryRequest == null)
+                throw new ArgumentNullException(nameof(categoryRequest), "Category cannot be null");
 
-            VaildationHelper.ModelValidation(categoryDto);
+            ValidationHelper.ModelValidation(categoryRequest);
 
-            var category = _mapper.Map<Category>(categoryDto);
+            var category = _mapper.Map<Category>(categoryRequest);
 
             category.Id = Guid.NewGuid(); // Ensure a new ID is generated for the category
 
             await _categoryRepository.AddAsync(category);
 
-            return _mapper.Map<CategoryDTO>(category);
+            return _mapper.Map<CategoryResponse>(category);
         }
 
         public async Task<bool> DeleteCategoryAsync(Guid id)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("Category ID cannot be empty", nameof(id));
+
             var category = await _categoryRepository.GetByIdAsync(id);
             if (category == null)
-                throw new KeyNotFoundException($"Category with ID {id} not found.");
+                return false;
 
             var res = await _categoryRepository.DeleteAsync(id);
 
             return res;
         }
 
-        public async Task<IEnumerable<CategoryDTO>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync()
         {
             var categories = await _categoryRepository.GetAllAsync();
-            var res = categories.Select(x => _mapper.Map<CategoryDTO>(x)).ToList();
+            var res = categories.Select(x => _mapper.Map<CategoryResponse>(x)).ToList();
             return res;
         }
 
-        public async Task<CategoryDTO?> GetCategoryByIdAsync(Guid id)
+        public async Task<CategoryResponse?> GetCategoryByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("Category ID cannot be empty", nameof(id));
@@ -59,26 +60,25 @@ namespace EStoreX.Core.Services
             if (category == null)
                 return null;
 
-            return _mapper.Map<CategoryDTO>(category);
+            return _mapper.Map<CategoryResponse>(category);
         }
 
-        public async Task<CategoryDTO> UpdateCategoryAsync(UpdateCategoryDTO updateCategoryDto)
+        public async Task<CategoryResponse> UpdateCategoryAsync(UpdateCategoryDTO updateCategoryDto)
         {
             if(updateCategoryDto is null)
                 throw new ArgumentNullException(nameof(updateCategoryDto), "Category cannot be null");
 
-            VaildationHelper.ModelValidation(updateCategoryDto);
+            ValidationHelper.ModelValidation(updateCategoryDto);
 
             var category = await _categoryRepository.GetByIdAsync(updateCategoryDto.Id);
             if (category == null)
                 throw new KeyNotFoundException($"Category with ID {updateCategoryDto.Id} not found.");
 
-            category.Name = updateCategoryDto.Name;
-            category.Description = updateCategoryDto.Description;
+            _mapper.Map(updateCategoryDto, category);
 
             var res = await _categoryRepository.UpdateAsync(category);
 
-            return _mapper.Map<CategoryDTO>(category);
+            return _mapper.Map<CategoryResponse>(category);
         }
     }
 }

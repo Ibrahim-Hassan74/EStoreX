@@ -1,4 +1,5 @@
 using EStoreX.Infrastructure;
+using EStoreX.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.ConfigureInfrastructure(builder.Configuration);
+
+builder.Services.ConfigureCore();
 
 var app = builder.Build();
 

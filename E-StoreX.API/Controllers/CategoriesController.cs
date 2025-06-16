@@ -1,5 +1,6 @@
 ﻿using EStoreX.Core.DTO;
 using EStoreX.Core.RepositoryContracts;
+using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,11 +11,15 @@ namespace E_StoreX.API.Controllers
     /// </summary>
     public class CategoriesController : CustomControllerBase
     {
+        private readonly ICategoriesService _categoriesService;
         /// <summary>
         /// Constructor for CategoriesController.
         /// </summary>
-        /// <param name="unitOfWork"></param>
-        public CategoriesController(IUnitOfWork unitOfWork) : base(unitOfWork) { }
+        /// <param name="categoriesService"></param>
+        public CategoriesController(ICategoriesService categoriesService)
+        {
+            _categoriesService = categoriesService;
+        }
         /// <summary>
         /// Retrieves all categories from the database.
         /// </summary>
@@ -22,7 +27,7 @@ namespace E_StoreX.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetCategories()
         {
-            var categories = await _unitOfWork.CategoryRepository.GetAllAsync();
+            var categories = await _categoriesService.GetAllCategoriesAsync();
             return Ok(categories);
         }
 
@@ -35,7 +40,7 @@ namespace E_StoreX.API.Controllers
         public async Task<IActionResult> GetCategoryById(Guid Id)
         {
 
-            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(Id);
+            var category = await _categoriesService.GetCategoryByIdAsync(Id);
 
             if (category is null)
                 return BadRequest();
@@ -49,12 +54,10 @@ namespace E_StoreX.API.Controllers
         /// <param name="categoryDTO">categoryDTO object</param>
         /// <returns>Category created</returns>
         [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryDTO categoryDTO)
+        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequest categoryDTO)
         {
-            if (categoryDTO is null)
-                return BadRequest("Category cannot be null");
-            var category = categoryDTO.ToCategory();
-            await _unitOfWork.CategoryRepository.AddAsync(category);
+            var category = await _categoriesService.CreateCategoryAsync(categoryDTO);
+
             return CreatedAtAction(nameof(GetCategoryById), new { Id = category.Id }, categoryDTO);
         }
 
@@ -70,18 +73,8 @@ namespace E_StoreX.API.Controllers
             if (Id != categoryDTO.Id)
                 return BadRequest("Id mismatch");
 
-            if (categoryDTO is null)
-                return BadRequest("Category cannot be null");
+            var res = await _categoriesService.UpdateCategoryAsync(categoryDTO);
 
-            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(Id);
-
-            if (category is null)
-                return NotFound();
-
-            category.Name = categoryDTO.Name;
-            category.Description = categoryDTO.Description;
-
-            await _unitOfWork.CategoryRepository.UpdateAsync(category);
             return NoContent();
         }
         /// <summary>
@@ -92,19 +85,11 @@ namespace E_StoreX.API.Controllers
         [HttpDelete("{Id:guid}")]
         public async Task<IActionResult> DeleteCategory(Guid Id)
         {
-            if (Id == Guid.Empty)
-                return BadRequest("Id cannot be empty");
-
-            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(Id);
-            if (category is null)
-                return NotFound();
-
-            var result = await _unitOfWork.CategoryRepository.DeleteAsync(Id);
+            var result = await _categoriesService.DeleteCategoryAsync(Id);
             if (!result)
                 return BadRequest("Failed to delete category");
 
             return NoContent();
-
         }
     }
 }

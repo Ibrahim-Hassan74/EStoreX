@@ -9,11 +9,11 @@
             Controller for managing product categories in the E-StoreX application.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.#ctor(EStoreX.Core.RepositoryContracts.IUnitOfWork)">
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
             <summary>
             Constructor for CategoriesController.
             </summary>
-            <param name="unitOfWork"></param>
+            <param name="categoriesService"></param>
         </member>
         <member name="M:E_StoreX.API.Controllers.CategoriesController.GetCategories">
             <summary>
@@ -28,7 +28,7 @@
             <param name="Id">Category Id</param>
             <returns>Category with Id or BadRequest</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.CreateCategory(EStoreX.Core.DTO.CategoryDTO)">
+        <member name="M:E_StoreX.API.Controllers.CategoriesController.CreateCategory(EStoreX.Core.DTO.CategoryRequest)">
             <summary>
             Creates a new category in the database.
             </summary>
@@ -55,12 +55,7 @@
             Base controller for the E-StoreX API, providing common functionality for all controllers.
             </summary>
         </member>
-        <member name="F:E_StoreX.API.Controllers.CustomControllerBase._unitOfWork">
-            <summary>
-            Unit of Work instance for managing database transactions and repositories.
-            </summary>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.CustomControllerBase.#ctor(EStoreX.Core.RepositoryContracts.IUnitOfWork)">
+        <member name="M:E_StoreX.API.Controllers.CustomControllerBase.#ctor">
             <summary>
             Constructor for CustomControllerBase, initializing the unit of work.
             </summary>
