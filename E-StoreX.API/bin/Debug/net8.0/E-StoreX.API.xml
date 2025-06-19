@@ -78,5 +78,12 @@
             </summary>
             <returns>products</returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.ProductsController.GetProductById(System.Guid)">
+            <summary>
+            Retrieves a product by its ID.
+            </summary>
+            <param name="Id">Product Id</param>
+            <returns>Product or NotFound</returns>
+        </member>
     </members>
 </doc>

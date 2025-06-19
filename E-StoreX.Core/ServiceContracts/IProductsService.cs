@@ -14,7 +14,7 @@ namespace EStoreX.Core.ServiceContracts
         /// </summary>
         /// <param name="id">Product ID</param>
         /// <returns>Product with the specified ID</returns>
-        Task<ProductResponse> GetProductByIdAsync(Guid id);
+        Task<ProductResponse?> GetProductByIdAsync(Guid id);
         /// <summary>
         /// Creates a new product in the database.
         /// </summary>

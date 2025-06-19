@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.ServiceContracts;
+﻿using EStoreX.Core.DTO;
+using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,10 +25,21 @@ namespace E_StoreX.API.Controllers
         /// </summary>
         /// <returns>products</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductResponse>?>> GetAllProducts()
         {
             var products = await _productsService.GetAllProductsAsync();
             return Ok(products);
+        }
+        /// <summary>
+        /// Retrieves a product by its ID.
+        /// </summary>
+        /// <param name="Id">Product Id</param>
+        /// <returns>Product or NotFound</returns>
+        [HttpGet("{Id:guid}")]
+        public async Task<ActionResult<ProductResponse>> GetProductById(Guid Id)
+        {
+            var product = await _productsService.GetProductByIdAsync(Id);
+            return product is not null ? Ok(product) : NotFound();
         }
 
 

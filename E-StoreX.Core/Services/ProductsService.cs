@@ -7,8 +7,10 @@ namespace EStoreX.Core.Services
 {
     public class ProductsService : BaseService, IProductsService
     {
+        private readonly IProductRepository _productRepository;
         public ProductsService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
+            _productRepository = unitOfWork.ProductRepository;
         }
 
         public Task<ProductResponse> CreateProductAsync(ProductRequest productRequest)
@@ -23,14 +25,25 @@ namespace EStoreX.Core.Services
 
         public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync()
         {
-            var products = await _unitOfWork.ProductRepository.GetAllAsync(x => x.Category, y => y.Photos);
+            var products = await _productRepository.GetAllAsync(x => x.Category, y => y.Photos);
             var productResponses = _mapper.Map<IEnumerable<ProductResponse>>(products);
             return productResponses;
         }
 
-        public Task<ProductResponse> GetProductByIdAsync(Guid id)
+        public async Task<ProductResponse?> GetProductByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            if(id == Guid.Empty)
+            {
+                throw new ArgumentException("Product ID cannot be empty.", nameof(id));
+            }
+
+            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos);
+            
+            if (product == null)
+                return null;
+
+            var productResponse = _mapper.Map<ProductResponse>(product);
+            return productResponse;
         }
 
         public Task<ProductResponse> UpdateProductAsync(Guid id, ProductRequest productRequest)
