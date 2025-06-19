@@ -61,5 +61,22 @@
             </summary>
             <param name="unitOfWork"></param>
         </member>
+        <member name="T:E_StoreX.API.Controllers.ProductsController">
+            <summary>
+            Controller for managing products in the E-StoreX application.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
+            <summary>
+            Constructor for ProductsController.
+            </summary>
+            <param name="productsService"></param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.ProductsController.GetAllProducts">
+            <summary>
+            Retrieves all products from the database.
+            </summary>
+            <returns>products</returns>
+        </member>
     </members>
 </doc>

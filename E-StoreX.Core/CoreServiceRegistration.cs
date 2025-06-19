@@ -13,6 +13,8 @@ namespace EStoreX.Core
 
             services.AddScoped<ICategoriesService, CategoriesService>();
 
+            services.AddScoped<IProductsService, ProductsService>();
+
             return services;
         }
     }

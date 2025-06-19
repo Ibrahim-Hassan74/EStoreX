@@ -139,6 +139,19 @@
           }
         }
       }
+    },
+    "/api/Products": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Retrieves all products from the database.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -181,6 +194,10 @@
     {
       "name": "Categories",
       "description": "Controller for managing product categories in the E-StoreX application."
+    },
+    {
+      "name": "Products",
+      "description": "Controller for managing products in the E-StoreX application."
     }
   ]
 }
