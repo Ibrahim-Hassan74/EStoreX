@@ -165,3 +165,4 @@ E:\aspnetcore\code\EStoreX\E-StoreX.UI\obj\Debug\net8.0\refint\E-StoreX.UI.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.UI\obj\Debug\net8.0\E-StoreX.UI.pdb
 E:\aspnetcore\code\EStoreX\E-StoreX.UI\obj\Debug\net8.0\E-StoreX.UI.genruntimeconfig.cache
 E:\aspnetcore\code\EStoreX\E-StoreX.UI\obj\Debug\net8.0\ref\E-StoreX.UI.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.UI\bin\Debug\net8.0\AutoMapper.dll

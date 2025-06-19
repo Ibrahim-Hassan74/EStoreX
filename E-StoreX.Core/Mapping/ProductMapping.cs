@@ -11,9 +11,10 @@ namespace EStoreX.Core.Mapping
 
             CreateMap<Product, ProductResponse>()
                 .ForMember(dest => dest.CategoryName,
-                           opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : string.Empty))
+                    opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : string.Empty))
                 .ForMember(dest => dest.Photos,
-                           opt => opt.MapFrom(src => src.Photos));
+                    opt => opt.MapFrom(src => src.Photos)); 
+
 
             CreateMap<Photo, PhotoResponse>();
 
@@ -22,7 +23,7 @@ namespace EStoreX.Core.Mapping
                            opt => opt.MapFrom(src => src.Photos));
 
             CreateMap<PhotoRequest, Photo>()
-                .ForMember(dest => dest.ProductId, opt => opt.Ignore()); 
+                .ForMember(dest => dest.ProductId, opt => opt.Ignore());
 
 
         }

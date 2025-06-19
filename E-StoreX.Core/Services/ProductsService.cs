@@ -5,7 +5,7 @@ using EStoreX.Core.ServiceContracts;
 
 namespace EStoreX.Core.Services
 {
-    public class ProductsService : BaseService,IProductsService
+    public class ProductsService : BaseService, IProductsService
     {
         public ProductsService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
