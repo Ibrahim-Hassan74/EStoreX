@@ -244,10 +244,6 @@
           "imageName": {
             "type": "string",
             "nullable": true
-          },
-          "productId": {
-            "type": "string",
-            "format": "uuid"
           }
         },
         "additionalProperties": false

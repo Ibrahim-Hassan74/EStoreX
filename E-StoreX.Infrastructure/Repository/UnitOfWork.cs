@@ -1,18 +1,24 @@
-﻿using EStoreX.Core.RepositoryContracts;
+﻿using AutoMapper;
+using EStoreX.Core.RepositoryContracts;
+using EStoreX.Core.ServiceContracts;
 using EStoreX.Infrastructure.Data;
 
 namespace EStoreX.Infrastructure.Repository
 {
-    public class UnitOfWork : IUnitOfWork   
+    public class UnitOfWork : IUnitOfWork
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMapper _mapper;
+        private readonly IImageService _imageService;
         public IProductRepository ProductRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
         public IPhotoRepository PhotoRepository { get; }
-        public UnitOfWork(ApplicationDbContext context)
+        public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService)
         {
             _context = context;
-            ProductRepository = new ProductRepository(_context);
+            _mapper = mapper;
+            _imageService = imageService;
+            ProductRepository = new ProductRepository(_context, _mapper, _imageService);
             CategoryRepository = new CategoryRepository(_context);
             PhotoRepository = new PhotoRepository(_context);
         }

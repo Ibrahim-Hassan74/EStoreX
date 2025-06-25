@@ -42,6 +42,17 @@ namespace E_StoreX.API.Controllers
             return product is not null ? Ok(product) : NotFound();
         }
 
+        [HttpPost]
+        public async Task<ActionResult<ProductResponse>> CreateProduct([FromBody] ProductRequest productRequest)
+        {
+            if (productRequest == null)
+            {
+                return BadRequest("Product request cannot be null.");
+            }
+            var createdProduct = await _productsService.CreateProductAsync(productRequest);
+            return CreatedAtAction(nameof(GetProductById), new { Id = createdProduct.Id }, createdProduct);
+        }
+
 
     }
 }
