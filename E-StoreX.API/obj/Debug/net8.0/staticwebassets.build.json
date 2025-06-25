@@ -1,12 +1,20 @@
 {
   "Version": 1,
-  "Hash": "o0y52V8QQc6x24sy5HdoKR60AnIqeXlY7zdBGn4Hrdg=",
+  "Hash": "zajHBzKAL6oe7iTj4Ne2KEuNiiwVC55Zs+XAq9IlGUw=",
   "Source": "E-StoreX.API",
   "BasePath": "_content/E-StoreX.API",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "E-StoreX.API\\wwwroot",
+      "Source": "E-StoreX.API",
+      "ContentRoot": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\",
+      "BasePath": "_content/E-StoreX.API",
+      "Pattern": "**"
+    }
+  ],
   "Assets": [],
   "Endpoints": []
 }

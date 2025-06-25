@@ -1,5 +1,6 @@
 using EStoreX.Infrastructure;
 using EStoreX.Core;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +16,10 @@ builder.Services.AddSwaggerGen(options =>
         includeControllerXmlComments: true
     );
 });
+
+builder.Services.AddSingleton<IFileProvider>(
+    new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
+);
 
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 

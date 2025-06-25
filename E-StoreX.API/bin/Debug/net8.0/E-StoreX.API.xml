@@ -85,5 +85,12 @@
             <param name="Id">Product Id</param>
             <returns>Product or NotFound</returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.ProductsController.CreateProduct(EStoreX.Core.DTO.ProductRequest)">
+            <summary>
+            Create new product in database
+            </summary>
+            <param name="productRequest"></param>
+            <returns></returns>
+        </member>
     </members>
 </doc>

@@ -19,10 +19,11 @@ namespace EStoreX.Infrastructure.Repository
             _imageService = imageService;
         }
 
-        public async Task<bool> AddAsync(ProductRequest productRequest)
+        public async Task<Product> AddProductAsync(ProductRequest productRequest)
         {
-            if (productRequest is null) return false;
             var product = _mapper.Map<Product>(productRequest);
+            product.Id = Guid.NewGuid();
+
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
@@ -38,7 +39,7 @@ namespace EStoreX.Infrastructure.Repository
             await _context.AddRangeAsync(photos);
             await _context.SaveChangesAsync();
 
-            return true;
+            return product;
         }
         // You can add product-specific methods here if needed
         // For example, methods to get products by category, price range, etc.

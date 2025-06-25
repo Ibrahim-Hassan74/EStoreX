@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using Domain.Entities.Product;
 using EStoreX.Core.DTO;
+using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 
@@ -13,9 +15,17 @@ namespace EStoreX.Core.Services
             _productRepository = unitOfWork.ProductRepository;
         }
 
-        public Task<ProductResponse> CreateProductAsync(ProductRequest productRequest)
+        public async Task<ProductResponse> CreateProductAsync(ProductRequest productRequest)
         {
-            throw new NotImplementedException();
+            if (productRequest == null)
+            {
+                throw new ArgumentNullException(nameof(productRequest), "Product request cannot be null.");
+            }
+            ValidationHelper.ModelValidation(productRequest);
+
+            var product = await _productRepository.AddProductAsync(productRequest);
+
+            return _mapper.Map<ProductResponse>(product);
         }
 
         public Task DeleteProductAsync(Guid id)

@@ -5,6 +5,6 @@ namespace EStoreX.Core.RepositoryContracts
 {
     public interface IProductRepository : IGenericRepository<Product>
     {
-        Task<bool> AddAsync(ProductRequest productRequest);
+        Task<Product> AddProductAsync(ProductRequest productRequest);
     }
 }

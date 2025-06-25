@@ -41,14 +41,14 @@ namespace E_StoreX.API.Controllers
             var product = await _productsService.GetProductByIdAsync(Id);
             return product is not null ? Ok(product) : NotFound();
         }
-
+        /// <summary>
+        /// Create new product in database
+        /// </summary>
+        /// <param name="productRequest"></param>
+        /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<ProductResponse>> CreateProduct([FromBody] ProductRequest productRequest)
+        public async Task<ActionResult<ProductResponse>> CreateProduct(ProductRequest productRequest)
         {
-            if (productRequest == null)
-            {
-                return BadRequest("Product request cannot be null.");
-            }
             var createdProduct = await _productsService.CreateProductAsync(productRequest);
             return CreatedAtAction(nameof(GetProductById), new { Id = createdProduct.Id }, createdProduct);
         }

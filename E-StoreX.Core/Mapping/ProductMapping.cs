@@ -9,7 +9,7 @@ namespace EStoreX.Core.Mapping
         public ProductMapping()
         {
             CreateMap<ProductRequest, Product>()
-                .ForMember(x => x.Photos, opt => opt.Ignore())
+                .ForMember(x => x.Photos, opt => opt.Ignore());
 
             CreateMap<Product, ProductResponse>()
                 .ForMember(dest => dest.CategoryName,
