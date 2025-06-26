@@ -18,9 +18,9 @@ namespace Domain.Entities.Product
         public decimal OldPrice { get; set; }
         public Guid CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
-        public virtual Category Category { get; set; } 
+        public virtual Category Category { get; set; }
 
-        public List<Photo> Photos { get; set; }
+        public List<Photo> Photos { get; set; } = new List<Photo>();
 
     }
 }

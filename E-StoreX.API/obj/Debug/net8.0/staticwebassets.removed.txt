@@ -1,0 +1,6 @@
+E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Asus\44c9dda1-9e89-4d05-b70e-f8b7ea91358a_51btJzcsbYL._AC_SX466_.jpg
+E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Asus\56ac4120-ba91-457b-9e07-dc0aa73d8528_51btJzcsbYL._AC_SX466_.jpg
+E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Asus\8a3eec80-9768-448c-bb36-4542254707e9_61M831oph0L._AC_SX466_.jpg
+E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Asus\91bfe356-c529-4609-8e55-d6e43052b121_61M831oph0L._AC_SX466_.jpg
+E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Asus\97f525a0-3dde-49e5-80cf-be04a28eb742_61OYRwzcUoL._AC_SX466_.jpg
+E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Asus\ed5be05c-3095-4fca-aab2-715518a660bc_61OYRwzcUoL._AC_SX466_.jpg

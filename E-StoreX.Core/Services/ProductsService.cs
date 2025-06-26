@@ -23,7 +23,10 @@ namespace EStoreX.Core.Services
             }
             ValidationHelper.ModelValidation(productRequest);
 
-            var product = await _productRepository.AddProductAsync(productRequest);
+            var product = _mapper.Map<Product>(productRequest);
+            product.Id = Guid.NewGuid();
+
+            product = await _productRepository.AddProductAsync(product, productRequest.Photos);
 
             return _mapper.Map<ProductResponse>(product);
         }
@@ -42,13 +45,13 @@ namespace EStoreX.Core.Services
 
         public async Task<ProductResponse?> GetProductByIdAsync(Guid id)
         {
-            if(id == Guid.Empty)
+            if (id == Guid.Empty)
             {
                 throw new ArgumentException("Product ID cannot be empty.", nameof(id));
             }
 
             var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos);
-            
+
             if (product == null)
                 return null;
 

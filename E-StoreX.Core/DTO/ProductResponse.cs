@@ -1,11 +1,14 @@
 ﻿namespace EStoreX.Core.DTO
 {
-    public record ProductResponse(
-    Guid Id,
-    string Name,
-    string Description,
-    decimal? Price,
-    string CategoryName,
-    IEnumerable<PhotoResponse> Photos);
+    public class ProductResponse
+    {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public decimal? Price { get; set; }
+        public string CategoryName { get; set; }
+        public IEnumerable<PhotoResponse> Photos { get; set; }
 
+        public ProductResponse() { } 
+    }
 }

@@ -4,40 +4,47 @@ using EStoreX.Core.DTO;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 using EStoreX.Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Infrastructure.Repository
 {
     public class ProductRepository : GenericRepository<Product>, IProductRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IMapper _mapper;
-        private readonly IImageService _imageService;
-        public ProductRepository(ApplicationDbContext context, IMapper mapper, IImageService imageService) : base(context)
+        private readonly IPhotoRepository _photosRepository;
+        public ProductRepository(ApplicationDbContext context, IPhotoRepository photosRepository) : base(context)
         {
             _context = context;
-            _mapper = mapper;
-            _imageService = imageService;
+            _photosRepository = photosRepository;
         }
 
-        public async Task<Product> AddProductAsync(ProductRequest productRequest)
+        public async Task<Product> AddProductAsync(Product product, IFormFileCollection formFiles)
         {
-            var product = _mapper.Map<Product>(productRequest);
-            product.Id = Guid.NewGuid();
 
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
 
-            var imagePath = await _imageService.AddImageAsync(productRequest.Photos, productRequest.Name);
-
-            var photos = imagePath.Select(path => new Photo
+            var photosDTO = new PhotosDTO()
             {
-                ImageName = path,
                 ProductId = product.Id,
-                Id = Guid.NewGuid()
-            }).ToList();
+                Src = product.Name,
+                formFiles = formFiles
+            };
+            var photos = await _photosRepository.AddRangeAsync(photosDTO);
 
-            await _context.AddRangeAsync(photos);
-            await _context.SaveChangesAsync();
+            #region Commented out code for image handling
+            //var imagePath = await _imageService.AddImageAsync(productRequest.Photos, productRequest.Name);
+
+            //var photos = imagePath.Select(path => new Photo
+            //{
+            //    ImageName = path,
+            //    ProductId = product.Id,
+            //    Id = Guid.NewGuid()
+            //}).ToList();
+
+            //await _context.AddRangeAsync(photos);
+            //await _context.SaveChangesAsync();
+            #endregion
 
             return product;
         }

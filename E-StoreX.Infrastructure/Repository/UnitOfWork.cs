@@ -18,9 +18,9 @@ namespace EStoreX.Infrastructure.Repository
             _context = context;
             _mapper = mapper;
             _imageService = imageService;
-            ProductRepository = new ProductRepository(_context, _mapper, _imageService);
             CategoryRepository = new CategoryRepository(_context);
-            PhotoRepository = new PhotoRepository(_context);
+            PhotoRepository = new PhotoRepository(_context, _imageService);
+            ProductRepository = new ProductRepository(_context, PhotoRepository);
         }
     }
 }

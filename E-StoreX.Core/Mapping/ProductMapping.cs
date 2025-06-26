@@ -20,9 +20,9 @@ namespace EStoreX.Core.Mapping
 
             CreateMap<Photo, PhotoResponse>();
 
-            CreateMap<ProductRequest, Product>()
-                .ForMember(dest => dest.Photos,
-                           opt => opt.MapFrom(src => src.Photos));
+            //CreateMap<ProductRequest, Product>()
+            //    .ForMember(dest => dest.Photos,
+            //               opt => opt.MapFrom(src => src.Photos));
 
             CreateMap<PhotoRequest, Photo>()
                 .ForMember(dest => dest.ProductId, opt => opt.Ignore());
