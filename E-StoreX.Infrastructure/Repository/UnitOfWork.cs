@@ -20,7 +20,7 @@ namespace EStoreX.Infrastructure.Repository
             _imageService = imageService;
             CategoryRepository = new CategoryRepository(_context);
             PhotoRepository = new PhotoRepository(_context, _imageService);
-            ProductRepository = new ProductRepository(_context, PhotoRepository);
+            ProductRepository = new ProductRepository(_context, PhotoRepository, _imageService);
         }
     }
 }

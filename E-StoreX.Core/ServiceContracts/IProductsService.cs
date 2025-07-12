@@ -20,18 +20,18 @@ namespace EStoreX.Core.ServiceContracts
         /// </summary>
         /// <param name="productRequest">Product details to create</param>
         /// <returns>Created product</returns>
-        Task<ProductResponse> CreateProductAsync(ProductRequest productRequest);
+        Task<ProductResponse> CreateProductAsync(ProductAddRequest productRequest);
         /// <summary>
         /// Updates an existing product in the database.
         /// </summary>
         /// <param name="id">Product ID to update</param>
         /// <param name="productRequest">Updated product details</param>
         /// <returns>Updated product</returns>
-        Task<ProductResponse> UpdateProductAsync(Guid id, ProductRequest productRequest);
+        Task<ProductResponse> UpdateProductAsync(ProductUpdateRequest productUpdateRequest);
         /// <summary>
         /// Deletes a product by its ID.
         /// </summary>
         /// <param name="id">Product ID to delete</param>
-        Task DeleteProductAsync(Guid id);
+        Task<bool> DeleteProductAsync(Guid id);
     }
 }

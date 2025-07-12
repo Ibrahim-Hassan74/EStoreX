@@ -15,7 +15,7 @@ namespace EStoreX.Core.Services
             _productRepository = unitOfWork.ProductRepository;
         }
 
-        public async Task<ProductResponse> CreateProductAsync(ProductRequest productRequest)
+        public async Task<ProductResponse> CreateProductAsync(ProductAddRequest productRequest)
         {
             if (productRequest == null)
             {
@@ -31,9 +31,14 @@ namespace EStoreX.Core.Services
             return _mapper.Map<ProductResponse>(product);
         }
 
-        public Task DeleteProductAsync(Guid id)
+        public async Task<bool> DeleteProductAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y =>  y.Photos);
+
+            if(product == null)
+                return false;
+
+            return await _productRepository.DeleteAsync(product);
         }
 
         public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync()
@@ -59,9 +64,32 @@ namespace EStoreX.Core.Services
             return productResponse;
         }
 
-        public Task<ProductResponse> UpdateProductAsync(Guid id, ProductRequest productRequest)
+        public async Task<ProductResponse> UpdateProductAsync(ProductUpdateRequest productUpdateRequest)
         {
-            throw new NotImplementedException();
+            if(productUpdateRequest == null)
+            {
+                throw new ArgumentNullException(paramName: nameof(productUpdateRequest), "Product update request cannot be null.");
+            }
+
+            ValidationHelper.ModelValidation(productUpdateRequest);
+
+            var findProduct = await _productRepository.GetByIdAsync(productUpdateRequest.Id, x => x.Category, x => x.Photos);
+
+            if (findProduct == null)
+            {
+                throw new KeyNotFoundException($"Product with ID {productUpdateRequest.Id} not found.");
+            }
+
+            findProduct.Id = productUpdateRequest.Id;
+            findProduct.Name = productUpdateRequest.Name;
+            findProduct.Description = productUpdateRequest.Description;
+            findProduct.OldPrice = productUpdateRequest.OldPrice;
+            findProduct.NewPrice = productUpdateRequest.NewPrice;
+            findProduct.CategoryId = productUpdateRequest.CategoryId;
+
+            var productResponse = await _productRepository.UpdateProductAsync(findProduct, productUpdateRequest.Photos);
+
+            return _mapper.Map<ProductResponse>(findProduct);
         }
     }
 }

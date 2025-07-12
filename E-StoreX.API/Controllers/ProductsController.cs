@@ -47,12 +47,42 @@ namespace E_StoreX.API.Controllers
         /// <param name="productRequest"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<ActionResult<ProductResponse>> CreateProduct(ProductRequest productRequest)
+        public async Task<ActionResult<ProductResponse>> CreateProduct(ProductAddRequest productRequest)
         {
             var createdProduct = await _productsService.CreateProductAsync(productRequest);
             return CreatedAtAction(nameof(GetProductById), new { Id = createdProduct.Id }, createdProduct);
         }
+        /// <summary>
+        /// Updates an existing product in the database.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="productUpdateRequest"></param>
+        /// <returns></returns>
+        [HttpPut("{id:guid}")]
+        public async Task<ActionResult<ProductResponse>> UpdateProduct([FromRoute] Guid id, [FromForm] ProductUpdateRequest productUpdateRequest)
+        {
+            if (id != productUpdateRequest.Id) return BadRequest("Id must be equals");
 
+            var updatedProduct = await _productsService.UpdateProductAsync(productUpdateRequest);
+            return Ok(updatedProduct);
+        }
+        /// <summary>
+        /// delete product from database
+        /// </summary>
+        /// <param name="id">product Id</param>
+        /// <returns>ok / NotFound</returns>
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteProduct(Guid id)
+        {
+            if (id == Guid.Empty) 
+                return BadRequest("Invalid Product ID");
 
+            var res = await _productsService.DeleteProductAsync(id);
+
+            if (!res)
+                return NotFound("Can't find any product with this ID");
+
+            return Ok("Deleted Successfully");
+        }
     }
 }

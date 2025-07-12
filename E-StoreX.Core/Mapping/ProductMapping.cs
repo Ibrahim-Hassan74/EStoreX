@@ -8,14 +8,17 @@ namespace EStoreX.Core.Mapping
     {
         public ProductMapping()
         {
-            CreateMap<ProductRequest, Product>()
+            CreateMap<ProductAddRequest, Product>()
+                .ForMember(x => x.Photos, opt => opt.Ignore());
+
+            CreateMap<ProductUpdateRequest, Product>()
                 .ForMember(x => x.Photos, opt => opt.Ignore());
 
             CreateMap<Product, ProductResponse>()
                 .ForMember(dest => dest.CategoryName,
                     opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : string.Empty))
                 .ForMember(dest => dest.Photos,
-                    opt => opt.MapFrom(src => src.Photos)); 
+                    opt => opt.MapFrom(src => src.Photos));
 
 
             CreateMap<Photo, PhotoResponse>();

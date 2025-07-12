@@ -85,12 +85,27 @@
             <param name="Id">Product Id</param>
             <returns>Product or NotFound</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.CreateProduct(EStoreX.Core.DTO.ProductRequest)">
+        <member name="M:E_StoreX.API.Controllers.ProductsController.CreateProduct(EStoreX.Core.DTO.ProductAddRequest)">
             <summary>
             Create new product in database
             </summary>
             <param name="productRequest"></param>
             <returns></returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.ProductsController.UpdateProduct(System.Guid,EStoreX.Core.DTO.ProductUpdateRequest)">
+            <summary>
+            Updates an existing product in the database.
+            </summary>
+            <param name="id"></param>
+            <param name="productUpdateRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.ProductsController.DeleteProduct(System.Guid)">
+            <summary>
+            delete product from database
+            </summary>
+            <param name="id">product Id</param>
+            <returns>ok / NotFound</returns>
         </member>
     </members>
 </doc>
