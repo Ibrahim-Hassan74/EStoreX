@@ -24,16 +24,18 @@ namespace E_StoreX.API.Middleware
         {
             try
             {
-                if (!IsRequestAllowed(httpContext))
-                {
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
+                ApplySecurity(httpContext);
 
-                    httpContext.Response.ContentType = "application/json";
+                //if (!IsRequestAllowed(httpContext))
+                //{
+                //    httpContext.Response.StatusCode = (int)HttpStatusCode.TooManyRequests;
 
-                    var response = new ApiExceptions((int)HttpStatusCode.TooManyRequests, "Too Many Request .. Please Try again Later");
-                    await httpContext.Response.WriteAsJsonAsync(response);
-                    return;
-                }
+                //    httpContext.Response.ContentType = "application/json";
+
+                //    var response = new ApiExceptions((int)HttpStatusCode.TooManyRequests, "Too Many Request .. Please Try again Later");
+                //    await httpContext.Response.WriteAsJsonAsync(response);
+                //    return;
+                //}
 
                 await _next(httpContext);
             }
@@ -81,6 +83,14 @@ namespace E_StoreX.API.Middleware
             return true;
 
         }
+
+        private void ApplySecurity(HttpContext context)
+        {
+            context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+            context.Response.Headers["X-XSS-Protection"] = "1;mode=block";
+            context.Response.Headers["X-Frame-Options"] = "DENY";
+        }
+
     }
     /// <summary>
     /// Exception Handling Middleware Extensions
