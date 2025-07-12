@@ -49,6 +49,11 @@ namespace E_StoreX.API.Middleware
                 await httpContext.Response.WriteAsync(json);
             }
         }
+
+        // Legacy rate limiting logic (based on IMemoryCache and IP)
+        // Replaced by built-in ASP.NET Core Rate Limiter using AddRateLimiter in Program.cs
+        // Use app.UseRateLimiter() in the pipeline and configure it via services.AddRateLimiter()
+        // NOTE: This method is no longer used and can be safely removed after verifying the new setup.
         private bool IsRequestAllowed(HttpContext context)
         {
             var ip = context.Connection.RemoteIpAddress?.ToString();
