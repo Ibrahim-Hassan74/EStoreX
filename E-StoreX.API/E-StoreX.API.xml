@@ -4,6 +4,35 @@
         <name>E-StoreX.API</name>
     </assembly>
     <members>
+        <member name="T:E_StoreX.API.Controllers.BugController">
+            <summary>
+            Controller for handling bug-related operations.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BugController.GetError">
+            <summary>
+            Returns a 500 Internal Server Error response.
+            </summary>
+            <returns>A 500 status code with a message indicating an internal server error.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BugController.GetNotFound">
+            <summary>
+            Returns a 404 Not Found response.
+            </summary>
+            <returns>A 404 status code with a message indicating the resource was not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BugController.GetBadRequest(System.Guid)">
+             <summary>
+             Returns a 400 Bad Request response.
+             </summary>
+             <returns>A 400 status code with a message indicating the resource was bad-request</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BugController.GetBadRequest">
+             <summary>
+             Returns a 400 Bad Request response.
+             </summary>
+             <returns>A 400 status code with a message indicating the resource was bad-request</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.CategoriesController">
             <summary>
             Controller for managing product categories in the E-StoreX application.
@@ -61,6 +90,11 @@
             </summary>
             <param name="unitOfWork"></param>
         </member>
+        <member name="T:E_StoreX.API.Controllers.ErrorController">
+            <summary>
+            
+            </summary>
+        </member>
         <member name="T:E_StoreX.API.Controllers.ProductsController">
             <summary>
             Controller for managing products in the E-StoreX application.
@@ -106,6 +140,18 @@
             </summary>
             <param name="id">product Id</param>
             <returns>ok / NotFound</returns>
+        </member>
+        <member name="T:E_StoreX.API.Middleware.ExceptionHandlingMiddlewareExtensions">
+            <summary>
+            Exception Handling Middleware Extensions
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Middleware.ExceptionHandlingMiddlewareExtensions.UseExceptionHandlingMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
         </member>
     </members>
 </doc>

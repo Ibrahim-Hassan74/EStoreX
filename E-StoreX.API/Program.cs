@@ -1,12 +1,15 @@
 using EStoreX.Infrastructure;
 using EStoreX.Core;
 using Microsoft.Extensions.FileProviders;
+using E_StoreX.API.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddMemoryCache();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -32,6 +35,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseExceptionHandlingMiddleware();
+
+app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseHttpsRedirection();
 

@@ -5,6 +5,69 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Bug/error": {
+      "get": {
+        "tags": [
+          "Bug"
+        ],
+        "summary": "Returns a 500 Internal Server Error response.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Bug/not-found": {
+      "get": {
+        "tags": [
+          "Bug"
+        ],
+        "summary": "Returns a 404 Not Found response.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Bug/bad-request/{Id}": {
+      "get": {
+        "tags": [
+          "Bug"
+        ],
+        "summary": "Returns a 400 Bad Request response.",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Bug/bad-request": {
+      "get": {
+        "tags": [
+          "Bug"
+        ],
+        "summary": "Returns a 400 Bad Request response.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Categories": {
       "get": {
         "tags": [
@@ -130,6 +193,29 @@
             "schema": {
               "type": "string",
               "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/errors/{statusCode}": {
+      "get": {
+        "tags": [
+          "Error"
+        ],
+        "parameters": [
+          {
+            "name": "statusCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
             }
           }
         ],
@@ -547,8 +633,16 @@
   },
   "tags": [
     {
+      "name": "Bug",
+      "description": "Controller for handling bug-related operations."
+    },
+    {
       "name": "Categories",
       "description": "Controller for managing product categories in the E-StoreX application."
+    },
+    {
+      "name": "Error",
+      "description": ""
     },
     {
       "name": "Products",

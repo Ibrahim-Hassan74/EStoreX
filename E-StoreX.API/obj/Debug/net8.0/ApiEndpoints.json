@@ -1,5 +1,51 @@
 [
   {
+    "ContainingType": "E_StoreX.API.Controllers.BugController",
+    "Method": "GetBadRequest",
+    "RelativePath": "api/Bug/bad-request",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.BugController",
+    "Method": "GetBadRequest",
+    "RelativePath": "api/Bug/bad-request/{Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.BugController",
+    "Method": "GetError",
+    "RelativePath": "api/Bug/error",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.BugController",
+    "Method": "GetNotFound",
+    "RelativePath": "api/Bug/not-found",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "E_StoreX.API.Controllers.CategoriesController",
     "Method": "GetCategories",
     "RelativePath": "api/Categories",
@@ -251,5 +297,21 @@
         "StatusCode": 200
       }
     ]
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.ErrorController",
+    "Method": "Error",
+    "RelativePath": "errors/{statusCode}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "statusCode",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
   }
 ]
