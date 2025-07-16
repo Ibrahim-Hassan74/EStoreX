@@ -33,9 +33,9 @@ namespace EStoreX.Core.Services
 
         public async Task<bool> DeleteProductAsync(Guid id)
         {
-            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y =>  y.Photos);
+            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos);
 
-            if(product == null)
+            if (product == null)
                 return false;
 
             return await _productRepository.DeleteAsync(product);
@@ -66,7 +66,7 @@ namespace EStoreX.Core.Services
 
         public async Task<ProductResponse> UpdateProductAsync(ProductUpdateRequest productUpdateRequest)
         {
-            if(productUpdateRequest == null)
+            if (productUpdateRequest == null)
             {
                 throw new ArgumentNullException(paramName: nameof(productUpdateRequest), "Product update request cannot be null.");
             }
@@ -91,5 +91,22 @@ namespace EStoreX.Core.Services
 
             return _mapper.Map<ProductResponse>(findProduct);
         }
+
+        public async Task<IEnumerable<ProductResponse>> GetFilteredProductsAsync(ProductQueryDTO query)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query), "Query cannot be null.");
+            }
+
+            if(string.IsNullOrEmpty(query.SearchString) || string.IsNullOrEmpty(query.SearchBy))
+            {
+                return await GetAllProductsAsync();
+            }
+
+            var products = await _productRepository.GetFilteredProductsAsync(query);
+            return _mapper.Map<IEnumerable<ProductResponse>>(products);
+        }
+
     }
 }

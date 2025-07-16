@@ -33,5 +33,11 @@ namespace EStoreX.Core.ServiceContracts
         /// </summary>
         /// <param name="id">Product ID to delete</param>
         Task<bool> DeleteProductAsync(Guid id);
+        /// <summary>
+        /// Retrieves a filtered, sorted, and paginated list of products based on the provided query parameters.
+        /// </summary>
+        /// <param name="query">An object containing filtering, sorting, and pagination parameters for products.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains a collection of <see cref="ProductResponse"/> matching the criteria.</returns>
+        Task<IEnumerable<ProductResponse>> GetFilteredProductsAsync(ProductQueryDTO query);
     }
 }

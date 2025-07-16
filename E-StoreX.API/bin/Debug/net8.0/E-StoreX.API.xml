@@ -106,7 +106,7 @@
             </summary>
             <param name="productsService"></param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.GetAllProducts">
+        <member name="M:E_StoreX.API.Controllers.ProductsController.GetAllProducts(EStoreX.Core.DTO.ProductQueryDTO)">
             <summary>
             Retrieves all products from the database.
             </summary>

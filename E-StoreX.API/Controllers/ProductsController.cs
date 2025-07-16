@@ -25,9 +25,13 @@ namespace E_StoreX.API.Controllers
         /// </summary>
         /// <returns>products</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductResponse>?>> GetAllProducts()
+        public async Task<ActionResult<IEnumerable<ProductResponse>>> GetAllProducts([FromQuery] ProductQueryDTO query)
         {
-            var products = await _productsService.GetAllProductsAsync();
+            var products = await _productsService.GetFilteredProductsAsync(query);
+
+            if (!products.Any())
+                return NoContent();
+
             return Ok(products);
         }
         /// <summary>

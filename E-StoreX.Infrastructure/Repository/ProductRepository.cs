@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities.Product;
 using EStoreX.Core.DTO;
+using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 using EStoreX.Infrastructure.Data;
@@ -87,6 +88,109 @@ namespace EStoreX.Infrastructure.Repository
 
             return res;
         }
+
+        public async Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductQueryDTO query)
+        {
+            IQueryable<Product> products = _context.Products
+                .Include(p => p.Category)
+                .Include(p => p.Photos);
+
+            products = ApplyFiltering(products, query);
+            products = ApplySorting(products, query);
+            products = ApplyPagination(products, query);
+
+            return await products.ToListAsync();
+        }
+
+
+        private IQueryable<Product> ApplyFiltering(IQueryable<Product> products, ProductQueryDTO query)
+        {
+            if (!string.IsNullOrWhiteSpace(query.SearchBy) && !string.IsNullOrWhiteSpace(query.SearchString))
+            {
+                switch (query.SearchBy.ToLower())
+                {
+                    case "name":
+                        products = products.Where(p => p.Name.Contains(query.SearchString));
+                        break;
+                    case "description":
+                        products = products.Where(p => p.Description.Contains(query.SearchString));
+                        break;
+                    case "category":
+                        products = products.Where(p => p.Category.Name.Contains(query.SearchString));
+                        break;
+                }
+            }
+
+            if (query.CategoryId.HasValue)
+            {
+                products = products.Where(p => p.CategoryId == query.CategoryId.Value);
+            }
+
+            if (query.MinPrice.HasValue)
+            {
+                products = products.Where(p => p.NewPrice >= query.MinPrice.Value);
+            }
+
+            if (query.MaxPrice.HasValue)
+            {
+                products = products.Where(p => p.NewPrice <= query.MaxPrice.Value);
+            }
+
+            return products;
+        }
+       
+        private IQueryable<Product> ApplySorting(IQueryable<Product> products, ProductQueryDTO query)
+        {
+            var sortBy = query.SortBy ?? nameof(Product.NewPrice); 
+            bool isAscending = query.SortOrder == SortOrderOptions.ASC;
+
+            switch (sortBy)
+            {
+                case var s when s == nameof(Product.Name):
+                    products = isAscending
+                        ? products.OrderBy(p => p.Name)
+                        : products.OrderByDescending(p => p.Name);
+                    break;
+
+                case var s when s == nameof(Product.NewPrice):
+                    products = isAscending
+                        ? products.OrderBy(p => p.NewPrice)
+                        : products.OrderByDescending(p => p.NewPrice);
+                    break;
+
+                case var s when s == nameof(Product.OldPrice):
+                    products = isAscending
+                        ? products.OrderBy(p => p.OldPrice)
+                        : products.OrderByDescending(p => p.OldPrice);
+                    break;
+
+                case "Category":
+                    products = isAscending
+                        ? products.OrderBy(p => p.Category.Name)
+                        : products.OrderByDescending(p => p.Category.Name);
+                    break;
+
+                default:
+                    products = isAscending
+                        ? products.OrderBy(p => p.NewPrice)
+                        : products.OrderByDescending(p => p.NewPrice);
+                    break;
+            }
+
+            return products;
+        }
+
+        private IQueryable<Product> ApplyPagination(IQueryable<Product> products, ProductQueryDTO query)
+        {
+            int pageNumber = query.PageNumber < 1 ? 1 : query.PageNumber;
+            int pageSize = query.PageSize < 1 ? 10 : query.PageSize;
+
+            int skipAmount = (pageNumber - 1) * pageSize;
+
+            return products.Skip(skipAmount).Take(pageSize);
+        }
+
+
         // You can add product-specific methods here if needed
         // For example, methods to get products by category, price range, etc.
     }
