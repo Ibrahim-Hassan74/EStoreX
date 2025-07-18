@@ -53,5 +53,10 @@ namespace EStoreX.Core.RepositoryContracts
         /// <typeparam name="T">The type of the entity.</typeparam>
         /// <param name="id">The identifier of the entity to delete.</param>
         Task<bool> DeleteAsync(Guid id);
+        /// <summary>
+        /// count number of row in table
+        /// </summary>
+        /// <returns>number of row in the table</returns>
+        Task<int> CountAsync();
     }
 }

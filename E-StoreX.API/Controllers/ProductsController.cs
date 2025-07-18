@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.DTO;
+﻿using E_StoreX.API.Helper;
+using EStoreX.Core.DTO;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -29,10 +30,12 @@ namespace E_StoreX.API.Controllers
         {
             var products = await _productsService.GetFilteredProductsAsync(query);
 
+            var totalCount = await _productsService.CountProductsAsync();
+
             if (!products.Any())
                 return NoContent();
-
-            return Ok(products);
+            var result = new Pagination<ProductResponse>(query.PageNumber, query.PageSize, totalCount, products);
+            return Ok(result);
         }
         /// <summary>
         /// Retrieves a product by its ID.
@@ -78,7 +81,7 @@ namespace E_StoreX.API.Controllers
         [HttpDelete("{id:guid}")]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
-            if (id == Guid.Empty) 
+            if (id == Guid.Empty)
                 return BadRequest("Invalid Product ID");
 
             var res = await _productsService.DeleteProductAsync(id);

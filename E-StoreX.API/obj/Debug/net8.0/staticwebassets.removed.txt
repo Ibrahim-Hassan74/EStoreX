@@ -1,2 +1,0 @@
-E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Lenovo\010d7a28-ae3b-48d3-b463-c7f043fec6b2_PXL_20240726_221803020.jpg
-E:\aspnetcore\code\EStoreX\E-StoreX.API\wwwroot\Images\Lenovo\51b059e8-54f7-404a-8c71-8148d531986d_PXL_20240726_221731935.jpg

@@ -99,14 +99,13 @@ namespace EStoreX.Core.Services
                 throw new ArgumentNullException(nameof(query), "Query cannot be null.");
             }
 
-            if(string.IsNullOrEmpty(query.SearchString) || string.IsNullOrEmpty(query.SearchBy))
-            {
-                return await GetAllProductsAsync();
-            }
-
             var products = await _productRepository.GetFilteredProductsAsync(query);
             return _mapper.Map<IEnumerable<ProductResponse>>(products);
         }
 
+        public async Task<int> CountProductsAsync()
+        {
+            return await _productRepository.CountAsync();
+        }
     }
 }

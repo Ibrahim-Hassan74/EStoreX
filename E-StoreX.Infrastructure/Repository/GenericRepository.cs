@@ -27,6 +27,11 @@ namespace EStoreX.Infrastructure.Repository
             return entity;
         }
 
+        public async Task<int> CountAsync()
+        {
+            return await _db.CountAsync();
+        }
+
         public async Task<bool> DeleteAsync(Guid id)
         {
             if (id == Guid.Empty)

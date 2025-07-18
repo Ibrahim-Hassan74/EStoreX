@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "zajHBzKAL6oe7iTj4Ne2KEuNiiwVC55Zs+XAq9IlGUw=",
+  "Hash": "h4tFpbvpr3l2+sGmL5ZpycxKi4EFpzmSX2+4c+DxSzI=",
   "Source": "E-StoreX.API",
   "BasePath": "_content/E-StoreX.API",
   "Mode": "Default",
@@ -15,6 +15,420 @@
       "Pattern": "**"
     }
   ],
-  "Assets": [],
-  "Endpoints": []
+  "Assets": [
+    {
+      "Identity": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Dell\\1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.jpg",
+      "SourceId": "E-StoreX.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\",
+      "BasePath": "_content/E-StoreX.API",
+      "RelativePath": "Images/Dell/1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "gbpmy2yn00",
+      "Integrity": "VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Dell\\1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.jpg"
+    },
+    {
+      "Identity": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Dell\\9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.jpg",
+      "SourceId": "E-StoreX.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\",
+      "BasePath": "_content/E-StoreX.API",
+      "RelativePath": "Images/Dell/9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "7htkw1z20f",
+      "Integrity": "O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Dell\\9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.jpg"
+    },
+    {
+      "Identity": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Hp\\bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.jpg",
+      "SourceId": "E-StoreX.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\",
+      "BasePath": "_content/E-StoreX.API",
+      "RelativePath": "Images/Hp/bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "7htkw1z20f",
+      "Integrity": "O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Hp\\bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.jpg"
+    },
+    {
+      "Identity": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Hp\\e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.jpg",
+      "SourceId": "E-StoreX.API",
+      "SourceType": "Discovered",
+      "ContentRoot": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\",
+      "BasePath": "_content/E-StoreX.API",
+      "RelativePath": "Images/Hp/e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "gbpmy2yn00",
+      "Integrity": "VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\Images\\Hp\\e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.jpg"
+    }
+  ],
+  "Endpoints": [
+    {
+      "Route": "Images/Dell/1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.gbpmy2yn00.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Dell\\1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3514657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:26:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "gbpmy2yn00"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/Dell/1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Dell/1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Dell\\1038f9b7-fa1f-4910-9952-73c2b795d8ee_PXL_20240726_183618243.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3514657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:26:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Dell/9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.7htkw1z20f.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Dell\\9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2854852"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:26:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7htkw1z20f"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/Dell/9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Dell/9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Dell\\9ed34a15-6b5d-44aa-9117-c2304304272b_PXL_20240726_221803020.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2854852"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:26:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Hp/bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.7htkw1z20f.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Hp\\bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2854852"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:25:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "7htkw1z20f"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/Hp/bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Hp/bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Hp\\bd0c9250-a002-4651-89b1-21c72e794704_PXL_20240726_221803020.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2854852"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:25:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-O0YFu5eC7DsT+X/CpPRw/UzmSCjR+acm7N0rfq+oO+U="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Hp/e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.gbpmy2yn00.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Hp\\e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3514657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:25:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "gbpmy2yn00"
+        },
+        {
+          "Name": "label",
+          "Value": "Images/Hp/e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c="
+        }
+      ]
+    },
+    {
+      "Route": "Images/Hp/e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.jpg",
+      "AssetFile": "E:\\aspnetcore\\code\\EStoreX\\E-StoreX.API\\wwwroot\\Images\\Hp\\e35906e1-ffb4-4665-9295-305de3ee7620_PXL_20240726_183618243.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3514657"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 16 Jul 2025 17:25:43 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VEwLYzEYaH6oUCekVCHe37RJ+ig/WEsVVtb7f2WIt2c="
+        }
+      ]
+    }
+  ]
 }

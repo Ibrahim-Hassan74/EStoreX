@@ -107,13 +107,13 @@ namespace EStoreX.Infrastructure.Repository
         {
             if (!string.IsNullOrWhiteSpace(query.SearchBy) && !string.IsNullOrWhiteSpace(query.SearchString))
             {
+                var words = query.SearchString.Split(' ');
                 switch (query.SearchBy.ToLower())
                 {
                     case "name":
-                        products = products.Where(p => p.Name.Contains(query.SearchString));
-                        break;
                     case "description":
-                        products = products.Where(p => p.Description.Contains(query.SearchString));
+                        products = products.Where(p => words.All(w => p.Name.ToLower().Contains(w.ToLower()) 
+                        || p.Description.ToLower().Contains(w.ToLower())));
                         break;
                     case "category":
                         products = products.Where(p => p.Category.Name.Contains(query.SearchString));
@@ -138,10 +138,10 @@ namespace EStoreX.Infrastructure.Repository
 
             return products;
         }
-       
+
         private IQueryable<Product> ApplySorting(IQueryable<Product> products, ProductQueryDTO query)
         {
-            var sortBy = query.SortBy ?? nameof(Product.NewPrice); 
+            var sortBy = query.SortBy ?? nameof(Product.NewPrice);
             bool isAscending = query.SortOrder == SortOrderOptions.ASC;
 
             switch (sortBy)
