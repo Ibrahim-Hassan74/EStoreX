@@ -13,6 +13,9 @@ namespace EStoreX.Infrastructure.Repository
         public IProductRepository ProductRepository { get; }
         public ICategoryRepository CategoryRepository { get; }
         public IPhotoRepository PhotoRepository { get; }
+
+        public ICustomerBasketRepository CustomerBasketRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService)
         {
             _context = context;
@@ -21,6 +24,7 @@ namespace EStoreX.Infrastructure.Repository
             CategoryRepository = new CategoryRepository(_context);
             PhotoRepository = new PhotoRepository(_context, _imageService);
             ProductRepository = new ProductRepository(_context, PhotoRepository, _imageService);
+            CustomerBasketRepository = new CustomerBasketRepository();
         }
     }
 }

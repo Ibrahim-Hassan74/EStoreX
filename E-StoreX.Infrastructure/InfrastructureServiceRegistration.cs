@@ -4,6 +4,7 @@ using EStoreX.Infrastructure.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace EStoreX.Infrastructure
 {
@@ -19,6 +20,12 @@ namespace EStoreX.Infrastructure
             services.AddDbContext<ApplicationDbContext>(options =>
             {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+            });
+
+            services.AddSingleton<IConnectionMultiplexer>(provider =>
+            {
+                var configurationOptions = ConfigurationOptions.Parse(configuration.GetConnectionString("RedisConnection")!);
+                return ConnectionMultiplexer.Connect(configurationOptions);
             });
 
             return services;
