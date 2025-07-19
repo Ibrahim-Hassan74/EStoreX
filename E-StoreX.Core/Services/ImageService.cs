@@ -1,4 +1,5 @@
 ﻿using EStoreX.Core.ServiceContracts;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.FileProviders;
 
@@ -7,10 +8,12 @@ namespace EStoreX.Core.Services
     public class ImageService : IImageService
     {
         private readonly IFileProvider _fileProvider;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public ImageService(IFileProvider fileProvider)
+        public ImageService(IFileProvider fileProvider, IWebHostEnvironment webHostEnvironment)
         {
             _fileProvider = fileProvider;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<List<string>> AddImageAsync(IFormFileCollection files, string src)
@@ -24,7 +27,7 @@ namespace EStoreX.Core.Services
             {
                 throw new ArgumentException("Source folder cannot be null or empty.", nameof(src));
             }
-            var path = Path.Combine("wwwroot", "Images", src);
+            var path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", src);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
             foreach (var file in files)

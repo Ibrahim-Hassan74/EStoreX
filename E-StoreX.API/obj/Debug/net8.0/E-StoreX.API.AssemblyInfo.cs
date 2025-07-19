@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("E-StoreX.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+15de9d56e2ea5dd583df8b834b4ef13e9cab47d1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9f34c461634822f17c21396a291fe8dbba8b5a64")]
 [assembly: System.Reflection.AssemblyProductAttribute("E-StoreX.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("E-StoreX.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -2,7 +2,7 @@
 
 namespace EStoreX.Core.Domain.Options
 {
-    public class AccountSenderDetails
+    public class EmailSetting
     {
         public string? Email { get; set; }
         public string? Password { get; set; }

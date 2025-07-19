@@ -4,6 +4,7 @@ using Microsoft.Extensions.FileProviders;
 using E_StoreX.API.Middleware;
 using E_StoreX.API.Helper;
 using System.Threading.RateLimiting;
+using EStoreX.Core.Domain.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddMemoryCache();
+
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddCors(options =>
 {
@@ -53,6 +56,8 @@ builder.Services.AddRateLimiter(options =>
     };
 });
 
+builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSetting"));
+
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>
@@ -78,6 +83,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseStaticFiles();
 
 app.UseCors("AllowAllOrigins");
 

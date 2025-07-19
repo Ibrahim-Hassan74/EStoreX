@@ -19,6 +19,7 @@ namespace EStoreX.Infrastructure.Repository
 
         public ICustomerBasketRepository CustomerBasketRepository { get; }
 
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
             _context = context;

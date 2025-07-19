@@ -1,4 +1,6 @@
-﻿namespace EStoreX.Core.RepositoryContracts
+﻿using ServiceContracts;
+
+namespace EStoreX.Core.RepositoryContracts
 {
     public interface IUnitOfWork
     {

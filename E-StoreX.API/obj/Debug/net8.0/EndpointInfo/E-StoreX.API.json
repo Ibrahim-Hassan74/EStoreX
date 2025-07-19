@@ -700,6 +700,10 @@
   "components": {
     "schemas": {
       "BasketItem": {
+        "required": [
+          "category",
+          "name"
+        ],
         "type": "object",
         "properties": {
           "id": {
@@ -707,23 +711,34 @@
             "format": "uuid"
           },
           "name": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 500,
+            "minLength": 0,
             "type": "string",
             "nullable": true
           },
           "qunatity": {
+            "maximum": 2147483647,
+            "minimum": 1,
             "type": "integer",
             "format": "int32"
           },
           "price": {
+            "minimum": 0.01,
             "type": "number",
             "format": "double"
           },
           "category": {
-            "type": "string",
-            "nullable": true
+            "minLength": 1,
+            "type": "string"
           },
           "image": {
             "type": "string",
+            "format": "uri",
             "nullable": true
           }
         },

@@ -28,7 +28,6 @@ E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.E-StoreX.API.props
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.E-StoreX.API.props
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.pack.json
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\E-StoreX.2BD1C018.Up2Date
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\E-StoreX.API.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\refint\E-StoreX.API.dll
@@ -172,3 +171,8 @@ E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\AutoMapper.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\E-StoreX.API.staticwebassets.runtime.json
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\StackExchange.Redis.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\BouncyCastle.Cryptography.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\MailKit.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\MimeKit.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt

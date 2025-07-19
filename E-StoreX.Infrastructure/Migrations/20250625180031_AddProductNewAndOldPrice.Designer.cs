@@ -44,13 +44,7 @@ namespace EStoreX.Infrastructure.Migrations
 
                     b.ToTable("Categories");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("19f389fe-8472-46fc-83ea-2440790a2067"),
-                            Description = "Devices and gadgets",
-                            Name = "Electronics"
-                        });
+                   
                 });
 
             modelBuilder.Entity("Domain.Entities.Product.Photo", b =>
@@ -72,13 +66,7 @@ namespace EStoreX.Infrastructure.Migrations
 
                     b.ToTable("Photos");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("37a11589-ef34-463c-8c24-307ac1c177e4"),
-                            ImageName = "default.jpg",
-                            ProductId = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890")
-                        });
+                   
                 });
 
             modelBuilder.Entity("Domain.Entities.Product.Product", b =>
@@ -112,16 +100,7 @@ namespace EStoreX.Infrastructure.Migrations
 
                     b.ToTable("Products");
 
-                    b.HasData(
-                        new
-                        {
-                            Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
-                            CategoryId = new Guid("19f389fe-8472-46fc-83ea-2440790a2067"),
-                            Description = "This is a sample product description.",
-                            Name = "Sample Product",
-                            NewPrice = 19.99m,
-                            OldPrice = 0m
-                        });
+                    
                 });
 
             modelBuilder.Entity("Domain.Entities.Product.Photo", b =>

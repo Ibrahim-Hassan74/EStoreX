@@ -7,5 +7,6 @@ namespace EStoreX.Core.Domain.IdentityEntities
     {
         public string? DisplayName { get; set; }
         public Address Address { get; set; }
+        public string LastEmailConfirmationToken { get; set; } = string.Empty;
     }
 }

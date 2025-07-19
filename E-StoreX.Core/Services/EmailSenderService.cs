@@ -1,42 +1,42 @@
 ﻿using Microsoft.Extensions.Options;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.ServiceContracts;
-using System.Net.Mail;
-using System.Net;
+using EStoreX.Core.DTO;
+using MimeKit;
 
 
 namespace EStoreX.Core.Services
 {
-    public class EmailSenderService : IEmailSender
+    public class EmailSenderService : IEmailSenderService
     {
-        private readonly AccountSenderDetails _senderDetails;
-        public EmailSenderService(IOptions<AccountSenderDetails> senderDetails)
+        private readonly EmailSetting _senderDetails;
+        public EmailSenderService(IOptions<EmailSetting> senderDetails)
         {
             _senderDetails = senderDetails.Value;
         }
 
-        public async Task SendEmailAsync(string email, string subject, string htmlMessage)
+        public async Task SendEmailAsync(EmailDTO email)
         {
-            var smtpClient = new SmtpClient(_senderDetails.Host, _senderDetails.Port)
+            MimeMessage message = new();
+
+            message.From.Add(new MailboxAddress("E-StoreX", _senderDetails.Email));
+            message.Subject = email.Subject;
+            message.To.Add(new MailboxAddress(email.Email, email.Email));
+            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
-                EnableSsl = true,
-                UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(_senderDetails.Email, _senderDetails.Password)
+                Text = email.HtmlMessage
             };
 
-            var message = new MailMessage(_senderDetails.Email!, email)
+            using (var smtp = new MailKit.Net.Smtp.SmtpClient())
             {
-                Subject = subject,
-                Body = htmlMessage,
-                IsBodyHtml = true,
-                BodyEncoding = System.Text.Encoding.UTF8,
-                SubjectEncoding = System.Text.Encoding.Default,
-            };
+                await smtp.ConnectAsync(_senderDetails.Host, _senderDetails.Port, true);
+                await smtp.AuthenticateAsync(_senderDetails.Email, _senderDetails.Password);
 
-            message.ReplyToList.Add(_senderDetails.Email!);
-
-            await smtpClient.SendMailAsync(message);
-
+                await smtp.SendAsync(message);
+                smtp.Disconnect(true);
+            }
         }
+
     }
 }
+

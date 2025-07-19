@@ -8,7 +8,7 @@ namespace EStoreX.Core.DTO
     {
         [Required(ErrorMessage = "{0} can't be blank")]
         [Display(Name = "First Name")]
-        public string? PersonName { get; set; }
+        public string? UserName { get; set; }
         [Required(ErrorMessage = "{0} can't be blank")]
         [EmailAddress(ErrorMessage = "{0} should be in a proper email address format")]
         [Remote(action: "IsEmailAlreadyRegistered", controller: "Account", ErrorMessage = "Email is already use")]
