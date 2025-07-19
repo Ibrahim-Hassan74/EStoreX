@@ -21,14 +21,14 @@ namespace EStoreX.Infrastructure.Data.Configuration
                 .WithOne(p => p.Category)
                 .HasForeignKey(p => p.CategoryId);
 
-            builder.HasData(
-                new Category
-                {
-                    Id = Guid.Parse("19F389FE-8472-46FC-83EA-2440790A2067"),
-                    Name = "Electronics",
-                    Description = "Devices and gadgets"
-                }
-                );
+            //builder.HasData(
+            //    new Category
+            //    {
+            //        Id = Guid.Parse("19F389FE-8472-46FC-83EA-2440790A2067"),
+            //        Name = "Electronics",
+            //        Description = "Devices and gadgets"
+            //    }
+            //    );
         }
     }
 }

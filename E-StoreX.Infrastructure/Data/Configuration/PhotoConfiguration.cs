@@ -8,13 +8,13 @@ namespace EStoreX.Infrastructure.Data.Configuration
     {
         public void Configure(EntityTypeBuilder<Photo> builder)
         {
-            builder.HasData(new Photo
-            {
-                Id = Guid.NewGuid(),
-                ImageName = "default.jpg",
-                ProductId = Guid.Parse("A1B2C3D4-E5F6-7890-ABCD-EF1234567890")
-            }
-            );
+            //builder.HasData(new Photo
+            //{
+            //    Id = Guid.NewGuid(),
+            //    ImageName = "default.jpg",
+            //    ProductId = Guid.Parse("A1B2C3D4-E5F6-7890-ABCD-EF1234567890")
+            //}
+            //);
         }
     }
 }
