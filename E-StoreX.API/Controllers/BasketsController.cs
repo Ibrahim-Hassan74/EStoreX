@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.Domain.Entities;
+﻿using E_StoreX.API.Helper;
+using EStoreX.Core.Domain.Entities;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,7 +8,7 @@ namespace E_StoreX.API.Controllers
     /// <summary>
     /// API controller for managing customer baskets.
     /// </summary>
-    public class BasketsController : ControllerBase
+    public class BasketsController : CustomControllerBase
     {
         private readonly IBasketService _basketService;
         /// <summary>
@@ -27,8 +28,10 @@ namespace E_StoreX.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetBasket(string id)
         {
+            if (!Guid.TryParse(id, out _))
+                return BadRequest(new ResponseAPI(400, "Invalid Id format"));
             var basket = await _basketService.GetBasketAsync(id);
-            return Ok(basket);
+            return Ok(basket == null ? new CustomerBasket() : basket);
         }
 
         /// <summary>
@@ -51,8 +54,13 @@ namespace E_StoreX.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBasket(string id)
         {
+            if (!Guid.TryParse(id, out _))
+                return BadRequest(new ResponseAPI(400, "Invalid Id format"));
+
             var result = await _basketService.DeleteBasketAsync(id);
-            return result ? Ok() : BadRequest();
+            return result
+                ? Ok(new ResponseAPI(200, "Item Deleted"))
+                : BadRequest(new ResponseAPI(400, "Basket not found or already deleted"));
         }
     }
 }

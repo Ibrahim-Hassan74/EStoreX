@@ -17,6 +17,8 @@ namespace EStoreX.Core
 
             services.AddScoped<IProductsService, ProductsService>();
 
+            services.AddScoped<IBasketService, BasketService>();
+
             return services;
         }
     }

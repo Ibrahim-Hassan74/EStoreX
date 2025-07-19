@@ -4,6 +4,38 @@
         <name>E-StoreX.API</name>
     </assembly>
     <members>
+        <member name="T:E_StoreX.API.Controllers.BasketsController">
+            <summary>
+            API controller for managing customer baskets.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BasketsController.#ctor(EStoreX.Core.ServiceContracts.IBasketService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.BasketsController"/> class.
+            </summary>
+            <param name="basketService">basket service</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BasketsController.GetBasket(System.String)">
+            <summary>
+            Retrieves a customer basket by ID.
+            </summary>
+            <param name="id">The customer ID.</param>
+            <returns>The customer basket.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BasketsController.AddOrUpdateBasket(EStoreX.Core.Domain.Entities.CustomerBasket)">
+            <summary>
+            Adds or updates a customer basket.
+            </summary>
+            <param name="basket">The basket to add or update.</param>
+            <returns>The updated basket.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.BasketsController.DeleteBasket(System.String)">
+            <summary>
+            Deletes a customer basket by ID.
+            </summary>
+            <param name="id">The customer ID.</param>
+            <returns>Status of the deletion.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.BugController">
             <summary>
             Controller for handling bug-related operations.

@@ -22,21 +22,21 @@ namespace EStoreX.Core.Services
         }
 
         /// <inheritdoc/>
-        public Task<CustomerBasket?> GetBasketAsync(string id)
+        public async Task<CustomerBasket?> GetBasketAsync(string id)
         {
-            return _unitOfWork.CustomerBasketRepository.GetBasketAsync(id);
+            return await _unitOfWork.CustomerBasketRepository.GetBasketAsync(id);
         }
 
         /// <inheritdoc/>
-        public Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket)
+        public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket)
         {
-            return _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            return await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
         }
 
         /// <inheritdoc/>
-        public Task<bool> DeleteBasketAsync(string id)
+        public async Task<bool> DeleteBasketAsync(string id)
         {
-            return _unitOfWork.CustomerBasketRepository.DeleteBasketAsync(id);
+            return await _unitOfWork.CustomerBasketRepository.DeleteBasketAsync(id);
         }
     }
 }

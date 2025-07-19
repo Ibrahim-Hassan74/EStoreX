@@ -170,3 +170,5 @@ E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\zh-Hans\Microsoft.CodeA
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\zh-Hant\Microsoft.CodeAnalysis.Workspaces.resources.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\AutoMapper.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\E-StoreX.API.staticwebassets.runtime.json
+E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\Pipelines.Sockets.Unofficial.dll
+E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\StackExchange.Redis.dll

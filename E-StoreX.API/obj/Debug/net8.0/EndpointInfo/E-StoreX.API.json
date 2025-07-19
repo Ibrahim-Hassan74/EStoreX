@@ -5,6 +5,85 @@
     "version": "1.0"
   },
   "paths": {
+    "/api/Baskets/{id}": {
+      "get": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Retrieves a customer basket by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The customer ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Deletes a customer basket by ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The customer ID.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Baskets": {
+      "post": {
+        "tags": [
+          "Baskets"
+        ],
+        "summary": "Adds or updates a customer basket.",
+        "requestBody": {
+          "description": "The basket to add or update.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerBasket"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerBasket"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/CustomerBasket"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Bug/error": {
       "get": {
         "tags": [
@@ -620,6 +699,36 @@
   },
   "components": {
     "schemas": {
+      "BasketItem": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "qunatity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "price": {
+            "type": "number",
+            "format": "double"
+          },
+          "category": {
+            "type": "string",
+            "nullable": true
+          },
+          "image": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "CategoryRequest": {
         "type": "object",
         "properties": {
@@ -629,6 +738,23 @@
           },
           "description": {
             "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "CustomerBasket": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "nullable": true
+          },
+          "basketItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/BasketItem"
+            },
             "nullable": true
           }
         },
@@ -710,6 +836,10 @@
     }
   },
   "tags": [
+    {
+      "name": "Baskets",
+      "description": "API controller for managing customer baskets."
+    },
     {
       "name": "Bug",
       "description": "Controller for handling bug-related operations."
