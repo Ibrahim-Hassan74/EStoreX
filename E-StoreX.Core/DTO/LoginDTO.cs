@@ -14,6 +14,6 @@ namespace EStoreX.Core.DTO
         [MinLength(6, ErrorMessage = "{0} should be at least 7 characters")]
         public string? Password { get; set; }
         public bool RememberMe { get; set; } = false;
-        public IEnumerable<AuthenticationScheme> Schemes { get; set; } = new List<AuthenticationScheme>();
+        //public IEnumerable<AuthenticationScheme> Schemes { get; set; } = new List<AuthenticationScheme>();
     }
 }

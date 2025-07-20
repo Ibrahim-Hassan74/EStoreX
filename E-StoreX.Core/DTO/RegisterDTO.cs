@@ -25,6 +25,6 @@ namespace EStoreX.Core.DTO
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string? ConfirmPassword { get; set; }
-        public UserTypeOptions UserType { get; set; } = UserTypeOptions.User;
+        //public UserTypeOptions UserType { get; set; } = UserTypeOptions.User;
     }
 }

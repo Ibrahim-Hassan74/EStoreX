@@ -14,28 +14,50 @@ namespace EStoreX.Infrastructure.Repository
         private readonly IEmailSenderService _emailSender;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IJwtService _jwtService;
 
-        public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
+        public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender, 
+            SignInManager<ApplicationUser> signInManager,
+            IHttpContextAccessor httpContextAccessor, IJwtService jwtService)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
+            _jwtService = jwtService;
         }
-        public async Task<string?> RegisterAsync(RegisterDTO registerDTO)
+        public async Task<AuthenticationResponse> RegisterAsync(RegisterDTO registerDTO)
         {
             if (registerDTO == null)
             {
-                return null;
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Invalid registration data.",
+                    StatusCode = 400
+                };
             }
+
             if (await _userManager.FindByNameAsync(registerDTO.UserName) is not null)
             {
-                return "UserName is already registered";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Username is already registered.",
+                    StatusCode = 409
+                };
             }
+
             if (await _userManager.FindByEmailAsync(registerDTO.Email) is not null)
             {
-                return "Email is already registered";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Email is already registered.",
+                    StatusCode = 409
+                };
             }
+
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -45,49 +67,102 @@ namespace EStoreX.Infrastructure.Repository
             };
 
             IdentityResult result = await _userManager.CreateAsync(user, registerDTO.Password);
+
             if (!result.Succeeded)
             {
-                return result.Errors.FirstOrDefault()?.Description;
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = result.Errors.FirstOrDefault()?.Description ?? "Registration failed.",
+                    StatusCode = 400
+                };
             }
+
 
             await SendEmail(user);
 
-            return "Registration successful";
+            return new AuthenticationResponse
+            {
+                Success = true,
+                Message = "Registration successful. Please check your email to confirm your account.",
+                StatusCode = 200
+            };
         }
 
-        public async Task<string?> LoginAsync(LoginDTO loginDTO)
+        public async Task<AuthenticationResponse> LoginAsync(LoginDTO loginDTO)
         {
-            if (loginDTO is null)
-                return null;
-            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
-            if (user is null)
+            if (loginDTO == null)
             {
-                return "User not found";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Invalid login data.",
+                    StatusCode = 400
+                };
+            }
+
+            var user = await _userManager.FindByEmailAsync(loginDTO.Email);
+            if (user == null)
+            {
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "User not found.",
+                    StatusCode = 404
+                };
             }
 
             if (!user.EmailConfirmed)
             {
                 await SendEmail(user);
-                return "User not confirmed. A confirmation email has been sent to your email address.";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Your email is not confirmed yet. A confirmation email has been sent to your inbox. Please check your Spam, Junk, or Promotions folders if you don't see it.",
+                    StatusCode = 403
+                };
             }
+
+
             var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, loginDTO.RememberMe, true);
+
             if (result.Succeeded)
             {
-                return "Login successful";
+                var tokenResponse = _jwtService.CreateJwtToken(user);
+                tokenResponse.Success = true;
+                tokenResponse.Message = "Login successful.";
+                tokenResponse.StatusCode = 200;
+                return tokenResponse;
             }
             else if (result.IsLockedOut)
             {
-                return "User is locked out";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Your account is temporarily locked due to multiple failed login attempts. Please try again later.",
+                    StatusCode = 423
+                };
             }
             else if (result.IsNotAllowed)
             {
-                return "User is not allowed to login";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "User is not allowed to login.",
+                    StatusCode = 403
+                };
             }
             else
             {
-                return "Invalid login attempt";
+                return new AuthenticationResponse
+                {
+                    Success = false,
+                    Message = "Invalid login attempt.",
+                    StatusCode = 401
+                };
             }
         }
+
 
 
         private bool IsMobileDevice(HttpRequest? request)
@@ -118,7 +193,7 @@ namespace EStoreX.Infrastructure.Repository
             }
             else
             {
-                redirectUrl = "https://loaclhost4200/active";
+                redirectUrl = "https://loaclhost:4200/active";
             }
 
             string confirmationLink = $"{scheme}://{host}/api/account/confirmemail?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";

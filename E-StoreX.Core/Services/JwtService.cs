@@ -24,13 +24,14 @@ namespace EStoreX.Core.Services
         /// </summary>
         /// <param name="user">ApplicationUser object</param>
         /// <returns>AuthenticationResponse that includes token</returns>
-        public AuthenticationResponse CreateJwtToken(ApplicationUser user)
+        public AuthenticationSuccessResponse CreateJwtToken(ApplicationUser user)
         {
             // Create a DateTime object representing the token expiration time by adding the number of minutes specified in the configuration to the current UTC time.
             DateTime expiration = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
 
             // Create an array of Claim objects representing the user's claims, such as their ID, name, email, etc.
-            Claim[] claims = new Claim[] {
+            List<Claim> claims = new List<Claim>
+            {
                  new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), //Subject (user id)
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //JWT unique ID
                  new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()), //Issued at (date and time of token generation)
@@ -38,6 +39,13 @@ namespace EStoreX.Core.Services
                  new Claim(ClaimTypes.Name, user.UserName), //Name of the user
                  new Claim(ClaimTypes.Email, user.Email) //Email of the user
              };
+
+            var audienceClaims = _configuration.GetSection("Jwt:Audiences").Get<string[]>();
+            foreach (var aud in audienceClaims)
+            {
+                claims.Add(new Claim(JwtRegisteredClaimNames.Aud, aud));
+            }
+
 
             // Create a SymmetricSecurityKey object using the key specified in the configuration.
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -47,11 +55,10 @@ namespace EStoreX.Core.Services
 
             // Create a JwtSecurityToken object with the given issuer, audience, claims, expiration, and signing credentials.
             JwtSecurityToken tokenGenerator = new JwtSecurityToken(
-            _configuration["Jwt:Issuer"],
-            _configuration["Jwt:Audience"],
-            claims,
-            expires: expiration,
-            signingCredentials: signingCredentials
+                issuer: _configuration["Jwt:Issuer"],
+                claims: claims,
+                expires: expiration,
+                signingCredentials: signingCredentials
             );
 
             // Create a JwtSecurityTokenHandler object and use it to write the token as a string.
@@ -59,14 +66,14 @@ namespace EStoreX.Core.Services
             string token = tokenHandler.WriteToken(tokenGenerator);
 
             // Create and return an AuthenticationResponse object containing the token, user email, user name, and token expiration time.
-            return new AuthenticationResponse()
+            return new AuthenticationSuccessResponse()
             {
                 Token = token,
                 Email = user.Email,
                 UserName = user.UserName,
                 Expiration = expiration,
                 RefreshToken = GenerateRefreshToken(),
-                RefreshTokenExpirationDateTime = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"]))
+                RefreshTokenExpirationDateTime = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"])),
             };
         }
 
@@ -99,7 +106,7 @@ namespace EStoreX.Core.Services
                 ValidateLifetime = false,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _configuration["Jwt:Issuer"],
-                ValidAudience = _configuration["Jwt:Audience"],
+                ValidAudiences = _configuration.GetSection("Jwt:Audiences").Get<List<string>>(),
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]))
             };
 

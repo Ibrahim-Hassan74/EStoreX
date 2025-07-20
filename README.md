@@ -8,9 +8,166 @@ EStoreX is a RESTful API for managing products, categories, and customer baskets
 
 ### Authentication
 
-Currently, this API does **not require authentication**.
+This API uses **JWT-based authentication** with support for user registration and login.
+
+#### `POST /api/account/register`
+
+- **Description**: Register a new user. Sends a confirmation email with a token.
+- **Request Body**:
+
+```json
+{
+  "userName": "string",
+  "email": "user@example.com",
+  "phone": "0123456789",
+  "password": "string",
+  "confirmPassword": "string"
+}
+```
+
+- **Responses**:
+  - `200`: Registration successful, email sent
+  - `400`: Validation error or missing fields
+  - `409`: Email or username already in use
+
+_Example response (200):_
+
+```json
+{
+  "success": true,
+  "message": "Registration successful. Please check your email to confirm your account.",
+  "statusCode": 200
+}
+```
+
+_Example response (400):_
+
+```json
+{
+  "success": false,
+  "message": "Validation failed.",
+  "statusCode": 400,
+  "errors": {
+    "email": ["Email can't be blank"],
+    "password": ["Password should be at least 7 characters"]
+  }
+}
+```
+
+_Example response (409):_
+
+```json
+{
+  "success": false,
+  "message": "Email is already in use.",
+  "statusCode": 409
+}
+```
 
 ---
+
+#### `POST /api/account/login`
+
+- **Description**: Login using email and password. Returns JWT token on success.
+- **Request Body**:
+
+```json
+{
+  "email": "user@example.com",
+  "password": "string",
+  "rememberMe": true
+}
+```
+
+- **Responses**:
+  - `200`: Login successful with token
+  - `401`: Invalid credentials
+  - `403`: Email not confirmed or not allowed
+  - `404`: User not found
+  - `423`: Account locked due to failed attempts
+
+_Example response (200):_
+
+```json
+{
+  "success": true,
+  "message": "Login successful.",
+  "statusCode": 200,
+  "userName": "string",
+  "email": "string",
+  "token": "JWT_TOKEN_HERE",
+  "expiration": "2025-07-20T00:00:00Z",
+  "refreshToken": "REFRESH_TOKEN_HERE",
+  "refreshTokenExpirationDateTime": "2025-07-27T00:00:00Z"
+}
+```
+
+_Example response (400):_
+
+```json
+{
+  "success": false,
+  "message": "Validation failed.",
+  "statusCode": 400,
+  "errors": {
+    "email": ["Email can't be blank"],
+    "password": ["Password should be at least 7 characters"]
+  }
+}
+```
+
+_Example response (401):_
+
+```json
+{
+  "success": false,
+  "message": "Invalid email or password.",
+  "statusCode": 401
+}
+```
+
+_Example response (403):_
+
+```json
+{
+  "success": false,
+  "message": "You need to confirm your email before logging in.",
+  "statusCode": 403
+}
+```
+
+_Example response (404):_
+
+```json
+{
+  "success": false,
+  "message": "User with the provided email does not exist.",
+  "statusCode": 404
+}
+```
+
+_Example response (423):_
+
+```json
+{
+  "success": false,
+  "message": "Account is locked due to multiple failed login attempts. Please try again later.",
+  "statusCode": 423
+}
+```
+
+---
+
+### Notes
+
+- JWT Token is required for secured endpoints  
+  Add this header:  
+  `Authorization: Bearer YOUR_JWT_TOKEN`
+- Email confirmation is **mandatory** before login
+- A redirect URL is included in the confirmation email:
+  - `estorex://account-verified` for mobile apps
+  - `https://localhost:4200/active` for web
+- Lockout policies apply after multiple failed login attempts
 
 ## Endpoints
 
@@ -18,8 +175,8 @@ Currently, this API does **not require authentication**.
 
 #### `GET /api/categories`
 
-* **Description**: Retrieve all categories.
-* **Response**:
+- **Description**: Retrieve all categories.
+- **Response**:
 
 ```json
 [
@@ -33,8 +190,8 @@ Currently, this API does **not require authentication**.
 
 #### `GET /api/categories/{id}`
 
-* **Description**: Get category by ID.
-* **Response**:
+- **Description**: Get category by ID.
+- **Response**:
 
 ```json
 {
@@ -46,8 +203,8 @@ Currently, this API does **not require authentication**.
 
 #### `POST /api/categories`
 
-* **Description**: Create a new category.
-* **Request Body**:
+- **Description**: Create a new category.
+- **Request Body**:
 
 ```json
 {
@@ -58,8 +215,8 @@ Currently, this API does **not require authentication**.
 
 #### `PUT /api/categories/{id}`
 
-* **Description**: Update a category by ID.
-* **Request Body**:
+- **Description**: Update a category by ID.
+- **Request Body**:
 
 ```json
 {
@@ -71,7 +228,7 @@ Currently, this API does **not require authentication**.
 
 #### `DELETE /api/categories/{id}`
 
-* **Description**: Delete a category by ID.
+- **Description**: Delete a category by ID.
 
 ---
 
@@ -79,19 +236,20 @@ Currently, this API does **not require authentication**.
 
 #### `GET /api/products`
 
-* **Description**: Retrieve products with optional filters.
-* **Query Parameters**:
+- **Description**: Retrieve products with optional filters.
+- **Query Parameters**:
 
-  * `searchBy`
-  * `searchString`
-  * `minPrice`
-  * `maxPrice`
-  * `categoryId`
-  * `sortBy`
-  * `sortOrder` (ASC/DESC)
-  * `pageNumber`
-  * `pageSize`
-* **Response**:
+  - `searchBy`
+  - `searchString`
+  - `minPrice`
+  - `maxPrice`
+  - `categoryId`
+  - `sortBy`
+  - `sortOrder` (ASC/DESC)
+  - `pageNumber`
+  - `pageSize`
+
+- **Response**:
 
 ```json
 {
@@ -118,12 +276,12 @@ Currently, this API does **not require authentication**.
 
 #### `GET /api/products/{id}`
 
-* **Description**: Retrieve product by ID.
+- **Description**: Retrieve product by ID.
 
 #### `POST /api/products`
 
-* **Description**: Create a product.
-* **Request Body** (multipart/form-data):
+- **Description**: Create a product.
+- **Request Body** (multipart/form-data):
 
 ```json
 {
@@ -136,7 +294,7 @@ Currently, this API does **not require authentication**.
 }
 ```
 
-* **Response**:
+- **Response**:
 
 ```json
 {
@@ -156,12 +314,12 @@ Currently, this API does **not require authentication**.
 
 #### `PUT /api/products/{id}`
 
-* **Description**: Update a product.
-* **Request Body** (multipart/form-data): same as `POST` but includes `id`.
+- **Description**: Update a product.
+- **Request Body** (multipart/form-data): same as `POST` but includes `id`.
 
 #### `DELETE /api/products/{id}`
 
-* **Description**: Delete a product by ID.
+- **Description**: Delete a product by ID.
 
 ---
 
@@ -169,8 +327,8 @@ Currently, this API does **not require authentication**.
 
 #### `GET /api/baskets/{id}`
 
-* **Description**: Get a customer's basket by ID.
-* **Response**:
+- **Description**: Get a customer's basket by ID.
+- **Response**:
 
 ```json
 {
@@ -191,8 +349,8 @@ Currently, this API does **not require authentication**.
 
 #### `POST /api/baskets`
 
-* **Description**: Add or update a customer basket.
-* **Request Body**:
+- **Description**: Add or update a customer basket.
+- **Request Body**:
 
 ```json
 {
@@ -213,7 +371,7 @@ Currently, this API does **not require authentication**.
 
 #### `DELETE /api/baskets/{id}`
 
-* **Description**: Delete a customer basket by ID.
+- **Description**: Delete a customer basket by ID.
 
 ---
 
@@ -229,8 +387,7 @@ Currently, this API does **not require authentication**.
 
 ## Notes
 
-* IDs are represented as GUID strings.
-* The basket ID is a plain string (not GUID) representing the customer.
-* Validation errors will return status code `400`.
-* Use proper `Content-Type: multipart/form-data` for file upload endpoints.
-
+- IDs are represented as GUID strings.
+- The basket ID is a plain string (not GUID) representing the customer.
+- Validation errors will return status code `400`.
+- Use proper `Content-Type: multipart/form-data` for file upload endpoints.

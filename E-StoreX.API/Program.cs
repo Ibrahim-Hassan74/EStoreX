@@ -74,7 +74,7 @@ builder.Services.AddSingleton<IFileProvider>(
 
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 
-builder.Services.ConfigureCore();
+builder.Services.ConfigureCore(builder.Configuration);
 
 var app = builder.Build();
 
