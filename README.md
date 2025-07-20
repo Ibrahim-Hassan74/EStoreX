@@ -25,6 +25,24 @@ This API uses **JWT-based authentication** with support for user registration an
 }
 ```
 
+### Password Requirements
+
+To ensure strong account security, passwords must meet the following criteria:
+
+- Minimum 8 characters
+- At least 1 uppercase letter (A–Z)
+- At least 1 lowercase letter (a–z)
+- At least 1 digit (0–9)
+- Special characters (e.g. ! @ # $ %) — optional but recommended
+
+Example of a valid password:  
+StrongPass1
+
+If any of these conditions are not met, the API will return:
+
+- 400 Bad Request
+- With detailed error messages in the `errors.password[]` field of the response
+
 - **Responses**:
   - `200`: Registration successful, email sent
   - `400`: Validation error or missing fields

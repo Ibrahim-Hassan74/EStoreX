@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using ServiceContracts;
 using System.Text;
 
 namespace EStoreX.Core
@@ -26,6 +27,8 @@ namespace EStoreX.Core
             services.AddScoped<IEmailSenderService, EmailSenderService>();
 
             services.AddTransient<IJwtService, JwtService>();
+
+            services.AddScoped<IAuthenticationService, AuthenticationService>();
 
             services.AddAuthentication(options =>
             {

@@ -6,5 +6,6 @@ namespace ServiceContracts
     {
         Task<AuthenticationResponse> RegisterAsync(RegisterDTO registerDTO);
         Task<AuthenticationResponse> LoginAsync(LoginDTO loginDTO);
+        Task<AuthenticationResponse> ConfirmEmailAsync(ConfirmEmailDTO dto);
     }
 }

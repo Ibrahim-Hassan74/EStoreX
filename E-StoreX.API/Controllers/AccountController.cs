@@ -43,5 +43,25 @@ namespace E_StoreX.API.Controllers
             var response = await _authService.LoginAsync(loginDTO);
             return StatusCode(response.StatusCode, response);
         }
+        /// <summary>
+        /// Confirms a user's email using the provided user ID and token.
+        /// </summary>
+        /// <param name="dto">Contains the user ID, confirmation token, and optional redirect URL.</param>
+        /// <returns>Returns a redirection if a redirect URL is provided; otherwise, a response object.</returns>
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailDTO dto)
+        {
+            if (dto == null || string.IsNullOrEmpty(dto.UserId) || string.IsNullOrEmpty(dto.Token))
+            {
+                return BadRequest("Invalid confirmation data.");
+            }
+            var response = await _authService.ConfirmEmailAsync(dto);
+            //if (!string.IsNullOrEmpty(dto.RedirectTo))
+            //{
+            //    return Redirect(dto.RedirectTo);
+            //}
+            return StatusCode(response.StatusCode, response);
+        }
+
     }
 }

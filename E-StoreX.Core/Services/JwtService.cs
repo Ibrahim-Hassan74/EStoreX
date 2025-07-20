@@ -40,7 +40,7 @@ namespace EStoreX.Core.Services
                  new Claim(ClaimTypes.Email, user.Email) //Email of the user
              };
 
-            var audienceClaims = _configuration.GetSection("Jwt:Audiences").Get<string[]>();
+            var audienceClaims = _configuration.GetSection("Jwt:Audience").Get<string[]>();
             foreach (var aud in audienceClaims)
             {
                 claims.Add(new Claim(JwtRegisteredClaimNames.Aud, aud));

@@ -4,6 +4,39 @@
         <name>E-StoreX.API</name>
     </assembly>
     <members>
+        <member name="T:E_StoreX.API.Controllers.AccountController">
+            <summary>
+            Controller responsible for handling user authentication-related actions
+            such as registration and login for the E-StoreX API.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.#ctor(ServiceContracts.IAuthenticationService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.AccountController"/> class.
+            </summary>
+            <param name="authService">The authentication service to handle login and registration logic.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.PostRegister(EStoreX.Core.DTO.RegisterDTO)">
+            <summary>
+            Register a new user
+            </summary>
+            <param name="registerDTO">User registration data</param>
+            <returns>Result of registration</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.PostLogin(EStoreX.Core.DTO.LoginDTO)">
+            <summary>
+            Login an existing user
+            </summary>
+            <param name="loginDTO">User login data</param>
+            <returns>JWT token and login result</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.ConfirmEmail(EStoreX.Core.DTO.ConfirmEmailDTO)">
+            <summary>
+            Confirms a user's email using the provided user ID and token.
+            </summary>
+            <param name="dto">Contains the user ID, confirmation token, and optional redirect URL.</param>
+            <returns>Returns a redirection if a redirect URL is provided; otherwise, a response object.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
             <summary>
             API controller for managing customer baskets.

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using ServiceContracts;
 
-namespace EStoreX.Infrastructure.Repository
+namespace EStoreX.Core.Services
 {
     public class AuthenticationService : IAuthenticationService
     {
@@ -40,23 +40,27 @@ namespace EStoreX.Infrastructure.Repository
 
             if (await _userManager.FindByNameAsync(registerDTO.UserName) is not null)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "Username is already registered.",
+                    Errors = new List<string> { "The username is already taken." },
                     StatusCode = 409
                 };
             }
 
+
             if (await _userManager.FindByEmailAsync(registerDTO.Email) is not null)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "Email is already registered.",
+                    Errors = new List<string> { "This email is already in use." },
                     StatusCode = 409
                 };
             }
+
 
 
             ApplicationUser user = new ApplicationUser()
@@ -70,13 +74,15 @@ namespace EStoreX.Infrastructure.Repository
 
             if (!result.Succeeded)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
-                    Message = result.Errors.FirstOrDefault()?.Description ?? "Registration failed.",
+                    Message = "Registration failed.",
+                    Errors = result.Errors.Select(e => e.Description).ToList(),
                     StatusCode = 400
                 };
             }
+
 
 
             await SendEmail(user);
@@ -104,24 +110,28 @@ namespace EStoreX.Infrastructure.Repository
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (user == null)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "User not found.",
+                    Errors = new List<string> { "No account found with this email." },
                     StatusCode = 404
                 };
             }
 
+
             if (!user.EmailConfirmed)
             {
                 await SendEmail(user);
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
-                    Message = "Your email is not confirmed yet. A confirmation email has been sent to your inbox. Please check your Spam, Junk, or Promotions folders if you don't see it.",
+                    Message = "Email not confirmed.",
+                    Errors = new List<string> { "You must confirm your email before logging in." },
                     StatusCode = 403
                 };
             }
+
 
 
             var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, loginDTO.RememberMe, true);
@@ -154,15 +164,78 @@ namespace EStoreX.Infrastructure.Repository
             }
             else
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "Invalid login attempt.",
+                    Errors = new List<string> { "Incorrect email or password." },
                     StatusCode = 401
                 };
             }
         }
 
+
+
+        public async Task<AuthenticationResponse> ConfirmEmailAsync(ConfirmEmailDTO dto)
+        {
+            var user = await _userManager.FindByIdAsync(dto.UserId);
+            if (user == null)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "User not found.",
+                    StatusCode = 404
+                };
+            }
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return new AuthenticationResponse
+                {
+                    Success = true,
+                    Message = "Email is already confirmed.",
+                    StatusCode = 200
+                };
+            }
+
+            if (user.LastEmailConfirmationToken != dto.Token)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Invalid or expired confirmation token.",
+                    Errors = new List<string> { "Token mismatch or already used." },
+                    StatusCode = 400
+                };
+            }
+
+            var result = await _userManager.ConfirmEmailAsync(user, dto.Token);
+
+            if (result.Succeeded)
+            {
+                user.LastEmailConfirmationToken = null;
+                await _userManager.UpdateAsync(user);
+
+                return new AuthenticationResponse
+                {
+                    Success = true,
+                    Message = "Email confirmed successfully.",
+                    StatusCode = 200
+                };
+            }
+            else
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Failed to confirm email.",
+                    Errors = result.Errors.Select(e => e.Description).ToList(),
+                    StatusCode = 400
+                };
+            }
+
+        }
 
 
         private bool IsMobileDevice(HttpRequest? request)
@@ -196,7 +269,7 @@ namespace EStoreX.Infrastructure.Repository
                 redirectUrl = "https://loaclhost:4200/active";
             }
 
-            string confirmationLink = $"{scheme}://{host}/api/account/confirmemail?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
+            string confirmationLink = $"{scheme}://{host}/api/account/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
 
             string html = EmailTemplateService.GetConfirmationEmailTemplate(confirmationLink);
 
