@@ -358,6 +358,7 @@ namespace EStoreX.Core.Services
             }
 
             string decodedToken;
+
             try
             {
                 decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(dto.Token));
@@ -417,10 +418,56 @@ namespace EStoreX.Core.Services
                 StatusCode = 200
             };
         }
-        public Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordDTO dto)
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordDTO dto)
         {
-            throw new NotImplementedException();
+            if (dto == null)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Invalid reset password data.",
+                    Errors = new List<string> { "Request body cannot be null." }
+                };
+            }
+
+            var verifyResponse = await VerifyResetPasswordTokenAsync(
+                new VerifyResetPasswordDTO
+                {
+                    UserId = dto.UserId!,
+                    Token = dto.Token!
+                }
+            );
+
+            if (!verifyResponse.Success)
+                return verifyResponse; 
+
+            var user = await _userManager.FindByIdAsync(dto.UserId!);
+            var resetResult = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
+
+            if (!resetResult.Succeeded)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Failed to reset password.",
+                    Errors = resetResult.Errors.Select(e => e.Description).ToList()
+                };
+            }
+
+            await _userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "Token");
+            await _userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
+
+            return new AuthenticationResponse
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = "Password has been reset successfully."
+            };
         }
+
         private bool IsMobileDevice(HttpRequest? request)
         {
             if (request is null) return false;

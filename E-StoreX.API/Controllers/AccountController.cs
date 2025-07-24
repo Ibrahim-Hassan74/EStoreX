@@ -110,16 +110,16 @@ namespace E_StoreX.API.Controllers
             return StatusCode(response.StatusCode, response);
         }
 
-        ///// <summary>
-        ///// Resets the user's password using a valid token.
-        ///// </summary>
-        ///// <param name="dto">Contains user ID, token, and new password details.</param>
-        ///// <returns>Returns a success or failure response based on token validity and password rules.</returns>
-        //[HttpPost("reset-password")]
-        //public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
-        //{
-        //    var result = await _authService.ResetPasswordAsync(dto);
-        //    return StatusCode(result.StatusCode, result);
-        //}
+        /// <summary>
+        /// Resets the user's password using a valid token.
+        /// </summary>
+        /// <param name="dto">Contains user ID, token, and new password details.</param>
+        /// <returns>Returns a success or failure response based on token validity and password rules.</returns>
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
+        {
+            var result = await _authService.ResetPasswordAsync(dto);
+            return StatusCode(result.StatusCode, result);
+        }
     }
 }

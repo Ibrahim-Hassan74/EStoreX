@@ -1,17 +1,15 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace EStoreX.Core.DTO
 {
     public class ResetPasswordDTO
     {
         [Required(ErrorMessage = "{0} can't be blank")]
-        [EmailAddress(ErrorMessage = "{0} Should be in proper email address format")]
-        [DataType(DataType.EmailAddress)]
-        public string? Email { get; set; }
+        [Display(Name = "User ID")]
+        public string? UserId { get; set; }
 
         [Required(ErrorMessage = "{0} can't be blank")]
-        public string? Token { get; set; } 
+        public string? Token { get; set; }
 
         [Required(ErrorMessage = "{0} can't be blank")]
         [DataType(DataType.Password)]
@@ -24,5 +22,4 @@ namespace EStoreX.Core.DTO
         [Display(Name = "Confirm Password")]
         public string? ConfirmPassword { get; set; }
     }
-
 }
