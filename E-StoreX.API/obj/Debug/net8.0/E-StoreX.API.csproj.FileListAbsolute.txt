@@ -22,12 +22,6 @@ E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\scopedcss\bundle\E-Stor
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.build.json
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.development.json
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.E-StoreX.API.Microsoft.AspNetCore.StaticWebAssets.props
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.E-StoreX.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.build.E-StoreX.API.props
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.E-StoreX.API.props
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.E-StoreX.API.props
-E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.pack.json
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\E-StoreX.2BD1C018.Up2Date
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\E-StoreX.API.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\refint\E-StoreX.API.dll
@@ -176,3 +170,8 @@ E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\MailKit.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\bin\Debug\net8.0\MimeKit.dll
 E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\rpswa.dswa.cache.json
+E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\rjimswa.dswa.cache.json
+E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\rjsmrazor.dswa.cache.json
+E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\rjsmcshtml.dswa.cache.json
+E:\aspnetcore\code\EStoreX\E-StoreX.API\obj\Debug\net8.0\staticwebassets.build.json.cache

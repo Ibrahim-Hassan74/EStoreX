@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.DTO;
+﻿using EStoreX.API.Filters;
+using EStoreX.Core.DTO;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 
@@ -8,6 +9,7 @@ namespace E_StoreX.API.Controllers
     /// Controller responsible for handling user authentication-related actions
     /// such as registration and login for the E-StoreX API.
     /// </summary>
+    //[TypeFilter(typeof(AccountValidationFilter))]
     public class AccountController : CustomControllerBase
     {
         private readonly IAuthenticationService _authService;
@@ -61,6 +63,20 @@ namespace E_StoreX.API.Controllers
             //    return Redirect(dto.RedirectTo);
             //}
             return StatusCode(response.StatusCode, response);
+        }
+        /// <summary>
+        /// Sends a password reset link to the user's email.
+        /// </summary>
+        /// <param name="dto">The email address to send the reset link to.</param>
+        /// <returns>Returns a message indicating whether the reset link was sent or not.</returns>
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _authService.ForgotPasswordAsync(dto);
+            return StatusCode(result.StatusCode, result);
         }
 
     }

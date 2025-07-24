@@ -1,14 +1,17 @@
-using EStoreX.Infrastructure;
-using EStoreX.Core;
-using Microsoft.Extensions.FileProviders;
-using E_StoreX.API.Middleware;
 using E_StoreX.API.Helper;
-using System.Threading.RateLimiting;
-using EStoreX.Core.Domain.Options;
+using E_StoreX.API.Middleware;
+using EStoreX.API.Filters;
+using EStoreX.Core;
 using EStoreX.Core.Domain.IdentityEntities;
+using EStoreX.Core.Domain.Options;
+using EStoreX.Core.DTO;
+using EStoreX.Infrastructure;
 using EStoreX.Infrastructure.Data;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +75,31 @@ builder.Services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
     .AddDefaultTokenProviders()
     .AddUserStore<UserStore<ApplicationUser, ApplicationRole, ApplicationDbContext, Guid>>()
     .AddRoleStore<RoleStore<ApplicationRole, ApplicationDbContext, Guid>>();
+
+builder.Services.AddScoped<AccountValidationFilter>();
+
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.InvalidModelStateResponseFactory = context =>
+    {
+        var errors = context.ModelState
+            .Where(x => x.Value.Errors.Count > 0)
+            .SelectMany(x => x.Value.Errors)
+            .Select(x => x.ErrorMessage)
+            .ToList();
+
+        var response = new ApiErrorResponse
+        {
+            StatusCode = 400,
+            Message = "Validation failed.",
+            Errors = errors
+        };
+
+        return new BadRequestObjectResult(response);
+    };
+});
+
+
 
 builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("EmailSetting"));
 

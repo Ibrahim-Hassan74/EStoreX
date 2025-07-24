@@ -1,9 +1,9 @@
 ﻿using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO;
 using EStoreX.Core.ServiceContracts;
-using EStoreX.Core.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+
 using ServiceContracts;
 
 namespace EStoreX.Core.Services
@@ -26,15 +26,17 @@ namespace EStoreX.Core.Services
             _httpContextAccessor = httpContextAccessor;
             _jwtService = jwtService;
         }
+        /// <inheritdoc/>
         public async Task<AuthenticationResponse> RegisterAsync(RegisterDTO registerDTO)
         {
             if (registerDTO == null)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "Invalid registration data.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { "Registration data cannot be null." }
                 };
             }
 
@@ -99,11 +101,12 @@ namespace EStoreX.Core.Services
         {
             if (loginDTO == null)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "Invalid login data.",
-                    StatusCode = 400
+                    StatusCode = 400,
+                    Errors = new List<string> { "Login data cannot be null." }
                 };
             }
 
@@ -175,7 +178,7 @@ namespace EStoreX.Core.Services
         }
 
 
-
+        /// <inheritdoc/>
         public async Task<AuthenticationResponse> ConfirmEmailAsync(ConfirmEmailDTO dto)
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
@@ -185,17 +188,19 @@ namespace EStoreX.Core.Services
                 {
                     Success = false,
                     Message = "User not found.",
-                    StatusCode = 404
+                    StatusCode = 404,
+                    Errors = new List<string> { "User with the provided ID does not exist." }
                 };
             }
 
             if (await _userManager.IsEmailConfirmedAsync(user))
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = true,
                     Message = "Email is already confirmed.",
-                    StatusCode = 200
+                    StatusCode = 200,
+                    Errors = new List<string> { "Email already confirmed." }
                 };
             }
 
@@ -236,6 +241,101 @@ namespace EStoreX.Core.Services
             }
 
         }
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> ForgotPasswordAsync(ForgotPasswordDTO dto)
+        {
+            var user = await _userManager.FindByEmailAsync(dto.Email);
+
+            if (user == null)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Incorrect email.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "Email not found." }
+                };
+            }
+
+            if (!await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Please confirm your email before resetting password.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "Email is not confirmed." }
+                };
+            }
+
+            var logins = await _userManager.GetLoginsAsync(user);
+            if (logins.Any())
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "You registered using an external provider (Google/GitHub). Use it to log in.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "External login detected." }
+                };
+            }
+
+            var existingToken = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "Token");
+
+            if (!string.IsNullOrEmpty(existingToken))
+            {
+                var tokenTimeStr = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
+                if (!string.IsNullOrEmpty(tokenTimeStr) && DateTime.TryParse(tokenTimeStr, out var tokenTime))
+                {
+                    if (DateTime.UtcNow < tokenTime.AddMinutes(10))
+                    {
+                        return new AuthenticationFailureResponse
+                        {
+                            Success = false,
+                            Message = "A password reset email was already sent recently. Please wait before trying again.",
+                            StatusCode = 429,
+                            Errors = new List<string> { "Reset already requested." }
+                        };
+                    }
+                }
+            }
+
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+            await _userManager.SetAuthenticationTokenAsync(user, "ResetPassword", "Token", token);
+            await _userManager.SetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime", DateTime.UtcNow.ToString());
+
+            var request = _httpContextAccessor.HttpContext?.Request;
+            var scheme = request?.Scheme ?? "https";
+            var host = request?.Host.Value ?? "localhost:5000";
+
+            string redirectUrl;
+
+            if (IsMobileDevice(request))
+            {
+                redirectUrl = "estorex://reset-password";
+            }
+            else
+            {
+                redirectUrl = "https://loaclhost:4200/reset-password";
+            }
+
+            string resetLink = $"{scheme}://{host}/api/account/reset-password?email={Uri.EscapeDataString(user.Email)}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
+
+            string html = EmailTemplateService.GetPasswordResetEmailTemplate(resetLink);
+
+            var emailDTO = new EmailDTO(user.Email, "Reset Your Password", html);
+
+            await _emailSender.SendEmailAsync(emailDTO);
+
+
+            return new AuthenticationResponse
+            {
+                Success = true,
+                Message = "A password reset link has been sent to your email.",
+                StatusCode = 200
+            };
+        }
 
 
         private bool IsMobileDevice(HttpRequest? request)
@@ -262,13 +362,12 @@ namespace EStoreX.Core.Services
             string redirectUrl;
             if (IsMobileDevice(request))
             {
-                redirectUrl = "estorex://account-verified";
+                redirectUrl = "estorex://active";
             }
             else
             {
                 redirectUrl = "https://loaclhost:4200/active";
             }
-
             string confirmationLink = $"{scheme}://{host}/api/account/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
 
             string html = EmailTemplateService.GetConfirmationEmailTemplate(confirmationLink);

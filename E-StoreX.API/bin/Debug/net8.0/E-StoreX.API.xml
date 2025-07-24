@@ -37,6 +37,13 @@
             <param name="dto">Contains the user ID, confirmation token, and optional redirect URL.</param>
             <returns>Returns a redirection if a redirect URL is provided; otherwise, a response object.</returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.ForgotPassword(EStoreX.Core.DTO.ForgotPasswordDTO)">
+            <summary>
+            Sends a password reset link to the user's email.
+            </summary>
+            <param name="dto">The email address to send the reset link to.</param>
+            <returns>Returns a message indicating whether the reset link was sent or not.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
             <summary>
             API controller for managing customer baskets.
@@ -217,6 +224,22 @@
             </summary>
             <param name="builder"></param>
             <returns></returns>
+        </member>
+        <member name="T:EStoreX.API.Filters.AccountValidationFilter">
+            <summary>
+            A custom action filter that handles model validation errors for account-related actions.
+            Returns a uniform error response if the ModelState is invalid.
+            </summary>
+        </member>
+        <member name="M:EStoreX.API.Filters.AccountValidationFilter.OnActionExecutionAsync(Microsoft.AspNetCore.Mvc.Filters.ActionExecutingContext,Microsoft.AspNetCore.Mvc.Filters.ActionExecutionDelegate)">
+            <summary>
+            Executes the action filter asynchronously.
+            If the model state is invalid, it short-circuits the pipeline and returns a standardized error response.
+            Otherwise, it allows the request to proceed to the action method.
+            </summary>
+            <param name="context">The context for the current action execution.</param>
+            <param name="next">The delegate to execute the next action filter or action method.</param>
+            <returns>A task that represents the asynchronous operation.</returns>
         </member>
     </members>
 </doc>

@@ -27,6 +27,22 @@
   },
   {
     "ContainingType": "E_StoreX.API.Controllers.AccountController",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Account/forgot-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EStoreX.Core.DTO.ForgotPasswordDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.AccountController",
     "Method": "PostLogin",
     "RelativePath": "api/Account/login",
     "HttpMethod": "POST",
