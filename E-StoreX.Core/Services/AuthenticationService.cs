@@ -3,8 +3,9 @@ using EStoreX.Core.DTO;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-
+using Microsoft.AspNetCore.WebUtilities;
 using ServiceContracts;
+using System.Text;
 
 namespace EStoreX.Core.Services
 {
@@ -306,28 +307,20 @@ namespace EStoreX.Core.Services
             await _userManager.SetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime", DateTime.UtcNow.ToString());
 
             var request = _httpContextAccessor.HttpContext?.Request;
-            var scheme = request?.Scheme ?? "https";
-            var host = request?.Host.Value ?? "localhost:5000";
 
-            string redirectUrl;
+            string frontendBaseUrl = IsMobileDevice(request)
+                ? "estorex://reset-password"
+                : "https://estorex/reset-password";
 
-            if (IsMobileDevice(request))
-            {
-                redirectUrl = "estorex://reset-password";
-            }
-            else
-            {
-                redirectUrl = "https://loaclhost:4200/reset-password";
-            }
+            var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            string resetLink = $"{scheme}://{host}/api/account/reset-password?email={Uri.EscapeDataString(user.Email)}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
+            string resetLink = $"{frontendBaseUrl}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
 
             string html = EmailTemplateService.GetPasswordResetEmailTemplate(resetLink);
 
             var emailDTO = new EmailDTO(user.Email, "Reset Your Password", html);
 
             await _emailSender.SendEmailAsync(emailDTO);
-
 
             return new AuthenticationResponse
             {
@@ -337,7 +330,97 @@ namespace EStoreX.Core.Services
             };
         }
 
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> VerifyResetPasswordTokenAsync(VerifyResetPasswordDTO dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.UserId) || string.IsNullOrWhiteSpace(dto.Token))
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Invalid verification request.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "UserId and token are required." }
+                };
+            }
 
+            var user = await _userManager.FindByIdAsync(dto.UserId);
+
+            if (user == null)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "User not found.",
+                    StatusCode = 404,
+                    Errors = new List<string> { "No account found for the provided user ID." }
+                };
+            }
+
+            string decodedToken;
+            try
+            {
+                decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(dto.Token));
+            }
+            catch
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Invalid token format.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "The token format is invalid or corrupted." }
+                };
+            }
+
+            var storedToken = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "Token");
+
+            if (storedToken == null || storedToken != decodedToken)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Invalid or expired token.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "The token is invalid or has already been used." }
+                };
+            }
+
+            var tokenTimeStr = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
+
+            if (string.IsNullOrEmpty(tokenTimeStr) || !DateTime.TryParse(tokenTimeStr, out var tokenTime))
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Token validation failed.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "The token timestamp is invalid." }
+                };
+            }
+
+            if (DateTime.UtcNow > tokenTime.AddMinutes(10))
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    Message = "Reset password link has expired.",
+                    StatusCode = 400,
+                    Errors = new List<string> { "The reset password link has expired. Please request a new one." }
+                };
+            }
+
+            return new AuthenticationResponse
+            {
+                Success = true,
+                Message = "The reset password token is valid.",
+                StatusCode = 200
+            };
+        }
+        public Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordDTO dto)
+        {
+            throw new NotImplementedException();
+        }
         private bool IsMobileDevice(HttpRequest? request)
         {
             if (request is null) return false;
@@ -375,6 +458,5 @@ namespace EStoreX.Core.Services
             var emailDTO = new EmailDTO(user.Email, "Confirm Your Email", html);
             await _emailSender.SendEmailAsync(emailDTO);
         }
-
     }
 }
