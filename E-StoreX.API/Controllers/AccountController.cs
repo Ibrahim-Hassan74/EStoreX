@@ -121,5 +121,17 @@ namespace E_StoreX.API.Controllers
             var result = await _authService.ResetPasswordAsync(dto);
             return StatusCode(result.StatusCode, result);
         }
+        /// <summary>
+        /// Generates a new access token (and refresh token) using a valid refresh token.
+        /// </summary>
+        /// <param name="model">The current (expired) access token and refresh token.</param>
+        /// <returns>Returns a new JWT token pair on success or an error response on failure.</returns>
+        [HttpPost("generate-new-jwt-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenModel model)
+        {
+            var response = await _authService.RefreshTokenAsync(model);
+            return StatusCode(response.StatusCode, response);
+        }
+
     }
 }

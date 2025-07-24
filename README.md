@@ -324,6 +324,91 @@ Resets the user's password using a valid token.
 }
 ```
 
+### `POST /api/account/generate-new-jwt-token`
+
+- **Description**:  
+  Generates a **new access JWT token** using a valid **refresh token** when the old access token has expired.  
+  This helps the user stay logged in without re-entering credentials, as long as the refresh token is valid.
+
+---
+
+### **Request Body**
+
+```json
+{
+  "token": "EXPIRED_ACCESS_TOKEN",
+  "refreshToken": "VALID_REFRESH_TOKEN"
+}
+```
+
+---
+
+### **Validation Rules**
+
+- `token` (string): **Required**. Must be a valid JWT, even if expired.
+- `refreshToken` (string): **Required**. Must match the one stored for the user and must not be expired.
+
+---
+
+### **Responses**
+
+#### `200 OK` – **Token successfully refreshed**
+
+```json
+{
+  "success": true,
+  "message": "Token refreshed successfully.",
+  "statusCode": 200,
+  "userName": "string",
+  "email": "user@example.com",
+  "token": "NEW_JWT_ACCESS_TOKEN",
+  "expiration": "2025-07-24T12:00:00Z",
+  "refreshToken": "NEW_REFRESH_TOKEN",
+  "refreshTokenExpirationDateTime": "2025-07-24T13:00:00Z"
+}
+```
+
+#### `400 Bad Request` – **Invalid request**
+
+```json
+{
+  "success": false,
+  "message": "Invalid token or refresh token.",
+  "statusCode": 400,
+  "errors": ["Refresh token is invalid or expired."]
+}
+```
+
+#### `401 Unauthorized` – **Token tampered or invalid**
+
+```json
+{
+  "success": false,
+  "message": "Invalid token signature or structure.",
+  "statusCode": 401,
+  "errors": ["Token tampered or invalid"]
+}
+```
+
+#### `404 NotFound` – **User doesn't exist**
+
+```json
+{
+  "success": false,
+  "message": "User not found",
+  "statusCode": 404,
+  "errors": ["User does not exist."]
+}
+```
+
+---
+
+### **Notes**
+
+- This endpoint should be called **only when the access token expires**.
+- The new `refreshToken` returned in the response must replace the old one on the client side.
+- If the refresh token is also expired, the user must **log in again**.
+
 ---
 
 ## Notes

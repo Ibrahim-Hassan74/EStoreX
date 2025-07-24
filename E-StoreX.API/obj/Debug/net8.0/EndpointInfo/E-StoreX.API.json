@@ -10,9 +10,9 @@
         "tags": [
           "Account"
         ],
-        "summary": "Register a new user",
+        "summary": "Registers a new user in the system.",
         "requestBody": {
-          "description": "User registration data",
+          "description": "An object containing user registration details like username, email, and password.",
           "content": {
             "application/json": {
               "schema": {
@@ -43,9 +43,9 @@
         "tags": [
           "Account"
         ],
-        "summary": "Login an existing user",
+        "summary": "Authenticates an existing user and generates a JWT token.",
         "requestBody": {
-          "description": "User login data",
+          "description": "The user's login credentials (email and password).",
           "content": {
             "application/json": {
               "schema": {
@@ -116,9 +116,9 @@
         "tags": [
           "Account"
         ],
-        "summary": "Sends a password reset link to the user's email.",
+        "summary": "Sends a password reset link to the user's email address.",
         "requestBody": {
-          "description": "The email address to send the reset link to.",
+          "description": "Contains the email address of the user who requested a password reset.",
           "content": {
             "application/json": {
               "schema": {
@@ -133,6 +133,101 @@
             "application/*+json": {
               "schema": {
                 "$ref": "#/components/schemas/ForgotPasswordDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Account/reset-password/verify": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Verifies the validity of a reset password token for a given user.",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Account/reset-password": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Resets the user's password using a valid token.",
+        "requestBody": {
+          "description": "Contains user ID, token, and new password details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Account/generate-new-jwt-token": {
+      "post": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Generates a new access token (and refresh token) using a valid refresh token.",
+        "requestBody": {
+          "description": "The current (expired) access token and refresh token.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/TokenModel"
               }
             }
           }
@@ -1035,6 +1130,36 @@
         },
         "additionalProperties": false
       },
+      "ResetPasswordDTO": {
+        "required": [
+          "confirmPassword",
+          "newPassword",
+          "token",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "newPassword": {
+            "minLength": 1,
+            "type": "string",
+            "format": "password"
+          },
+          "confirmPassword": {
+            "minLength": 1,
+            "type": "string",
+            "format": "password"
+          }
+        },
+        "additionalProperties": false
+      },
       "SortOrderOptions": {
         "enum": [
           0,
@@ -1042,6 +1167,24 @@
         ],
         "type": "integer",
         "format": "int32"
+      },
+      "TokenModel": {
+        "required": [
+          "refreshToken",
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "refreshToken": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       },
       "UpdateCategoryDTO": {
         "type": "object",
@@ -1066,7 +1209,7 @@
   "tags": [
     {
       "name": "Account",
-      "description": "Controller responsible for handling user authentication-related actions\r\nsuch as registration and login for the E-StoreX API."
+      "description": "Controller responsible for handling user authentication-related actions\r\nsuch as registration, login, email confirmation, and password reset for the E-StoreX API."
     },
     {
       "name": "Baskets",

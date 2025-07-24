@@ -24,7 +24,7 @@ namespace EStoreX.Core.Services
         /// </summary>
         /// <param name="user">ApplicationUser object</param>
         /// <returns>AuthenticationResponse that includes token</returns>
-        public AuthenticationSuccessResponse CreateJwtToken(ApplicationUser user)
+        public AuthenticationResponse CreateJwtToken(ApplicationUser user)
         {
             // Create a DateTime object representing the token expiration time by adding the number of minutes specified in the configuration to the current UTC time.
             DateTime expiration = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
@@ -34,18 +34,20 @@ namespace EStoreX.Core.Services
             {
                  new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()), //Subject (user id)
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //JWT unique ID
-                 new Claim(JwtRegisteredClaimNames.Iat, DateTime.Now.ToString()), //Issued at (date and time of token generation)
-                 new Claim(ClaimTypes.NameIdentifier, user.Email), //Unique name identifier of the user (Email)
-                 new Claim(ClaimTypes.Name, user.UserName), //Name of the user
+                 new Claim(JwtRegisteredClaimNames.Iat,
+                    new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64), //Issued at (date and time of token generation)
+                 new Claim(ClaimTypes.NameIdentifier, user.UserName), //Unique name identifier of the user (Email)
                  new Claim(ClaimTypes.Email, user.Email) //Email of the user
              };
 
-            var audienceClaims = _configuration.GetSection("Jwt:Audience").Get<string[]>();
-            foreach (var aud in audienceClaims)
+            var audienceClaims = _configuration.GetSection("Jwt:Audiences").Get<string[]>();
+            if (audienceClaims is not null)
             {
-                claims.Add(new Claim(JwtRegisteredClaimNames.Aud, aud));
+                foreach (var aud in audienceClaims)
+                {
+                    claims.Add(new Claim(JwtRegisteredClaimNames.Aud, aud));
+                }
             }
-
 
             // Create a SymmetricSecurityKey object using the key specified in the configuration.
             SymmetricSecurityKey securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
@@ -73,7 +75,7 @@ namespace EStoreX.Core.Services
                 UserName = user.UserName,
                 Expiration = expiration,
                 RefreshToken = GenerateRefreshToken(),
-                RefreshTokenExpirationDateTime = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"])),
+                RefreshTokenExpirationDateTime = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"])),
             };
         }
 
@@ -84,12 +86,9 @@ namespace EStoreX.Core.Services
         private string GenerateRefreshToken()
         {
             Byte[] bytes = new byte[64];
-
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(bytes);
-                return Convert.ToBase64String(bytes);
-            }
+            using var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(bytes);
+            return Convert.ToBase64String(bytes);
         }
 
         /// <summary>

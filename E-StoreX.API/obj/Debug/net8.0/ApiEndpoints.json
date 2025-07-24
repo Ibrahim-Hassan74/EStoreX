@@ -43,6 +43,22 @@
   },
   {
     "ContainingType": "E_StoreX.API.Controllers.AccountController",
+    "Method": "RefreshToken",
+    "RelativePath": "api/Account/generate-new-jwt-token",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "model",
+        "Type": "EStoreX.Core.DTO.TokenModel",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.AccountController",
     "Method": "PostLogin",
     "RelativePath": "api/Account/login",
     "HttpMethod": "POST",
@@ -69,6 +85,43 @@
         "Name": "registerDTO",
         "Type": "EStoreX.Core.DTO.RegisterDTO",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.AccountController",
+    "Method": "ResetPassword",
+    "RelativePath": "api/Account/reset-password",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "EStoreX.Core.DTO.ResetPasswordDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.AccountController",
+    "Method": "VerifyResetPassword",
+    "RelativePath": "api/Account/reset-password/verify",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Token",
+        "Type": "System.String",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

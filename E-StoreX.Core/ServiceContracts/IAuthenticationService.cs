@@ -86,5 +86,14 @@ namespace ServiceContracts
         /// issues or validation errors (StatusCode 400 or 404).
         /// </returns>
         Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordDTO dto);
+        /// <summary>
+        /// Generates a new JWT (and refresh token) using a valid refresh token.
+        /// </summary>
+        /// <param name="model">The current (expired) access token and the refresh token.</param>
+        /// <returns>
+        /// Returns an <see cref="AuthenticationResponse"/> with a new access token on success,
+        /// or a failure response when the refresh token is invalid or expired.
+        /// </returns>
+        Task<AuthenticationResponse> RefreshTokenAsync(TokenModel model);
     }
 }

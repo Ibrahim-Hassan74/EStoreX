@@ -4,7 +4,9 @@ using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.IdentityModel.Tokens;
 using ServiceContracts;
+using System.Security.Claims;
 using System.Text;
 
 namespace EStoreX.Core.Services
@@ -466,6 +468,98 @@ namespace EStoreX.Core.Services
                 StatusCode = 200,
                 Message = "Password has been reset successfully."
             };
+        }
+
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> RefreshTokenAsync(TokenModel model)
+        {
+            if (model is null || string.IsNullOrWhiteSpace(model.Token) || string.IsNullOrWhiteSpace(model.RefreshToken))
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Invalid token model.",
+                    Errors = new List<string> { "Token and refresh token are required." }
+                };
+            }
+
+            ClaimsPrincipal? principal;
+
+            try
+            {
+                principal = _jwtService.GetPrincipalFromJwtToken(model.Token);
+            }
+            catch (SecurityTokenException)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Invalid token.",
+                    Errors = new List<string> { "Access token is invalid." }
+                };
+            }
+
+            if (principal is null)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Invalid token.",
+                    Errors = new List<string> { "Access token is invalid." }
+                };
+            }
+
+            var email = principal.FindFirstValue(ClaimTypes.Email);
+            if (string.IsNullOrWhiteSpace(email))
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Invalid token.",
+                    Errors = new List<string> { "Email claim is missing in token." }
+                };
+            }
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 404,
+                    Message = "User not found.",
+                    Errors = new List<string> { "User does not exist." }
+                };
+            }
+
+            if (user.RefreshToken != model.RefreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
+            {
+                return new AuthenticationFailureResponse
+                {
+                    Success = false,
+                    StatusCode = 400,
+                    Message = "Invalid refresh token.",
+                    Errors = new List<string> { "Refresh token is invalid or expired." }
+                };
+            }
+
+            var authResponse = _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
+
+            // Rotate refresh token
+            user.RefreshToken = authResponse?.RefreshToken;
+            user.RefreshTokenExpirationDateTime = authResponse.RefreshTokenExpirationDateTime;
+
+            await _userManager.UpdateAsync(user);
+
+            authResponse.Success = true;
+            authResponse.StatusCode = 200;
+            authResponse.Message = "Token refreshed successfully.";
+
+            return authResponse;
         }
 
         private bool IsMobileDevice(HttpRequest? request)

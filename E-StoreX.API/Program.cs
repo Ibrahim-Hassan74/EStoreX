@@ -7,10 +7,14 @@ using EStoreX.Core.Domain.Options;
 using EStoreX.Core.DTO;
 using EStoreX.Infrastructure;
 using EStoreX.Infrastructure.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -46,7 +50,7 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: ip,
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 8, 
+                PermitLimit = 8,
                 Window = TimeSpan.FromSeconds(30),
                 AutoReplenishment = true,
                 QueueLimit = 0
@@ -129,7 +133,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseStaticFiles();
 
 app.UseCors("AllowAllOrigins");
 
@@ -137,11 +140,15 @@ app.UseRateLimiter();
 
 app.UseExceptionHandlingMiddleware();
 
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.UseStaticFiles();
+
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
 app.UseHttpsRedirection();
-
-app.UseAuthorization();
 
 app.MapControllers();
 
