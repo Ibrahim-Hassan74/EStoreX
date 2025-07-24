@@ -1,4 +1,4 @@
-## EStoreX API Documentation
+## E-StoreX API Documentation
 
 ### Overview
 
@@ -6,14 +6,18 @@ EStoreX is a RESTful API for managing products, categories, and customer baskets
 
 ---
 
-### Authentication
+# Authentication API – EStoreX
 
-This API uses **JWT-based authentication** with support for user registration and login.
+This API uses **JWT-based authentication** with support for user registration, login, email confirmation, and password reset.
 
-#### `POST /api/account/register`
+---
 
-- **Description**: Register a new user. Sends a confirmation email with a token.
-- **Request Body**:
+## `POST /api/account/register`
+
+**Description:**  
+Register a new user. Sends a confirmation email with a token.
+
+**Request Body:**
 
 ```json
 {
@@ -27,28 +31,19 @@ This API uses **JWT-based authentication** with support for user registration an
 
 ### Password Requirements
 
-To ensure strong account security, passwords must meet the following criteria:
-
 - Minimum 8 characters
 - At least 1 uppercase letter (A–Z)
 - At least 1 lowercase letter (a–z)
 - At least 1 digit (0–9)
 - Special characters (e.g. ! @ # $ %) — optional but recommended
 
-Example of a valid password:  
-StrongPass1
+**Responses:**
 
-If any of these conditions are not met, the API will return:
+- **200 OK:** Registration successful, email sent
+- **400 Bad Request:** Validation error or missing fields
+- **409 Conflict:** Email or username already in use
 
-- 400 Bad Request
-- With detailed error messages in the `errors.password[]` field of the response
-
-- **Responses**:
-  - `200`: Registration successful, email sent
-  - `400`: Validation error or missing fields
-  - `409`: Email or username already in use
-
-_Example response (200):_
+**Example response (200):**
 
 ```json
 {
@@ -58,36 +53,40 @@ _Example response (200):_
 }
 ```
 
-_Example response (400):_
+**Example response (400):**
 
 ```json
 {
   "success": false,
   "message": "Validation failed.",
   "statusCode": 400,
-  "errors": {
-    "email": ["Email can't be blank"],
-    "password": ["Password should be at least 7 characters"]
-  }
+  "errors": [
+    "Email can't be blank",
+    "Password should be at least 8 characters",
+    "..."
+  ]
 }
 ```
 
-_Example response (409):_
+**Example response (409):**
 
 ```json
 {
   "success": false,
-  "message": "Email is already in use.",
-  "statusCode": 409
+  "message": "Username or Email is already in use.",
+  "statusCode": 409,
+  "errors": ["The username or email is already taken.", "...."]
 }
 ```
 
 ---
 
-#### `POST /api/account/login`
+## `POST /api/account/login`
 
-- **Description**: Login using email and password. Returns JWT token on success.
-- **Request Body**:
+**Description:**  
+Login using email and password. Returns JWT token on success.
+
+**Request Body:**
 
 ```json
 {
@@ -97,14 +96,16 @@ _Example response (409):_
 }
 ```
 
-- **Responses**:
-  - `200`: Login successful with token
-  - `401`: Invalid credentials
-  - `403`: Email not confirmed or not allowed
-  - `404`: User not found
-  - `423`: Account locked due to failed attempts
+**Responses:**
 
-_Example response (200):_
+- **200 OK:** Login successful with token
+- **400 Bad Request:** Validation errors
+- **401 Unauthorized:** Invalid credentials
+- **403 Forbidden:** Email not confirmed
+- **404 Not Found:** User not found
+- **423 Locked:** Account locked due to failed attempts
+
+**Example response (200):**
 
 ```json
 {
@@ -120,72 +121,220 @@ _Example response (200):_
 }
 ```
 
-_Example response (400):_
+**Example response (400):**
 
 ```json
 {
   "success": false,
   "message": "Validation failed.",
   "statusCode": 400,
-  "errors": {
-    "email": ["Email can't be blank"],
-    "password": ["Password should be at least 7 characters"]
-  }
+  "errors": ["Email can't be blank", "Password can't be blank"]
 }
 ```
 
-_Example response (401):_
+**Example response (401):**
 
 ```json
 {
   "success": false,
   "message": "Invalid email or password.",
-  "statusCode": 401
+  "statusCode": 401,
+  "errors": ["Incorrect email or password."]
 }
 ```
 
-_Example response (403):_
+**Example response (403):**
 
 ```json
 {
   "success": false,
   "message": "You need to confirm your email before logging in.",
-  "statusCode": 403
+  "statusCode": 403,
+  "errors": [
+    "You must confirm your email before logging in.",
+    "User is not allowed to login."
+  ]
 }
 ```
 
-_Example response (404):_
+**Example response (404):**
 
 ```json
 {
   "success": false,
   "message": "User with the provided email does not exist.",
-  "statusCode": 404
+  "statusCode": 404,
+  "errors": ["No account found with this email."]
 }
 ```
 
-_Example response (423):_
+**Example response (423):**
 
 ```json
 {
   "success": false,
   "message": "Account is locked due to multiple failed login attempts. Please try again later.",
-  "statusCode": 423
+  "statusCode": 423,
+  "errors": [
+    "Your account is temporarily locked due to multiple failed login attempts. Please try again later."
+  ]
 }
 ```
 
 ---
 
-### Notes
+## `POST /api/account/forgot-password`
 
-- JWT Token is required for secured endpoints  
-  Add this header:  
+**Description:**  
+Initiates the password reset process by sending a reset link to the user's email.
+
+**Request Body:**
+
+```json
+{
+  "email": "user@example.com"
+}
+```
+
+**Responses:**
+
+- **200 OK:** Password reset link sent successfully
+- **400 Bad Request:** Email not found or not confirmed
+- **429 Too Many Requests:** Password reset already requested recently
+
+**Example response (200):**
+
+```json
+{
+  "success": true,
+  "message": "A password reset link has been sent to your email.",
+  "statusCode": 200
+}
+```
+
+**Example response (400):**
+
+```json
+{
+  "success": false,
+  "message": "Email is not confirmed.",
+  "statusCode": 400,
+  "errors": [
+    "Email not found.",
+    "Please confirm your email before resetting password."
+  ]
+}
+```
+
+**Example response (429):**
+
+```json
+{
+  "success": false,
+  "message": "A password reset email was already sent recently. Please wait before trying again.",
+  "statusCode": 429,
+  "errors": [
+    "A password reset email was already sent recently. Please wait before trying again."
+  ]
+}
+```
+
+---
+
+## `GET /api/account/reset-password/verify`
+
+**Description:**  
+Verifies the validity of a reset password token.
+
+**Query Parameters:**
+
+```
+userId=<USER_ID>&token=<TOKEN>
+```
+
+**Responses:**
+
+- **200 OK:** Token is valid
+- **400 Bad Request:** Token or user is invalid
+- **404 Not Found:** User not found
+
+**Example response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Token is valid.",
+  "statusCode": 200
+}
+```
+
+**Example response (400):**
+
+```json
+{
+  "success": false,
+  "message": "Invalid or expired token.",
+  "statusCode": 400,
+  "errors": ["Invalid verification request."]
+}
+```
+
+---
+
+## `POST /api/account/reset-password`
+
+**Description:**  
+Resets the user's password using a valid token.
+
+**Request Body:**
+
+```json
+{
+  "userId": "guid",
+  "token": "RESET_TOKEN",
+  "newPassword": "NewStrongPass1",
+  "confirmPassword": "NewStrongPass1"
+}
+```
+
+**Responses:**
+
+- **200 OK:** Password reset successful
+- **400 Bad Request:** Token invalid or password mismatch
+- **404 Not Found:** User not found
+
+**Example response (200):**
+
+```json
+{
+  "success": true,
+  "message": "Password reset successful.",
+  "statusCode": 200
+}
+```
+
+**Example response (400):**
+
+```json
+{
+  "success": false,
+  "message": "Passwords do not match or token is invalid.",
+  "statusCode": 400,
+  "errors": ["Invalid or expired token."]
+}
+```
+
+---
+
+## Notes
+
+- **JWT Token** is required for secured endpoints:  
   `Authorization: Bearer YOUR_JWT_TOKEN`
-- Email confirmation is **mandatory** before login
-- A redirect URL is included in the confirmation email:
-  - `estorex://account-verified` for mobile apps
-  - `https://localhost:4200/active` for web
-- Lockout policies apply after multiple failed login attempts
+- **Email confirmation is mandatory** before login.
+- Redirect URLs in emails:
+  - `estorex://reset-password` for mobile apps
+  - `https://localhost:4200/reset-password` for web
+- Lockout policies apply after multiple failed login attempts.
 
 ## Endpoints
 
