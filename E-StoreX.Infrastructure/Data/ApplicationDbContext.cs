@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Product;
+using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -22,5 +23,8 @@ namespace EStoreX.Infrastructure.Data
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Address> Addresses { get; set; }
+        public virtual DbSet<DeliveryMethod> DeliveryMethods { get; set; }
+        public virtual DbSet<Order> Orders { get; set; }
+        public virtual DbSet<OrderItem> OrderItems { get; set; }
     }
 }

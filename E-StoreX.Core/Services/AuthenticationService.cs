@@ -290,7 +290,7 @@ namespace EStoreX.Core.Services
                 var tokenTimeStr = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
                 if (!string.IsNullOrEmpty(tokenTimeStr) && DateTime.TryParse(tokenTimeStr, out var tokenTime))
                 {
-                    if (DateTime.UtcNow < tokenTime.AddMinutes(10))
+                    if (DateTime.UtcNow < tokenTime.AddMinutes(30))
                     {
                         return new AuthenticationFailureResponse
                         {
@@ -402,7 +402,7 @@ namespace EStoreX.Core.Services
                 };
             }
 
-            if (DateTime.UtcNow > tokenTime.AddMinutes(10))
+            if (DateTime.UtcNow > tokenTime.AddMinutes(30))
             {
                 return new AuthenticationFailureResponse
                 {
@@ -446,7 +446,9 @@ namespace EStoreX.Core.Services
                 return verifyResponse; 
 
             var user = await _userManager.FindByIdAsync(dto.UserId!);
-            var resetResult = await _userManager.ResetPasswordAsync(user, dto.Token, dto.NewPassword);
+            var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(dto.Token));
+            var resetResult = await _userManager.ResetPasswordAsync(user, decodedToken, dto.NewPassword);
+
 
             if (!resetResult.Succeeded)
             {

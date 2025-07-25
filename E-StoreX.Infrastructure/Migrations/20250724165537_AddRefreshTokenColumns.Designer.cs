@@ -4,6 +4,7 @@ using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EStoreX.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250724165537_AddRefreshTokenColumns")]
+    partial class AddRefreshTokenColumns
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -133,95 +136,6 @@ namespace EStoreX.Infrastructure.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("EStoreX.Core.Domain.Entities.Orders.DeliveryMethod", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("DeliveryTime")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DeliveryMethods");
-                });
-
-            modelBuilder.Entity("EStoreX.Core.Domain.Entities.Orders.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("DeliveryMethodId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("OrderDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("SubTotal")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DeliveryMethodId");
-
-                    b.ToTable("Orders");
-                });
-
-            modelBuilder.Entity("EStoreX.Core.Domain.Entities.Orders.OrderItem", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("MainImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid?>("OrderId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<Guid>("ProductItemId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ProductName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("OrderId");
-
-                    b.ToTable("OrderItems");
                 });
 
             modelBuilder.Entity("EStoreX.Core.Domain.IdentityEntities.ApplicationRole", b =>
@@ -466,65 +380,6 @@ namespace EStoreX.Infrastructure.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("EStoreX.Core.Domain.Entities.Orders.Order", b =>
-                {
-                    b.HasOne("EStoreX.Core.Domain.Entities.Orders.DeliveryMethod", "DeliveryMethod")
-                        .WithMany()
-                        .HasForeignKey("DeliveryMethodId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.OwnsOne("EStoreX.Core.Domain.Entities.Orders.ShippingAddress", "ShippingAddress", b1 =>
-                        {
-                            b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<string>("City")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("FirstName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("LastName")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("State")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("Street")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.Property<string>("ZipCode")
-                                .IsRequired()
-                                .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("Id");
-
-                            b1.ToTable("Orders");
-
-                            b1.WithOwner()
-                                .HasForeignKey("Id");
-                        });
-
-                    b.Navigation("DeliveryMethod");
-
-                    b.Navigation("ShippingAddress")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("EStoreX.Core.Domain.Entities.Orders.OrderItem", b =>
-                {
-                    b.HasOne("EStoreX.Core.Domain.Entities.Orders.Order", null)
-                        .WithMany("OrderItems")
-                        .HasForeignKey("OrderId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<System.Guid>", b =>
                 {
                     b.HasOne("EStoreX.Core.Domain.IdentityEntities.ApplicationRole", null)
@@ -584,11 +439,6 @@ namespace EStoreX.Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Product.Product", b =>
                 {
                     b.Navigation("Photos");
-                });
-
-            modelBuilder.Entity("EStoreX.Core.Domain.Entities.Orders.Order", b =>
-                {
-                    b.Navigation("OrderItems");
                 });
 
             modelBuilder.Entity("EStoreX.Core.Domain.IdentityEntities.ApplicationUser", b =>
