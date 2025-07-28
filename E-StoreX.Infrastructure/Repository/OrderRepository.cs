@@ -1,9 +1,13 @@
 ﻿using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace EStoreX.Infrastructure.Repository
 {
+    /// <summary>
+    /// Provides implementation for order data access using Entity Framework Core.
+    /// </summary>
     public class OrderRepository : IOrderRepository
     {
         private readonly ApplicationDbContext _context;
@@ -11,34 +15,45 @@ namespace EStoreX.Infrastructure.Repository
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        /// <inheritDoc />
-        public Task<Order> CreateOrderAsync(Order order)
+        /// <inheritdoc />
+        public async Task<Order> CreateOrderAsync(Order order)
         {
-            throw new NotImplementedException();
+            await _context.Orders.AddAsync(order);
+            await _context.SaveChangesAsync();
+            return order;
         }
 
-        /// <inheritDoc />
-        public Task<IEnumerable<DeliveryMethod>> GetAllDeliveryMethodsAsync()
+        /// <inheritdoc />
+        public async Task<IEnumerable<Order>> GetOrdersByBuyerEmailAsync(string buyerEmail)
         {
-            throw new NotImplementedException();
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .Include(o => o.ShippingAddress)
+                .Include(o => o.DeliveryMethod)
+                .Where(o => o.BuyerEmail == buyerEmail)
+                .ToListAsync();
         }
 
-        /// <inheritDoc />
-        public Task<DeliveryMethod?> GetDeliveryMethodByIdAsync(Guid id)
+        /// <inheritdoc />
+        public async Task<Order?> GetOrderByIdAsync(Guid orderId, string buyerEmail)
         {
-            throw new NotImplementedException();
+            return await _context.Orders
+                .Include(o => o.OrderItems)
+                .Include(o => o.ShippingAddress)
+                .Include(o => o.DeliveryMethod)
+                .FirstOrDefaultAsync(o => o.Id == orderId && o.BuyerEmail == buyerEmail);
         }
 
-        /// <inheritDoc />
-        public Task<Order?> GetOrderByIdAsync(Guid orderId, string buyerEmail)
+        /// <inheritdoc />
+        public async Task<IEnumerable<DeliveryMethod>> GetAllDeliveryMethodsAsync()
         {
-            throw new NotImplementedException();
+            return await _context.DeliveryMethods.ToListAsync();
         }
 
-        /// <inheritDoc />
-        public Task<IEnumerable<Order>> GetOrdersByBuyerEmailAsync(string buyerEmail)
+        /// <inheritdoc />
+        public async Task<DeliveryMethod?> GetDeliveryMethodByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.DeliveryMethods.FirstOrDefaultAsync(dm => dm.Id == id);
         }
     }
 }
