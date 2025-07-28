@@ -8,5 +8,6 @@ namespace EStoreX.Core.RepositoryContracts
         ICategoryRepository CategoryRepository { get; }
         IPhotoRepository PhotoRepository { get; }
         ICustomerBasketRepository CustomerBasketRepository { get; }
+        IOrderRepository OrderRepository { get; }
     }
 }

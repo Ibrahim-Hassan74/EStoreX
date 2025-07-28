@@ -12,17 +12,13 @@ namespace E_StoreX.API.Controllers
     public class CustomControllerBase : ControllerBase
     {
         /// <summary>
-        /// Unit of Work instance for managing database transactions and repositories.
-        /// </summary>
-        //protected readonly IUnitOfWork _unitOfWork;
-        /// <summary>
         /// Constructor for CustomControllerBase, initializing the unit of work.
         /// </summary>
-        /// <param name="unitOfWork"></param>
 
-        public CustomControllerBase(/*IUnitOfWork unitOfWork*/)
-        {
-            //_unitOfWork = unitOfWork;
+        public CustomControllerBase()
+        {   
+            // This constructor can be used to initialize common services or properties
+            // that all derived controllers might need.
         }
     }
 }

@@ -4,16 +4,16 @@ namespace EStoreX.Core.Domain.Entities.Orders
 {
     public class Order : BaseEntity<Guid>
     {
-        public Order(string email, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, IEnumerable<OrderItem> orderItems)
+        public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, IEnumerable<OrderItem> orderItems)
         {
-            Email = email;
+            BuyerEmail = buyerEmail;
             SubTotal = subTotal;
             ShippingAddress = shippingAddress;
             DeliveryMethod = deliveryMethod;
             OrderItems = orderItems;
         }
         public Order() { }
-        public string Email { get; set; }
+        public string BuyerEmail { get; set; }
         public decimal SubTotal { get; set; }
         public ShippingAddress ShippingAddress { get; set; }
         public DeliveryMethod DeliveryMethod { get; set; }
