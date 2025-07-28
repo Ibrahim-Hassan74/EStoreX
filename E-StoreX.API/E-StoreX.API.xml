@@ -205,12 +205,35 @@
             <summary>
             Constructor for CustomControllerBase, initializing the unit of work.
             </summary>
-            <param name="unitOfWork"></param>
         </member>
         <member name="T:E_StoreX.API.Controllers.ErrorController">
             <summary>
             
             </summary>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.OrdersController">
+            <summary>
+            Controller responsible for handling order-related operations.
+            Requires the user to be authenticated.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.OrdersController.#ctor(EStoreX.Core.ServiceContracts.IOrderService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.OrdersController"/> class.
+            </summary>
+            <param name="orderService">The service that handles order-related operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.OrdersController.CreateOrder(EStoreX.Core.DTO.OrderAddRequest)">
+            <summary>
+            Creates a new order for the authenticated user.
+            </summary>
+            <param name="order">The order data to be created.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the created order details if successful;
+            otherwise, returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> if the user email is not found.
+            </returns>
+            <response code="200">Returns the newly created order.</response>
+            <response code="400">If the user email is not present in the JWT token.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.ProductsController">
             <summary>

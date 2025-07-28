@@ -539,6 +539,42 @@
         }
       }
     },
+    "/api/Orders": {
+      "post": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Creates a new order for the authenticated user.",
+        "requestBody": {
+          "description": "The order data to be created.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderAddRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderAddRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrderAddRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns the newly created order."
+          },
+          "400": {
+            "description": "If the user email is not present in the JWT token."
+          }
+        }
+      }
+    },
     "/api/Products": {
       "get": {
         "tags": [
@@ -1046,6 +1082,29 @@
         },
         "additionalProperties": false
       },
+      "OrderAddRequest": {
+        "required": [
+          "basketId",
+          "deliveryMethodId",
+          "shippingAddress"
+        ],
+        "type": "object",
+        "properties": {
+          "deliveryMethodId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "basketId": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "shippingAddress": {
+            "$ref": "#/components/schemas/ShippingAddressDTO"
+          }
+        },
+        "additionalProperties": false
+      },
       "PhotoResponse": {
         "type": "object",
         "properties": {
@@ -1160,6 +1219,50 @@
         },
         "additionalProperties": false
       },
+      "ShippingAddressDTO": {
+        "required": [
+          "city",
+          "firstName",
+          "lastName",
+          "state",
+          "street",
+          "zipCode"
+        ],
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "lastName": {
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
+          },
+          "city": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "zipCode": {
+            "minLength": 1,
+            "pattern": "^\\d{4,10}$",
+            "type": "string"
+          },
+          "street": {
+            "maxLength": 200,
+            "minLength": 0,
+            "type": "string"
+          },
+          "state": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "SortOrderOptions": {
         "enum": [
           0,
@@ -1226,6 +1329,10 @@
     {
       "name": "Error",
       "description": ""
+    },
+    {
+      "name": "Orders",
+      "description": "Controller responsible for handling order-related operations.\r\nRequires the user to be authenticated."
     },
     {
       "name": "Products",
