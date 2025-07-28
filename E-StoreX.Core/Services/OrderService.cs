@@ -13,7 +13,7 @@ namespace EStoreX.Core.Services
         {
             _orderRepository = _unitOfWork.OrderRepository;
         }
-
+        /// <inheritdoc/>
         public async Task<OrderResponse> CreateOrdersAsync(OrderAddRequest order, string buyerEmail)
         {
             if (order == null)
@@ -59,7 +59,7 @@ namespace EStoreX.Core.Services
 
             return _mapper.Map<OrderResponse>(createdOrder);
         }
-
+        /// <inheritdoc/>
         public async Task<IEnumerable<OrderResponse>> GetAllOrdersAsync(string buyerEmail)
         {
             if (string.IsNullOrWhiteSpace(buyerEmail))
@@ -71,14 +71,26 @@ namespace EStoreX.Core.Services
             return _mapper.Map<IEnumerable<OrderResponse>>(orders);
         }
 
-        public Task<IEnumerable<DeliveryMethodResponse>> GetDeliveryMethodAsync()
+        /// <inheritdoc/>
+        public async Task<IEnumerable<DeliveryMethodResponse>> GetDeliveryMethodAsync()
         {
-            throw new NotImplementedException();
+            var deliveryMethods = await _orderRepository.GetAllDeliveryMethodsAsync();
+            return _mapper.Map<IEnumerable<DeliveryMethodResponse>>(deliveryMethods);
         }
 
-        public Task<OrderResponse> GetOrderByIdAsync(Guid Id, string buyerEmail)
+        /// <inheritdoc/>
+        public async Task<OrderResponse> GetOrderByIdAsync(Guid Id, string buyerEmail)
         {
-            throw new NotImplementedException();
+            if (Id == Guid.Empty)
+            {
+                throw new ArgumentException("Order ID cannot be empty", nameof(Id));
+            }
+            if (string.IsNullOrWhiteSpace(buyerEmail))
+            {
+                throw new ArgumentException("Buyer email cannot be null, empty, or whitespace", nameof(buyerEmail));
+            }
+            var order = await _orderRepository.GetOrderByIdAsync(Id, buyerEmail);
+            return _mapper.Map<OrderResponse>(order);
         }
     }
 }
