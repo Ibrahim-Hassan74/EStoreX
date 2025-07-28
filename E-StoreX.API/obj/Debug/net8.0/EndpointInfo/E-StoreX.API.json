@@ -573,6 +573,55 @@
             "description": "If the user email is not present in the JWT token."
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieves all orders associated with the currently authenticated user.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Orders/{Id}": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieves a specific order by its ID for the currently authenticated user.",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "The unique identifier of the order.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/Orders/deliveryMethods": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieves all available delivery methods.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/api/Products": {

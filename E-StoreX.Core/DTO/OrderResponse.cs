@@ -11,7 +11,7 @@ namespace EStoreX.Core.DTO
         public decimal SubTotal { get; set; }
         public decimal Total { get; set; }
         public ShippingAddressDTO ShippingAddress { get; set; }
-        public DeliveryMethodResponse DeliveryMethod { get; set; }
+        public string DeliveryMethod { get; set; } = string.Empty;
         public List<OrderItemResponse> OrderItems { get; set; } = new();
     }
 }

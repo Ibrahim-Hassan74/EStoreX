@@ -235,6 +235,25 @@
             <response code="200">Returns the newly created order.</response>
             <response code="400">If the user email is not present in the JWT token.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.OrdersController.GetOrders">
+            <summary>
+            Retrieves all orders associated with the currently authenticated user.
+            </summary>
+            <returns>A list of <see cref="T:EStoreX.Core.DTO.OrderResponse"/> objects representing the user's orders.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.OrdersController.GetOrdersById(System.Guid)">
+            <summary>
+            Retrieves a specific order by its ID for the currently authenticated user.
+            </summary>
+            <param name="Id">The unique identifier of the order.</param>
+            <returns>An <see cref="T:EStoreX.Core.DTO.OrderResponse"/> object representing the order, or NotFound if not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.OrdersController.GetDeliveryMethods">
+            <summary>
+            Retrieves all available delivery methods.
+            </summary>
+            <returns>A list of <see cref="T:EStoreX.Core.DTO.DeliveryMethodResponse"/> objects representing delivery options.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.ProductsController">
             <summary>
             Controller for managing products in the E-StoreX application.
