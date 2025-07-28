@@ -45,7 +45,45 @@ namespace E_StoreX.API.Controllers
 
             return Ok(createdOrder);
         }
+        /// <summary>
+        /// Retrieves all orders associated with the currently authenticated user.
+        /// </summary>
+        /// <returns>A list of <see cref="OrderResponse"/> objects representing the user's orders.</returns>
+        [HttpGet]
+        public async Task<IActionResult> GetOrders()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrWhiteSpace(email))
+                return NotFound();
+            var orderResponse = await _orderService.GetAllOrdersAsync(email);
+            return Ok(orderResponse);
+        }
 
+        /// <summary>
+        /// Retrieves a specific order by its ID for the currently authenticated user.
+        /// </summary>
+        /// <param name="Id">The unique identifier of the order.</param>
+        /// <returns>An <see cref="OrderResponse"/> object representing the order, or NotFound if not found.</returns>
+        [HttpGet("{Id:guid}")]
+        public async Task<IActionResult> GetOrdersById(Guid Id)
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrWhiteSpace(email))
+                return NotFound();
+            var orderResponse = await _orderService.GetOrderByIdAsync(Id, email);
+            return Ok(orderResponse);
+        }
+
+        /// <summary>
+        /// Retrieves all available delivery methods.
+        /// </summary>
+        /// <returns>A list of <see cref="DeliveryMethodResponse"/> objects representing delivery options.</returns>
+        [HttpGet("deliveryMethods")]
+        public async Task<IActionResult> GetDeliveryMethods()
+        {
+            var methods = await _orderService.GetDeliveryMethodAsync();
+            return Ok(methods);
+        }
 
     }
 }
