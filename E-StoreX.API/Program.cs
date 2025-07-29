@@ -7,14 +7,10 @@ using EStoreX.Core.Domain.Options;
 using EStoreX.Core.DTO;
 using EStoreX.Infrastructure;
 using EStoreX.Infrastructure.Data;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -10,13 +10,16 @@
             such as registration, login, email confirmation, and password reset for the E-StoreX API.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.#ctor(ServiceContracts.IAuthenticationService)">
+        <member name="M:E_StoreX.API.Controllers.AccountController.#ctor(ServiceContracts.IAuthenticationService,AutoMapper.IMapper)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.AccountController"/> class.
             </summary>
             <param name="authService">
             The authentication service that handles user registration, login, 
             email confirmation, and password reset logic.
+            </param>
+            <param name="mapper">
+            mapper instance for mapping between DTOs and domain entities.
             </param>
         </member>
         <member name="M:E_StoreX.API.Controllers.AccountController.PostRegister(EStoreX.Core.DTO.RegisterDTO)">
@@ -88,6 +91,22 @@
             </summary>
             <param name="model">The current (expired) access token and refresh token.</param>
             <returns>Returns a new JWT token pair on success or an error response on failure.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.UpdateAddress(EStoreX.Core.DTO.ShippingAddressDTO)">
+            <summary>
+            Updates the authenticated user's address.
+            </summary>
+            <param name="addressDTO">
+            The new <see cref="T:EStoreX.Core.DTO.ShippingAddressDTO"/> object containing the updated address details.
+            </param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with a success message if the update succeeds,
+            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if it fails.
+            </returns>
+            <remarks>
+            The method retrieves the user's email from the JWT claims and uses it to update the address.
+            The user must be authenticated for this operation.
+            </remarks>
         </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
             <summary>

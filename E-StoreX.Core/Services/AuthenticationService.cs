@@ -1,5 +1,8 @@
-﻿using EStoreX.Core.Domain.IdentityEntities;
+﻿using AutoMapper;
+using Domain.Entities;
+using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO;
+using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -11,7 +14,7 @@ using System.Text;
 
 namespace EStoreX.Core.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService : BaseService, IAuthenticationService
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSenderService _emailSender;
@@ -19,9 +22,9 @@ namespace EStoreX.Core.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtService _jwtService;
 
-        public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender, 
+        public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender,
             SignInManager<ApplicationUser> signInManager,
-            IHttpContextAccessor httpContextAccessor, IJwtService jwtService)
+            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -283,6 +286,7 @@ namespace EStoreX.Core.Services
                 };
             }
 
+            #region Timer
             var existingToken = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "Token");
 
             if (!string.IsNullOrEmpty(existingToken))
@@ -302,6 +306,7 @@ namespace EStoreX.Core.Services
                     }
                 }
             }
+            #endregion
 
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
 
@@ -310,13 +315,25 @@ namespace EStoreX.Core.Services
 
             var request = _httpContextAccessor.HttpContext?.Request;
 
-            string frontendBaseUrl = IsMobileDevice(request)
-                ? "estorex://reset-password"
-                : "https://estorex/reset-password";
+            //var phone = IsMobileDevice(request);
+            //string frontendBaseUrl = phone
+            //    ? "https://estorex/reset-password"
+            //    : "https://estorex/reset-password";
+
+            //var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
+
+            //string resetLink = $"{frontendBaseUrl}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+
+            string baseDeepLink = "https://estorex/reset-password";
+
+            string dynamicLinkPrefix = "https://estorex.page.link";
 
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            string resetLink = $"{frontendBaseUrl}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+            string fullLink = $"{baseDeepLink}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+
+            string resetLink = $"{dynamicLinkPrefix}/?link={Uri.EscapeDataString(fullLink)}&apn=com.yourapp.package&ibi=com.yourapp.ios";
+
 
             string html = EmailTemplateService.GetPasswordResetEmailTemplate(resetLink);
 
@@ -443,7 +460,7 @@ namespace EStoreX.Core.Services
             );
 
             if (!verifyResponse.Success)
-                return verifyResponse; 
+                return verifyResponse;
 
             var user = await _userManager.FindByIdAsync(dto.UserId!);
             var decodedToken = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(dto.Token));
@@ -569,8 +586,15 @@ namespace EStoreX.Core.Services
             if (request is null) return false;
 
             var userAgent = request.Headers["User-Agent"].ToString().ToLower();
+            var src = request.Headers["X-Source"].ToString().ToLower();
 
-            return userAgent.Contains("android") || userAgent.Contains("iphone") || userAgent.Contains("ipad");
+            return userAgent.Contains("android") ||
+                userAgent.Contains("iphone") ||
+                userAgent.Contains("ipad") ||
+                userAgent.Contains("mobile") ||
+                userAgent.Contains("opera mini") ||
+                userAgent.Contains("flutter") ||
+                src.Contains("flutter");
         }
 
         private async Task SendEmail(ApplicationUser user)
@@ -600,6 +624,31 @@ namespace EStoreX.Core.Services
 
             var emailDTO = new EmailDTO(user.Email, "Confirm Your Email", html);
             await _emailSender.SendEmailAsync(emailDTO);
+        }
+
+        public async Task<bool> UpdateAddress(string? email, Address? address)
+        {
+            if (email is null || address is null)
+            {
+                return false;
+            }
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+            {
+                return false;
+            }
+            return await _unitOfWork.AuthenticationRepository.UpdateAddress(user.Id, address);
+        }
+
+        public async Task<ShippingAddressDTO?> GetAddress(string? email)
+        {
+            if (string.IsNullOrEmpty(email)) 
+                return null;
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null) return null;
+            var address = await _unitOfWork.AuthenticationRepository.GetAddress(user.Id);
+            if (address is null) return null;
+            return _mapper.Map<ShippingAddressDTO>(address);
         }
     }
 }

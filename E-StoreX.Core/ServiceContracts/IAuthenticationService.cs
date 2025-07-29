@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.DTO;
+﻿using Domain.Entities;
+using EStoreX.Core.DTO;
 
 namespace ServiceContracts
 {
@@ -95,5 +96,31 @@ namespace ServiceContracts
         /// or a failure response when the refresh token is invalid or expired.
         /// </returns>
         Task<AuthenticationResponse> RefreshTokenAsync(TokenModel model);
+        /// <summary>
+        /// Updates the address information associated with a specific user.
+        /// </summary>
+        /// <param name="email">
+        /// The email address of the user whose address will be updated.
+        /// </param>
+        /// <param name="address">
+        /// The new <see cref="Address"/> information to associate with the user.
+        /// </param>
+        /// <returns>
+        /// Returns <c>true</c> if the address was updated successfully; otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> UpdateAddress(string? email, Address? address);
+        /// <summary>
+        /// Retrieves the shipping address associated with a user by their email.
+        /// </summary>
+        /// <param name="email">
+        /// The email address of the user. If null, the operation may return a default or empty result depending on implementation.
+        /// </param>
+        /// <returns>
+        /// A task representing the asynchronous operation. 
+        /// The task result contains a <see cref="ShippingAddressDTO"/> representing the user's shipping address.
+        /// </returns>
+        Task<ShippingAddressDTO?> GetAddress(string? email);
+
+
     }
 }

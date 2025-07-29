@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Domain.Entities;
 using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.DTO;
 
@@ -19,6 +20,7 @@ namespace EStoreX.Core.Mapping
                 .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
                 .ForMember(dest => dest.DeliveryMethod, opt => opt.MapFrom(src => src.DeliveryMethod.Name))
                 .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress));
+            CreateMap<Address, ShippingAddressDTO>().ReverseMap();
         }
     }
 }

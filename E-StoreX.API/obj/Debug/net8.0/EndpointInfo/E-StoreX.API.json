@@ -239,6 +239,40 @@
         }
       }
     },
+    "/api/Account/update-address": {
+      "put": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Updates the authenticated user's address.",
+        "description": "The method retrieves the user's email from the JWT claims and uses it to update the address.\r\nThe user must be authenticated for this operation.",
+        "requestBody": {
+          "description": "The new EStoreX.Core.DTO.ShippingAddressDTO object containing the updated address details.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingAddressDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingAddressDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ShippingAddressDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Baskets/{id}": {
       "get": {
         "tags": [
@@ -611,7 +645,7 @@
         }
       }
     },
-    "/api/Orders/deliveryMethods": {
+    "/api/Orders/delivery-methods": {
       "get": {
         "tags": [
           "Orders"

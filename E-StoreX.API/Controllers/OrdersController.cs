@@ -78,7 +78,7 @@ namespace E_StoreX.API.Controllers
         /// Retrieves all available delivery methods.
         /// </summary>
         /// <returns>A list of <see cref="DeliveryMethodResponse"/> objects representing delivery options.</returns>
-        [HttpGet("deliveryMethods")]
+        [HttpGet("delivery-methods")]
         public async Task<IActionResult> GetDeliveryMethods()
         {
             var methods = await _orderService.GetDeliveryMethodAsync();

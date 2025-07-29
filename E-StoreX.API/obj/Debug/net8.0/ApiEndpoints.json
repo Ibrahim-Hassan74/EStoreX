@@ -127,6 +127,22 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "E_StoreX.API.Controllers.AccountController",
+    "Method": "UpdateAddress",
+    "RelativePath": "api/Account/update-address",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "addressDTO",
+        "Type": "EStoreX.Core.DTO.ShippingAddressDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "E_StoreX.API.Controllers.BasketsController",
     "Method": "AddOrUpdateBasket",
     "RelativePath": "api/Baskets",
@@ -344,7 +360,7 @@
   {
     "ContainingType": "E_StoreX.API.Controllers.OrdersController",
     "Method": "GetDeliveryMethods",
-    "RelativePath": "api/Orders/deliveryMethods",
+    "RelativePath": "api/Orders/delivery-methods",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,

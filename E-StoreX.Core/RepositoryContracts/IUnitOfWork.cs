@@ -9,5 +9,6 @@ namespace EStoreX.Core.RepositoryContracts
         IPhotoRepository PhotoRepository { get; }
         ICustomerBasketRepository CustomerBasketRepository { get; }
         IOrderRepository OrderRepository { get; }
+        IAuthenticationRepository AuthenticationRepository { get; }
     }
 }
