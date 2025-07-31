@@ -41,5 +41,19 @@ namespace EStoreX.Core.RepositoryContracts
         /// <param name="id">The ID of the delivery method.</param>
         /// <returns>The delivery method if found; otherwise, null.</returns>
         Task<DeliveryMethod?> GetDeliveryMethodByIdAsync(Guid id);
+        /// <summary>
+        /// Retrieves an order using the specified PaymentIntentId.
+        /// </summary>
+        /// <param name="paymentIntentId">The PaymentIntent ID associated with the order.</param>
+        /// <returns>The order if found; otherwise, null.</returns>
+        Task<Order?> GetOrderByPaymentIntentIdAsync(string paymentIntentId);
+        /// <summary>
+        /// Deletes the specified order from the database.
+        /// </summary>
+        /// <param name="order">The order entity to delete.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        Task DeleteOrderAsync(Order order);
+
+
     }
 }

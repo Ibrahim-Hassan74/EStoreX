@@ -32,6 +32,8 @@ namespace EStoreX.Core
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            services.AddScoped<IPaymentService, PaymentService>();
+
             services.AddScoped<IOrderService, OrderService>();
 
             // JWT

@@ -73,7 +73,8 @@ namespace EStoreX.Core.Services
 
             ApplicationUser user = new ApplicationUser()
             {
-                UserName = registerDTO.UserName,
+                DisplayName = registerDTO.UserName,
+                UserName = registerDTO.Email,
                 Email = registerDTO.Email,
                 PhoneNumber = registerDTO.Phone
             };
@@ -102,7 +103,7 @@ namespace EStoreX.Core.Services
                 StatusCode = 200
             };
         }
-
+        /// <inheritdoc/>
         public async Task<AuthenticationResponse> LoginAsync(LoginDTO loginDTO)
         {
             if (loginDTO == null)
@@ -625,7 +626,7 @@ namespace EStoreX.Core.Services
             var emailDTO = new EmailDTO(user.Email, "Confirm Your Email", html);
             await _emailSender.SendEmailAsync(emailDTO);
         }
-
+        /// <inheritdoc/>
         public async Task<bool> UpdateAddress(string? email, Address? address)
         {
             if (email is null || address is null)
@@ -639,7 +640,7 @@ namespace EStoreX.Core.Services
             }
             return await _unitOfWork.AuthenticationRepository.UpdateAddress(user.Id, address);
         }
-
+        /// <inheritdoc/>
         public async Task<ShippingAddressDTO?> GetAddress(string? email)
         {
             if (string.IsNullOrEmpty(email)) 

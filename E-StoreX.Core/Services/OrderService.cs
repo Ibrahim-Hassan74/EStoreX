@@ -9,9 +9,11 @@ namespace EStoreX.Core.Services
     public class OrderService : BaseService, IOrderService
     {
         private readonly IOrderRepository _orderRepository;
-        public OrderService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        private readonly IPaymentService _paymentService;
+        public OrderService(IUnitOfWork unitOfWork, IMapper mapper, IPaymentService paymentService) : base(unitOfWork, mapper)
         {
             _orderRepository = _unitOfWork.OrderRepository;
+            _paymentService = paymentService;
         }
         /// <inheritdoc/>
         public async Task<OrderResponse> CreateOrdersAsync(OrderAddRequest order, string buyerEmail)
@@ -52,7 +54,15 @@ namespace EStoreX.Core.Services
             var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
             var shippingAddress = _mapper.Map<ShippingAddress>(order.ShippingAddress);
 
-            var orderEntity = new Order(buyerEmail, subTotal, shippingAddress, deliveryMethod, orderItems);
+            var existingOrder = await _orderRepository.GetOrderByPaymentIntentIdAsync(basket.PaymentIntentId);
+
+            if (existingOrder is not null)
+            {
+                await _orderRepository.DeleteOrderAsync(existingOrder);
+                await _paymentService.CreateOrUpdatePaymentIntentAsync(basket.Id, deliveryMethod.Id);
+            }
+
+            var orderEntity = new Order(buyerEmail, subTotal, shippingAddress, deliveryMethod, orderItems, basket.PaymentIntentId);
             var createdOrder = await _orderRepository.CreateOrderAsync(orderEntity);
 
             await _unitOfWork.CustomerBasketRepository.DeleteBasketAsync(order.BasketId);

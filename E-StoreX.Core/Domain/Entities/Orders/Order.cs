@@ -4,13 +4,14 @@ namespace EStoreX.Core.Domain.Entities.Orders
 {
     public class Order : BaseEntity<Guid>
     {
-        public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, IEnumerable<OrderItem> orderItems)
+        public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, IEnumerable<OrderItem> orderItems, string paymentIntentId)
         {
             BuyerEmail = buyerEmail;
             SubTotal = subTotal;
             ShippingAddress = shippingAddress;
             DeliveryMethod = deliveryMethod;
             OrderItems = orderItems;
+            PaymentIntentId = paymentIntentId;
         }
         public Order() { }
         public string BuyerEmail { get; set; }
@@ -19,6 +20,7 @@ namespace EStoreX.Core.Domain.Entities.Orders
         public DeliveryMethod DeliveryMethod { get; set; }
         public IEnumerable<OrderItem> OrderItems { get; set; }
         public DateTime OrderDate { get; set; } = DateTime.Now;
+        public string PaymentIntentId { get; set; }
         public Status Status { get; set; } = Status.Pending;
         public decimal GetTotal()
         {

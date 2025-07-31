@@ -46,8 +46,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: ip,
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 8,
-                Window = TimeSpan.FromSeconds(30),
+                PermitLimit = 30,
+                Window = TimeSpan.FromSeconds(20),
                 AutoReplenishment = true,
                 QueueLimit = 0
             });
@@ -123,7 +123,7 @@ builder.Services.ConfigureCore(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
+//if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();

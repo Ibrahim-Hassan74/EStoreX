@@ -3,6 +3,8 @@
     public class CustomerBasket : BaseEntity<string>
     {
         public List<BasketItem> BasketItems { get; set; } = new List<BasketItem>();
+        public string PaymentIntentId { get; set; }
+        public string ClientSecret { get; set; }
         public CustomerBasket()
         {
         }

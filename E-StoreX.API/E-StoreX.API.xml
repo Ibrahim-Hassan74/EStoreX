@@ -108,6 +108,19 @@
             The user must be authenticated for this operation.
             </remarks>
         </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.GetAddress">
+            <summary>
+            Retrieves the shipping address of the currently authenticated user.
+            </summary>
+            <remarks>
+            Requires the user to be authenticated. The user's email is extracted from the JWT claims,
+            and used to fetch the associated shipping address from the authentication service.
+            </remarks>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the shipping address on success (HTTP 200),
+            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if the address could not be retrieved (HTTP 400).
+            </returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
             <summary>
             API controller for managing customer baskets.

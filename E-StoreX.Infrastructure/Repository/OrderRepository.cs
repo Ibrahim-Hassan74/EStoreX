@@ -55,5 +55,18 @@ namespace EStoreX.Infrastructure.Repository
         {
             return await _context.DeliveryMethods.FirstOrDefaultAsync(dm => dm.Id == id);
         }
+        /// <inheritdoc />
+        public async Task<Order?> GetOrderByPaymentIntentIdAsync(string paymentIntentId)
+        {
+            return await _context.Orders
+                .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
+        }
+        /// <inheritdoc />
+        public async Task DeleteOrderAsync(Order order)
+        {
+            _context.Orders.Remove(order);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

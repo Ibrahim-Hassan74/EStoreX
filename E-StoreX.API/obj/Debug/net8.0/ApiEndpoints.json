@@ -59,6 +59,16 @@
   },
   {
     "ContainingType": "E_StoreX.API.Controllers.AccountController",
+    "Method": "GetAddress",
+    "RelativePath": "api/Account/get-address",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.AccountController",
     "Method": "PostLogin",
     "RelativePath": "api/Account/login",
     "HttpMethod": "POST",

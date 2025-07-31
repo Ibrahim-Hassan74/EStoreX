@@ -273,6 +273,20 @@
         }
       }
     },
+    "/api/Account/get-address": {
+      "get": {
+        "tags": [
+          "Account"
+        ],
+        "summary": "Retrieves the shipping address of the currently authenticated user.",
+        "description": "Requires the user to be authenticated. The user's email is extracted from the JWT claims,\r\nand used to fetch the associated shipping address from the authentication service.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Baskets/{id}": {
       "get": {
         "tags": [
