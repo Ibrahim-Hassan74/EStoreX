@@ -136,11 +136,13 @@ app.UseRateLimiter();
 
 app.UseExceptionHandlingMiddleware();
 
+app.UseHtmlRewriteMiddleware();
+
+app.UseStaticFiles();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
-
-app.UseStaticFiles();
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 

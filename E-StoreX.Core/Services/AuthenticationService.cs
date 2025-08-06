@@ -325,15 +325,17 @@ namespace EStoreX.Core.Services
 
             //string resetLink = $"{frontendBaseUrl}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
 
-            string baseDeepLink = "https://estorex/reset-password";
+            //string baseDeepLink = "https://estorex/reset-password";
 
-            string dynamicLinkPrefix = "https://estorex.page.link";
+            //string dynamicLinkPrefix = "https://estorex.page.link";
 
             var encodedToken = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(token));
 
-            string fullLink = $"{baseDeepLink}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+            //string fullLink = $"{baseDeepLink}?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
 
-            string resetLink = $"{dynamicLinkPrefix}/?link={Uri.EscapeDataString(fullLink)}&apn=com.yourapp.package&ibi=com.yourapp.ios";
+            //string resetLink = $"{dynamicLinkPrefix}/?link={Uri.EscapeDataString(fullLink)}&apn=com.yourapp.package&ibi=com.yourapp.ios";
+
+            string resetLink = $"{request.Scheme}://{request.Host}/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
 
 
             string html = EmailTemplateService.GetPasswordResetEmailTemplate(resetLink);

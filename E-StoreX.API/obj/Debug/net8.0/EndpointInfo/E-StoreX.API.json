@@ -722,6 +722,20 @@
         }
       }
     },
+    "/api/Payments/webhook": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Handles incoming Stripe webhook events to update the order status based on the payment result.",
+        "description": "This endpoint is called by Stripe to notify about payment intent status changes such as success or failure.\r\nIt processes the webhook payload, validates the Stripe signature, and updates the related order in the system.\r\n\r\nExpected events:\r\n<list type=\"bullet\"><item><term>payment_intent.succeeded</term><description>Updates the order status to PaymentReceived.</description></item><item><term>payment_intent.payment_failed</term><description>Updates the order status to PaymentFailed.</description></item></list>",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Products": {
       "get": {
         "tags": [

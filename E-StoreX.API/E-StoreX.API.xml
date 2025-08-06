@@ -295,6 +295,16 @@
             Typically called before placing an order to prepare or update the payment.
             </remarks>
         </member>
+        <member name="M:E_StoreX.API.Controllers.PaymentsController.#ctor(EStoreX.Core.ServiceContracts.IPaymentService,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.StripeSettings},Microsoft.Extensions.Logging.ILogger{E_StoreX.API.Controllers.PaymentsController})">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.PaymentsController"/> class.
+            Handles payment operations including creating payment intents and processing webhooks.
+            </summary>
+            <param name="paymentService">Service for handling payment-related business logic.</param>
+            <param name="options">Stripe configuration options (e.g., signing secret).</param>
+            <param name="logger">Logger instance for logging payment events and errors.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown if Stripe signing secret is not provided in configuration.</exception>
+        </member>
         <member name="M:E_StoreX.API.Controllers.PaymentsController.CreateOrUpdatePaymentIntent(System.String,System.Nullable{System.Guid})">
             <summary>
             Creates or updates a Stripe payment intent for the specified basket and delivery method.
@@ -310,6 +320,31 @@
             <remarks>
             This endpoint is called by the frontend before initiating payment through Stripe.
             </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.PaymentsController.UpdateStatusWithStripe">
+            <summary>
+            Handles incoming Stripe webhook events to update the order status based on the payment result.
+            </summary>
+            <remarks>
+            This endpoint is called by Stripe to notify about payment intent status changes such as success or failure.
+            It processes the webhook payload, validates the Stripe signature, and updates the related order in the system.
+            
+            Expected events:
+            <list type="bullet">
+              <item>
+                <term>payment_intent.succeeded</term>
+                <description>Updates the order status to PaymentReceived.</description>
+              </item>
+              <item>
+                <term>payment_intent.payment_failed</term>
+                <description>Updates the order status to PaymentFailed.</description>
+              </item>
+            </list>
+            </remarks>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> (200) if the webhook is processed successfully.
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> (400) if there's an error validating or processing the event.
+            </returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.ProductsController">
             <summary>
@@ -365,6 +400,36 @@
         <member name="M:E_StoreX.API.Middleware.ExceptionHandlingMiddlewareExtensions.UseExceptionHandlingMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
             <summary>
             
+            </summary>
+            <param name="builder"></param>
+            <returns></returns>
+        </member>
+        <member name="T:E_StoreX.API.Middleware.HtmlRewriteMiddleware">
+            <summary>
+            html rewrite middleware
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Middleware.HtmlRewriteMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+            <summary>
+            html rewrite middleware constructor
+            </summary>
+            <param name="next">call next middleware</param>
+        </member>
+        <member name="M:E_StoreX.API.Middleware.HtmlRewriteMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
+            <summary>
+            html rewrite middleware invoke method
+            </summary>
+            <param name="context">current context</param>
+            <returns>call next</returns>
+        </member>
+        <member name="T:E_StoreX.API.Middleware.HtmlRewriteMiddlewareExtensions">
+            <summary>
+            html rewrite middleware extensions
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Middleware.HtmlRewriteMiddlewareExtensions.UseHtmlRewriteMiddleware(Microsoft.AspNetCore.Builder.IApplicationBuilder)">
+            <summary>
+            html rewrite middleware extension method
             </summary>
             <param name="builder"></param>
             <returns></returns>

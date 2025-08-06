@@ -409,6 +409,16 @@
     ]
   },
   {
+    "ContainingType": "E_StoreX.API.Controllers.PaymentsController",
+    "Method": "UpdateStatusWithStripe",
+    "RelativePath": "api/Payments/webhook",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "E_StoreX.API.Controllers.ProductsController",
     "Method": "GetAllProducts",
     "RelativePath": "api/Products",
