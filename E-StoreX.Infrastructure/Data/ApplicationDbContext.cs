@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.Entities.Product;
+using EStoreX.Core.Domain.Entities;
 using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -26,5 +27,6 @@ namespace EStoreX.Infrastructure.Data
         public virtual DbSet<DeliveryMethod> DeliveryMethods { get; set; }
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<OrderItem> OrderItems { get; set; }
+        public virtual DbSet<ApiClient> ApiClients { get; set; }
     }
 }

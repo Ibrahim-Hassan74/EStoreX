@@ -138,6 +138,8 @@ app.UseExceptionHandlingMiddleware();
 
 app.UseHtmlRewriteMiddleware();
 
+app.UseApiKeyMiddleware();
+
 app.UseStaticFiles();
 
 app.UseAuthentication();

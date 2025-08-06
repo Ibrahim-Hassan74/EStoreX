@@ -22,6 +22,8 @@ namespace EStoreX.Infrastructure.Repository
 
         public IAuthenticationRepository AuthenticationRepository { get; }
 
+        public IApiClientRepository ApiClientRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
             _context = context;
@@ -34,6 +36,7 @@ namespace EStoreX.Infrastructure.Repository
             CustomerBasketRepository = new CustomerBasketRepository(_redis);
             OrderRepository = new OrderRepository(_context);
             AuthenticationRepository = new AuthenticationRepository(_context);
+            ApiClientRepository = new ApiClientRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

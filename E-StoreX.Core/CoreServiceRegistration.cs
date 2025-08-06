@@ -37,6 +37,8 @@ namespace EStoreX.Core
 
             services.AddScoped<IOrderService, OrderService>();
 
+            services.AddScoped<IApiClientService, ApiClientService>();
+
             // JWT
             services.AddAuthentication(options =>
             {
