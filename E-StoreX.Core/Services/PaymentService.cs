@@ -1,7 +1,11 @@
 ﻿using EStoreX.Core.Domain.Entities;
+using EStoreX.Core.Domain.Entities.Orders;
+using EStoreX.Core.Domain.Options;
+using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Stripe;
 
 namespace EStoreX.Core.Services
@@ -9,20 +13,22 @@ namespace EStoreX.Core.Services
     public class PaymentService : IPaymentService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly IConfiguration _configuration;
-        public PaymentService(IUnitOfWork unitOfWork, IConfiguration configuration)
+        //private readonly IConfiguration _configuration;
+        private readonly StripeSettings _stripeSettings;
+        public PaymentService(IUnitOfWork unitOfWork, IOptions<StripeSettings> options)
         {
             _unitOfWork = unitOfWork;
-            _configuration = configuration;
+            //_configuration = configuration;
+            _stripeSettings = options.Value;
         }
-
+        /// <inheritdoc/>
         public async Task<CustomerBasket> CreateOrUpdatePaymentIntentAsync(string basketId, Guid? deliveryMethodId)
         {
             var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);
             if (basket is null)
                 throw new Exception($"Basket with ID {basketId} not found.");
 
-            StripeConfiguration.ApiKey = _configuration["StripeSetting:SecretKey"];
+            StripeConfiguration.ApiKey = _stripeSettings.SecretKey; // _configuration["StripeSetting:SecretKey"];
             decimal shippingPrice = 0m;
             if (deliveryMethodId.HasValue)
             {
@@ -33,7 +39,7 @@ namespace EStoreX.Core.Services
             foreach (var item in basket.BasketItems)
             {
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
-                if(product is null)
+                if (product is null)
                     throw new Exception($"Product with ID {item.Id} not found.");
                 item.Price = product.NewPrice;
             }
@@ -63,10 +69,28 @@ namespace EStoreX.Core.Services
             await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
             return basket;
         }
-
-        public Task<CustomerBasket> GetPaymentIntentAsync(string basketId)
+        /// <inheritdoc/>
+        public async Task<bool> UpdateOrderFailedAsync(string? paymentIntentId)
         {
-            throw new NotImplementedException();
+            var order = await _unitOfWork.OrderRepository.GetOrderByPaymentIntentIdAsync(paymentIntentId);
+            if (order is null) return false;
+
+            order.Status = Status.PaymentFailed;
+            await _unitOfWork.CompleteAsync();
+            return true;
         }
+        /// <inheritdoc/>
+        public async Task<bool> UpdateOrderSuccessAsync(string? paymentIntentId)
+        {
+            var order = await _unitOfWork.OrderRepository.GetOrderByPaymentIntentIdAsync(paymentIntentId);
+            if (order is null) return false;
+
+            order.Status = Status.PaymentReceived;
+            await _unitOfWork.CompleteAsync();
+            return true;
+        }
+
+
+
     }
 }

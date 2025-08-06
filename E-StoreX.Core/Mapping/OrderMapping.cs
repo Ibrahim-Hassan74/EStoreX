@@ -19,7 +19,9 @@ namespace EStoreX.Core.Mapping
                 .ForMember(dest => dest.Total, opt => opt.MapFrom(src => src.GetTotal()))
                 .ForMember(dest => dest.OrderItems, opt => opt.MapFrom(src => src.OrderItems))
                 .ForMember(dest => dest.DeliveryMethod, opt => opt.MapFrom(src => src.DeliveryMethod.Name))
-                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress));
+                .ForMember(dest => dest.ShippingAddress, opt => opt.MapFrom(src => src.ShippingAddress))
+                .ForMember(dest => dest.PaymentIntentId, opt => opt.MapFrom(src => src.PaymentIntentId));
+
             CreateMap<Address, ShippingAddressDTO>().ReverseMap();
         }
     }

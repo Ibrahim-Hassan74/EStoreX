@@ -672,6 +672,56 @@
         }
       }
     },
+    "/api/Payments": {
+      "post": {
+        "tags": [
+          "Payments"
+        ],
+        "summary": "Creates or updates a Stripe payment intent for the specified basket and delivery method.",
+        "description": "This endpoint is called by the frontend before initiating payment through Stripe.",
+        "parameters": [
+          {
+            "name": "basketId",
+            "in": "query",
+            "description": "The ID of the customer's basket. Cannot be null or empty.",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "deliveryMethodId",
+            "in": "query",
+            "description": "The ID of the selected delivery method. Optional.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentIntentDTO"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentIntentDTO"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentIntentDTO"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Products": {
       "get": {
         "tags": [
@@ -1202,6 +1252,20 @@
         },
         "additionalProperties": false
       },
+      "PaymentIntentDTO": {
+        "type": "object",
+        "properties": {
+          "paymentIntentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientSecret": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "PhotoResponse": {
         "type": "object",
         "properties": {
@@ -1430,6 +1494,10 @@
     {
       "name": "Orders",
       "description": "Controller responsible for handling order-related operations.\r\nRequires the user to be authenticated."
+    },
+    {
+      "name": "Payments",
+      "description": "Handles payment-related operations such as creating or updating Stripe payment intents."
     },
     {
       "name": "Products",

@@ -10,5 +10,6 @@ namespace EStoreX.Core.RepositoryContracts
         ICustomerBasketRepository CustomerBasketRepository { get; }
         IOrderRepository OrderRepository { get; }
         IAuthenticationRepository AuthenticationRepository { get; }
+        Task<int> CompleteAsync();
     }
 }

@@ -286,6 +286,31 @@
             </summary>
             <returns>A list of <see cref="T:EStoreX.Core.DTO.DeliveryMethodResponse"/> objects representing delivery options.</returns>
         </member>
+        <member name="T:E_StoreX.API.Controllers.PaymentsController">
+            <summary>
+            Handles payment-related operations such as creating or updating Stripe payment intents.
+            </summary>
+            <remarks>
+            This controller is secured with [Authorize], meaning all endpoints require authenticated users.
+            Typically called before placing an order to prepare or update the payment.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.PaymentsController.CreateOrUpdatePaymentIntent(System.String,System.Nullable{System.Guid})">
+            <summary>
+            Creates or updates a Stripe payment intent for the specified basket and delivery method.
+            </summary>
+            <param name="basketId">The ID of the customer's basket. Cannot be null or empty.</param>
+            <param name="deliveryMethodId">The ID of the selected delivery method. Optional.</param>
+            <returns>
+            Returns the updated <see cref="T:EStoreX.Core.Domain.Entities.CustomerBasket"/> including the client secret for Stripe payment.
+            Returns <c>BadRequest</c> if basketId is invalid.
+            Returns <c>NotFound</c> if the basket does not exist.
+            Returns <c>Ok</c> with the updated basket if successful.
+            </returns>
+            <remarks>
+            This endpoint is called by the frontend before initiating payment through Stripe.
+            </remarks>
+        </member>
         <member name="T:E_StoreX.API.Controllers.ProductsController">
             <summary>
             Controller for managing products in the E-StoreX application.

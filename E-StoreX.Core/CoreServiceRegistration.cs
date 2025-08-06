@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.ServiceContracts;
+﻿using EStoreX.Core.Domain.Options;
+using EStoreX.Core.ServiceContracts;
 using EStoreX.Core.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -57,6 +58,7 @@ namespace EStoreX.Core
             });
 
 
+            services.Configure<StripeSettings>(configuration.GetSection("StripeSetting"));
 
             return services;
         }

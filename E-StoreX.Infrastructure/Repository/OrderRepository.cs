@@ -56,8 +56,12 @@ namespace EStoreX.Infrastructure.Repository
             return await _context.DeliveryMethods.FirstOrDefaultAsync(dm => dm.Id == id);
         }
         /// <inheritdoc />
-        public async Task<Order?> GetOrderByPaymentIntentIdAsync(string paymentIntentId)
+        public async Task<Order?> GetOrderByPaymentIntentIdAsync(string? paymentIntentId)
         {
+            if (string.IsNullOrEmpty(paymentIntentId))
+            {
+                return null;
+            }
             return await _context.Orders
                 .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
         }

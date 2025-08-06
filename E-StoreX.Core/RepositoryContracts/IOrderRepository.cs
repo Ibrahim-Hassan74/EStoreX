@@ -46,7 +46,7 @@ namespace EStoreX.Core.RepositoryContracts
         /// </summary>
         /// <param name="paymentIntentId">The PaymentIntent ID associated with the order.</param>
         /// <returns>The order if found; otherwise, null.</returns>
-        Task<Order?> GetOrderByPaymentIntentIdAsync(string paymentIntentId);
+        Task<Order?> GetOrderByPaymentIntentIdAsync(string? paymentIntentId);
         /// <summary>
         /// Deletes the specified order from the database.
         /// </summary>

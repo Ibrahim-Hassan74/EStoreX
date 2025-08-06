@@ -35,5 +35,9 @@ namespace EStoreX.Infrastructure.Repository
             OrderRepository = new OrderRepository(_context);
             AuthenticationRepository = new AuthenticationRepository(_context);
         }
+        public async Task<int> CompleteAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
     }
 }
