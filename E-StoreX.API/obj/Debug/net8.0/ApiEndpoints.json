@@ -153,6 +153,32 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "E_StoreX.API.Controllers.ApiClientsController",
+    "Method": "RegisterClient",
+    "RelativePath": "api/ApiClients/register",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "EStoreX.Core.DTO.RegisterApiClientRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "EStoreX.Core.DTO.RegisterApiClientResponse",
+        "MediaTypes": [
+          "text/plain",
+          "application/json",
+          "text/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "E_StoreX.API.Controllers.BasketsController",
     "Method": "AddOrUpdateBasket",
     "RelativePath": "api/Baskets",

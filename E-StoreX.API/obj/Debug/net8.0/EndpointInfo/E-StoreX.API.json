@@ -287,6 +287,56 @@
         }
       }
     },
+    "/api/ApiClients/register": {
+      "post": {
+        "tags": [
+          "ApiClients"
+        ],
+        "summary": "Registers a new API client and returns its API key.",
+        "requestBody": {
+          "description": "Client name info.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterApiClientRequest"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterApiClientRequest"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterApiClientRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterApiClientResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterApiClientResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterApiClientResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Baskets/{id}": {
       "get": {
         "tags": [
@@ -1327,6 +1377,33 @@
         },
         "additionalProperties": false
       },
+      "RegisterApiClientRequest": {
+        "required": [
+          "clientName"
+        ],
+        "type": "object",
+        "properties": {
+          "clientName": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RegisterApiClientResponse": {
+        "type": "object",
+        "properties": {
+          "clientName": {
+            "type": "string",
+            "nullable": true
+          },
+          "apiKey": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "RegisterDTO": {
         "required": [
           "confirmPassword",
@@ -1488,6 +1565,10 @@
     {
       "name": "Account",
       "description": "Controller responsible for handling user authentication-related actions\r\nsuch as registration, login, email confirmation, and password reset for the E-StoreX API."
+    },
+    {
+      "name": "ApiClients",
+      "description": "api clients controller"
     },
     {
       "name": "Baskets",

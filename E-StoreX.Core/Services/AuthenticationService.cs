@@ -148,7 +148,10 @@ namespace EStoreX.Core.Services
 
             if (result.Succeeded)
             {
-                var tokenResponse = _jwtService.CreateJwtToken(user);
+                var tokenResponse = _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
+                user.RefreshToken = tokenResponse?.RefreshToken;
+                user.RefreshTokenExpirationDateTime = tokenResponse.RefreshTokenExpirationDateTime;
+                await _userManager.UpdateAsync(user);
                 tokenResponse.Success = true;
                 tokenResponse.Message = "Login successful.";
                 tokenResponse.StatusCode = 200;
@@ -295,7 +298,7 @@ namespace EStoreX.Core.Services
                 var tokenTimeStr = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
                 if (!string.IsNullOrEmpty(tokenTimeStr) && DateTime.TryParse(tokenTimeStr, out var tokenTime))
                 {
-                    if (DateTime.UtcNow < tokenTime.AddMinutes(30))
+                    if (DateTime.UtcNow < tokenTime.AddMinutes(5))
                     {
                         return new AuthenticationFailureResponse
                         {
@@ -422,7 +425,7 @@ namespace EStoreX.Core.Services
                 };
             }
 
-            if (DateTime.UtcNow > tokenTime.AddMinutes(30))
+            if (DateTime.UtcNow > tokenTime.AddMinutes(5))
             {
                 return new AuthenticationFailureResponse
                 {

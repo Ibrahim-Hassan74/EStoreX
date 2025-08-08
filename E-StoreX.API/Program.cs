@@ -129,6 +129,7 @@ var app = builder.Build();
     app.UseSwaggerUI();
 }
 
+app.UseApiKeyMiddleware();
 
 app.UseCors("AllowAllOrigins");
 
@@ -137,8 +138,6 @@ app.UseRateLimiter();
 app.UseExceptionHandlingMiddleware();
 
 app.UseHtmlRewriteMiddleware();
-
-app.UseApiKeyMiddleware();
 
 app.UseStaticFiles();
 

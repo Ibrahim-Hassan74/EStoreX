@@ -12,6 +12,15 @@ namespace E_StoreX.API.Middleware
     {
         private readonly RequestDelegate _next;
         private const string API_KEY_HEADER_NAME = "X-API-KEY";
+        private readonly List<string> allowedStaticPaths = new List<string>
+        {
+            "/reset-password", "/password-reset-success", "/password-reset-failed",
+            "/invalid-reset-link", "/index"
+        };
+        private readonly List<string> allowedStaticExtensions = new List<string>
+        {
+            ".html", ".js", ".css", ".png", ".jpg", ".jpeg", ".svg"
+        };
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiKeyMiddleware"/> class.
@@ -29,6 +38,27 @@ namespace E_StoreX.API.Middleware
         /// <param name="apiClientService">api client</param>
         public async Task InvokeAsync(HttpContext context, IApiClientService apiClientService)
         {
+            var path = context.Request.Path.Value?.ToLower();
+
+            if (allowedStaticPaths.Any(p => path.StartsWith(p)) ||
+                allowedStaticExtensions.Any(ext => path.EndsWith(ext)))
+            {
+                await _next(context);
+                return;
+            }
+
+            if (context.Request.Method == HttpMethods.Options)
+            {
+                await _next(context);
+                return;
+            }
+
+            if (context.Request.Path.StartsWithSegments("/favicon.ico"))
+            {
+                await _next(context);
+                return;
+            }
+
             if (!context.Request.Headers.TryGetValue(API_KEY_HEADER_NAME, out var extractedApiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
@@ -36,7 +66,7 @@ namespace E_StoreX.API.Middleware
                 return;
             }
 
-            if( string.IsNullOrWhiteSpace(extractedApiKey))
+            if (string.IsNullOrWhiteSpace(extractedApiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 await context.Response.WriteAsync("API Key cannot be empty.");
@@ -52,11 +82,9 @@ namespace E_StoreX.API.Middleware
                 return;
             }
 
-            // Optionally, you can store the client info in HttpContext.Items if needed later
-            //context.Items["ApiClient"] = client;
-
             await _next(context);
         }
+
     }
 
     // Extension method used to add the middleware to the HTTP request pipeline.
