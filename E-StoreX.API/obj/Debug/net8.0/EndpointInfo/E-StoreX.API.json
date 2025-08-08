@@ -637,6 +637,70 @@
         }
       }
     },
+    "/api/frontend/reset": {
+      "post": {
+        "tags": [
+          "FrontendProxy"
+        ],
+        "summary": "Acts as a proxy endpoint that forwards a password reset request from the frontend to the backend API.",
+        "description": "This method reads the backend API URL and API key from the configuration, builds the full URL using the\r\ncurrent HTTP request context, and forwards the request to the backend with the necessary headers.",
+        "requestBody": {
+          "description": "The password reset request body sent from the frontend.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDTO"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDTO"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResetPasswordDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/frontend/reset/verify": {
+      "get": {
+        "tags": [
+          "FrontendProxy"
+        ],
+        "summary": "Acts as a proxy endpoint that forwards a verify reset password request from the frontend to the backend API.",
+        "description": "This endpoint constructs the backend verification URL using the current request scheme and host, \r\nappends the API key in the headers, and relays the GET request with query parameters.",
+        "parameters": [
+          {
+            "name": "UserId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Token",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Orders": {
       "post": {
         "tags": [
@@ -1585,6 +1649,10 @@
     {
       "name": "Error",
       "description": ""
+    },
+    {
+      "name": "FrontendProxy",
+      "description": "Controller that acts as a proxy between the frontend and backend for password reset functionality."
     },
     {
       "name": "Orders",

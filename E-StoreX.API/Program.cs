@@ -121,6 +121,8 @@ builder.Services.ConfigureInfrastructure(builder.Configuration);
 
 builder.Services.ConfigureCore(builder.Configuration);
 
+builder.Services.AddHttpClient();
+
 var app = builder.Build();
 
 //if (app.Environment.IsDevelopment())

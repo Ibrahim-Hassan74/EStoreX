@@ -264,6 +264,63 @@
             
             </summary>
         </member>
+        <member name="T:E_StoreX.API.Controllers.FrontendProxyController">
+            <summary>
+            Controller that acts as a proxy between the frontend and backend for password reset functionality.
+            </summary>
+            <remarks>
+            This controller is useful when the frontend cannot directly call the backend API due to security restrictions,
+            such as the need to hide the API key.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.FrontendProxyController.#ctor(System.Net.Http.IHttpClientFactory,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.FrontendProxyController"/> class.
+            </summary>
+            <param name="httpClientFactory">The factory used to create <see cref="T:System.Net.Http.HttpClient"/> instances.</param>
+            <param name="configuration">The configuration provider used to access API settings.</param>
+            <param name="httpContextAccessor">
+            Provides access to the current HTTP context, allowing retrieval of request-specific data
+            such as the scheme, host, and path for constructing full URLs.
+            </param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.FrontendProxyController.ResetPasswordProxy(EStoreX.Core.DTO.ResetPasswordDTO)">
+            <summary>
+            Acts as a proxy endpoint that forwards a password reset request from the frontend to the backend API.
+            </summary>
+            <param name="request">The password reset request body sent from the frontend.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> that contains the response returned by the backend API.
+            Possible status codes include:
+            - 200 OK if the reset was successful,
+            - 4xx for client-side errors (e.g. invalid input, rate limits),
+            - 5xx for server errors or connectivity issues.
+            </returns>
+            <remarks>
+            This method reads the backend API URL and API key from the configuration, builds the full URL using the
+            current HTTP request context, and forwards the request to the backend with the necessary headers.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.FrontendProxyController.VerifyResetPassword(EStoreX.Core.DTO.VerifyResetPasswordDTO)">
+            <summary>
+            Acts as a proxy endpoint that forwards a verify reset password request from the frontend to the backend API.
+            </summary>
+            <param name="request">
+            A <see cref="T:EStoreX.Core.DTO.VerifyResetPasswordDTO"/> that contains the user's ID and the reset token.
+            These parameters are passed from the frontend via query string.
+            </param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> that contains the response from the backend.
+            Status codes returned:
+            - 200 OK: if the token is valid,
+            - 400 Bad Request: if the token is invalid or expired,
+            - 500 Internal Server Error: if the HTTP context is unavailable or another error occurs.
+            </returns>
+            <remarks>
+            This endpoint constructs the backend verification URL using the current request scheme and host, 
+            appends the API key in the headers, and relays the GET request with query parameters.
+            </remarks>
+        </member>
         <member name="T:E_StoreX.API.Controllers.OrdersController">
             <summary>
             Controller responsible for handling order-related operations.

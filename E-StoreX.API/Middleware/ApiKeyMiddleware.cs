@@ -38,22 +38,14 @@ namespace E_StoreX.API.Middleware
         /// <param name="apiClientService">api client</param>
         public async Task InvokeAsync(HttpContext context, IApiClientService apiClientService)
         {
+
             var path = context.Request.Path.Value?.ToLower();
 
             if (allowedStaticPaths.Any(p => path.StartsWith(p)) ||
-                allowedStaticExtensions.Any(ext => path.EndsWith(ext)))
-            {
-                await _next(context);
-                return;
-            }
-
-            if (context.Request.Method == HttpMethods.Options)
-            {
-                await _next(context);
-                return;
-            }
-
-            if (context.Request.Path.StartsWithSegments("/favicon.ico"))
+                allowedStaticExtensions.Any(ext => path.EndsWith(ext)) ||
+                context.Request.Method == HttpMethods.Options || 
+                context.Request.Path.StartsWithSegments("/api/frontend/reset") ||
+                context.Request.Path.StartsWithSegments("/favicon.ico"))
             {
                 await _next(context);
                 return;

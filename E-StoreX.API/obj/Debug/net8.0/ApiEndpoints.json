@@ -352,6 +352,43 @@
     "ReturnTypes": []
   },
   {
+    "ContainingType": "E_StoreX.API.Controllers.FrontendProxyController",
+    "Method": "ResetPasswordProxy",
+    "RelativePath": "api/frontend/reset",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "EStoreX.Core.DTO.ResetPasswordDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "E_StoreX.API.Controllers.FrontendProxyController",
+    "Method": "VerifyResetPassword",
+    "RelativePath": "api/frontend/reset/verify",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "UserId",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Token",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
     "ContainingType": "E_StoreX.API.Controllers.OrdersController",
     "Method": "CreateOrder",
     "RelativePath": "api/Orders",
