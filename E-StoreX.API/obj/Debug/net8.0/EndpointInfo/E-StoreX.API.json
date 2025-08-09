@@ -1623,8 +1623,28 @@
         },
         "additionalProperties": false
       }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+        "name": "Authorization",
+        "in": "header"
+      },
+      "X-API-KEY": {
+        "type": "apiKey",
+        "description": "API Key needed to access the endpoints.",
+        "name": "X-API-KEY",
+        "in": "header"
+      }
     }
   },
+  "security": [
+    {
+      "Bearer": [ ],
+      "X-API-KEY": [ ]
+    }
+  ],
   "tags": [
     {
       "name": "Account",

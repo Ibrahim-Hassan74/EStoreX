@@ -1,4 +1,4 @@
-using E_StoreX.API.Helper;
+﻿using E_StoreX.API.Helper;
 using E_StoreX.API.Middleware;
 using EStoreX.API.Filters;
 using EStoreX.Core;
@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.OpenApi.Models;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -105,12 +106,55 @@ builder.Services.Configure<EmailSetting>(builder.Configuration.GetSection("Email
 
 
 builder.Services.AddEndpointsApiExplorer();
+
 builder.Services.AddSwaggerGen(options =>
 {
     options.IncludeXmlComments(
         System.IO.Path.Combine(System.AppContext.BaseDirectory, "E-StoreX.API.xml"),
         includeControllerXmlComments: true
     );
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer {token}'",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    options.AddSecurityDefinition("X-API-KEY", new OpenApiSecurityScheme
+    {
+        Description = "API Key needed to access the endpoints.",
+        Name = "X-API-KEY",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                        }
+                    },
+                    new string[] {}
+                },
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "X-API-KEY"
+                        }
+                    },
+                    new string[] {}
+                }
+            });
 });
 
 builder.Services.AddSingleton<IFileProvider>(
