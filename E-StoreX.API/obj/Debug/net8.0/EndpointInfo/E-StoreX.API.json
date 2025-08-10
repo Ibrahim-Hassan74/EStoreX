@@ -1316,6 +1316,14 @@
               "$ref": "#/components/schemas/BasketItem"
             },
             "nullable": true
+          },
+          "paymentIntentId": {
+            "type": "string",
+            "nullable": true
+          },
+          "clientSecret": {
+            "type": "string",
+            "nullable": true
           }
         },
         "additionalProperties": false
