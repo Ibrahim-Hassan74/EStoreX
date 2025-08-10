@@ -5,15 +5,8 @@ namespace EStoreX.Core.RepositoryContracts
     /// <summary>
     /// Represents the data access contract for managing orders.
     /// </summary>
-    public interface IOrderRepository
+    public interface IOrderRepository : IGenericRepository<Order>
     {
-        /// <summary>
-        /// Persists a new order to the database.
-        /// </summary>
-        /// <param name="order">The order to create.</param>
-        /// <returns>The created order entity.</returns>
-        Task<Order> CreateOrderAsync(Order order);
-
         /// <summary>
         /// Retrieves all orders for a specific buyer.
         /// </summary>
@@ -47,13 +40,5 @@ namespace EStoreX.Core.RepositoryContracts
         /// <param name="paymentIntentId">The PaymentIntent ID associated with the order.</param>
         /// <returns>The order if found; otherwise, null.</returns>
         Task<Order?> GetOrderByPaymentIntentIdAsync(string? paymentIntentId);
-        /// <summary>
-        /// Deletes the specified order from the database.
-        /// </summary>
-        /// <param name="order">The order entity to delete.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        Task DeleteOrderAsync(Order order);
-
-
     }
 }

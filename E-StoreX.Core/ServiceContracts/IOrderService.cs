@@ -35,5 +35,10 @@ namespace EStoreX.Core.ServiceContracts
         /// </summary>
         /// <returns>List of available delivery method responses.</returns>
         Task<IEnumerable<DeliveryMethodResponse>> GetDeliveryMethodAsync();
+        /// <summary>
+        /// Retrieves all orders in the system, regardless of the user.
+        /// </summary>
+        /// <returns>All Orders</returns>
+        Task<IEnumerable<OrderResponse>> GetAllOrders();
     }
 }

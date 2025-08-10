@@ -121,26 +121,117 @@
             or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if the address could not be retrieved (HTTP 400).
             </returns>
         </member>
-        <member name="T:E_StoreX.API.Controllers.ApiClientsController">
+        <member name="T:E_StoreX.API.Controllers.Admin.AdminControllerBase">
+            <summary>
+            Abstract base controller for admin-related operations.
+            </summary>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.ApiClientsController">
             <summary>
             api clients controller  
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ApiClientsController.#ctor(EStoreX.Core.Services.IApiClientService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(EStoreX.Core.Services.IApiClientService)">
             <summary>
-            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.ApiClientsController"/> class with the specified API client
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.ApiClientsController"/> class with the specified API client
             service.
             </summary>
             <remarks>— This constructor is typically used by dependency injection to provide the required
             service for API client management.</remarks>
             <param name="clientService">The service used to manage API client data and operations. Cannot be <c>null</c>.</param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ApiClientsController.RegisterClient(EStoreX.Core.DTO.RegisterApiClientRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RegisterClient(EStoreX.Core.DTO.RegisterApiClientRequest)">
             <summary>
             Registers a new API client and returns its API key.
             </summary>
             <param name="request">Client name info.</param>
             <returns>Client name and API key.</returns>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.CategoriesController">
+            <summary>
+            Controller for managing product categories in the E-StoreX application.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
+            <summary>
+            Constructor for CategoriesController.
+            </summary>
+            <param name="categoriesService"></param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.CreateCategory(EStoreX.Core.DTO.CategoryRequest)">
+            <summary>
+            Creates a new category in the database.
+            </summary>
+            <param name="categoryDTO">categoryDTO object</param>
+            <returns>Category created</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.UpdateCategory(System.Guid,EStoreX.Core.DTO.UpdateCategoryDTO)">
+            <summary>
+            Updates an existing category in the database.
+            </summary>
+            <param name="Id">category Id</param>
+            <param name="categoryDTO">the new value for category object</param>
+            <returns></returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.DeleteCategory(System.Guid)">
+            <summary>
+            Deletes a category with the specified Id from the database.
+            </summary>
+            <param name="Id">Category Id</param>
+            <returns></returns>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.OrdersController">
+            <summary>
+            Provides functionality for managing and processing orders within the administrative context.
+            </summary>
+            <remarks>This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended for use in
+            administrative scenarios where order-related operations are required. It serves as a base for implementing
+            actions related to order management.</remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.#ctor(EStoreX.Core.ServiceContracts.IOrderService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.OrdersController"/> class with the specified order service.
+            </summary>
+            <param name="orderService">The service used to manage order-related operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.GetOrders">
+            <summary>
+            Retrieves all orders from the system.
+            </summary>
+            <returns>All orders</returns>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.ProductsController">
+            <summary>
+            products controller for admin operations in the E-StoreX application.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
+            <summary>
+            Constructor for ProductsController.
+            </summary>
+            <param name="productsService"></param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.CreateProduct(EStoreX.Core.DTO.ProductAddRequest)">
+            <summary>
+            Create new product in database
+            </summary>
+            <param name="productRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.UpdateProduct(System.Guid,EStoreX.Core.DTO.ProductUpdateRequest)">
+            <summary>
+            Updates an existing product in the database.
+            </summary>
+            <param name="id"></param>
+            <param name="productUpdateRequest"></param>
+            <returns></returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.DeleteProduct(System.Guid)">
+            <summary>
+            delete product from database
+            </summary>
+            <param name="id">product Id</param>
+            <returns>ok / NotFound</returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
             <summary>
@@ -226,28 +317,6 @@
             </summary>
             <param name="Id">Category Id</param>
             <returns>Category with Id or BadRequest</returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.CreateCategory(EStoreX.Core.DTO.CategoryRequest)">
-            <summary>
-            Creates a new category in the database.
-            </summary>
-            <param name="categoryDTO">categoryDTO object</param>
-            <returns>Category created</returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.UpdateCategory(System.Guid,EStoreX.Core.DTO.UpdateCategoryDTO)">
-            <summary>
-            Updates an existing category in the database.
-            </summary>
-            <param name="Id">category Id</param>
-            <param name="categoryDTO">the new value for category object</param>
-            <returns></returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.DeleteCategory(System.Guid)">
-            <summary>
-            Deletes a category with the specified Id from the database.
-            </summary>
-            <param name="Id">Category Id</param>
-            <returns></returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.CustomControllerBase">
             <summary>
@@ -447,28 +516,6 @@
             </summary>
             <param name="Id">Product Id</param>
             <returns>Product or NotFound</returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.CreateProduct(EStoreX.Core.DTO.ProductAddRequest)">
-            <summary>
-            Create new product in database
-            </summary>
-            <param name="productRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.UpdateProduct(System.Guid,EStoreX.Core.DTO.ProductUpdateRequest)">
-            <summary>
-            Updates an existing product in the database.
-            </summary>
-            <param name="id"></param>
-            <param name="productUpdateRequest"></param>
-            <returns></returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.DeleteProduct(System.Guid)">
-            <summary>
-            delete product from database
-            </summary>
-            <param name="id">product Id</param>
-            <returns>ok / NotFound</returns>
         </member>
         <member name="T:E_StoreX.API.Middleware.ApiKeyMiddleware">
             <summary>

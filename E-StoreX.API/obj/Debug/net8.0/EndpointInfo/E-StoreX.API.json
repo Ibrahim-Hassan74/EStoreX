@@ -287,7 +287,7 @@
         }
       }
     },
-    "/api/ApiClients/register": {
+    "/api/admin/ApiClients/register": {
       "post": {
         "tags": [
           "ApiClients"
@@ -490,7 +490,34 @@
             "description": "OK"
           }
         }
-      },
+      }
+    },
+    "/api/Categories/{Id}": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "Retrieve category with specific Id",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Category Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/Categories": {
       "post": {
         "tags": [
           "Categories"
@@ -523,30 +550,7 @@
         }
       }
     },
-    "/api/Categories/{Id}": {
-      "get": {
-        "tags": [
-          "Categories"
-        ],
-        "summary": "Retrieve category with specific Id",
-        "parameters": [
-          {
-            "name": "Id",
-            "in": "path",
-            "description": "Category Id",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      },
+    "/api/admin/Categories/{Id}": {
       "put": {
         "tags": [
           "Categories"
@@ -786,6 +790,19 @@
         }
       }
     },
+    "/api/admin/Orders": {
+      "get": {
+        "tags": [
+          "Orders"
+        ],
+        "summary": "Retrieves all orders from the system.",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
     "/api/Payments": {
       "post": {
         "tags": [
@@ -957,7 +974,51 @@
             }
           }
         }
-      },
+      }
+    },
+    "/api/Products/{Id}": {
+      "get": {
+        "tags": [
+          "Products"
+        ],
+        "summary": "Retrieves a product by its ID.",
+        "parameters": [
+          {
+            "name": "Id",
+            "in": "path",
+            "description": "Product Id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/admin/Products": {
       "post": {
         "tags": [
           "Products"
@@ -1059,49 +1120,7 @@
         }
       }
     },
-    "/api/Products/{Id}": {
-      "get": {
-        "tags": [
-          "Products"
-        ],
-        "summary": "Retrieves a product by its ID.",
-        "parameters": [
-          {
-            "name": "Id",
-            "in": "path",
-            "description": "Product Id",
-            "required": true,
-            "schema": {
-              "type": "string",
-              "format": "uuid"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponse"
-                }
-              },
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponse"
-                }
-              },
-              "text/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ProductResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/api/Products/{id}": {
+    "/api/admin/Products/{id}": {
       "put": {
         "tags": [
           "Products"
@@ -1659,10 +1678,6 @@
       "description": "Controller responsible for handling user authentication-related actions\r\nsuch as registration, login, email confirmation, and password reset for the E-StoreX API."
     },
     {
-      "name": "ApiClients",
-      "description": "api clients controller"
-    },
-    {
       "name": "Baskets",
       "description": "API controller for managing customer baskets."
     },
@@ -1693,6 +1708,10 @@
     {
       "name": "Products",
       "description": "Controller for managing products in the E-StoreX application."
+    },
+    {
+      "name": "ApiClients",
+      "description": "api clients controller"
     }
   ]
 }

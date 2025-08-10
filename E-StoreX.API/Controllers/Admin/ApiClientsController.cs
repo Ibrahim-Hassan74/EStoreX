@@ -3,13 +3,12 @@ using EStoreX.Core.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace E_StoreX.API.Controllers
+namespace E_StoreX.API.Controllers.Admin
 {
     /// <summary>
     /// api clients controller  
     /// </summary>
-    [Authorize(Roles = "Admin")]
-    public class ApiClientsController : CustomControllerBase
+    public class ApiClientsController : AdminControllerBase
     {
         private readonly IApiClientService _clientService;
         /// <summary>

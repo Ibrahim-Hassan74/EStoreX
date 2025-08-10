@@ -19,18 +19,20 @@ namespace EStoreX.Core.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSenderService _emailSender;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtService _jwtService;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender,
             SignInManager<ApplicationUser> signInManager,
-            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper, RoleManager<ApplicationRole> roleManager) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
             _jwtService = jwtService;
+            _roleManager = roleManager;
         }
         /// <inheritdoc/>
         public async Task<AuthenticationResponse> RegisterAsync(RegisterDTO registerDTO)
@@ -142,13 +144,11 @@ namespace EStoreX.Core.Services
                 };
             }
 
-
-
             var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, loginDTO.RememberMe, true);
 
             if (result.Succeeded)
             {
-                var tokenResponse = _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
+                var tokenResponse = await _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
                 user.RefreshToken = tokenResponse?.RefreshToken;
                 user.RefreshTokenExpirationDateTime = tokenResponse.RefreshTokenExpirationDateTime;
                 await _userManager.UpdateAsync(user);
@@ -572,7 +572,7 @@ namespace EStoreX.Core.Services
                 };
             }
 
-            var authResponse = _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
+            var authResponse = await _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
 
             // Rotate refresh token
             user.RefreshToken = authResponse?.RefreshToken;
@@ -648,7 +648,7 @@ namespace EStoreX.Core.Services
         /// <inheritdoc/>
         public async Task<ShippingAddressDTO?> GetAddress(string? email)
         {
-            if (string.IsNullOrEmpty(email)) 
+            if (string.IsNullOrEmpty(email))
                 return null;
             var user = await _userManager.FindByEmailAsync(email);
             if (user is null) return null;

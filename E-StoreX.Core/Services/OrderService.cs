@@ -58,12 +58,12 @@ namespace EStoreX.Core.Services
 
             if (existingOrder is not null)
             {
-                await _orderRepository.DeleteOrderAsync(existingOrder);
+                await _orderRepository.DeleteAsync(existingOrder.Id);
                 await _paymentService.CreateOrUpdatePaymentIntentAsync(basket.Id, deliveryMethod.Id);
             }
 
             var orderEntity = new Order(buyerEmail, subTotal, shippingAddress, deliveryMethod, orderItems, basket.PaymentIntentId);
-            var createdOrder = await _orderRepository.CreateOrderAsync(orderEntity);
+            var createdOrder = await _orderRepository.AddAsync(orderEntity);
 
             await _unitOfWork.CustomerBasketRepository.DeleteBasketAsync(order.BasketId);
 
@@ -101,6 +101,16 @@ namespace EStoreX.Core.Services
             }
             var order = await _orderRepository.GetOrderByIdAsync(Id, buyerEmail);
             return _mapper.Map<OrderResponse>(order);
+        }
+        /// <inheritdoc/>
+        public async Task<IEnumerable<OrderResponse>> GetAllOrders()
+        {
+            var orders = await _orderRepository.GetAllAsync(sh => sh.ShippingAddress, oi => oi.OrderItems, dm => dm.DeliveryMethod);
+            if (orders == null || !orders.Any())
+            {
+                return Enumerable.Empty<OrderResponse>();
+            }
+            return _mapper.Map<IEnumerable<OrderResponse>>(orders);
         }
     }
 }

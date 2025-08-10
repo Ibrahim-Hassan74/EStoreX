@@ -1,6 +1,7 @@
 ﻿using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO;
 using EStoreX.Core.ServiceContracts;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -13,10 +14,12 @@ namespace EStoreX.Core.Services
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _configuration;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public JwtService(IConfiguration configuration)
+        public JwtService(IConfiguration configuration, UserManager<ApplicationUser> userManager)
         {
             _configuration = configuration;
+            _userManager = userManager;
         }
 
         /// <summary>
@@ -24,7 +27,7 @@ namespace EStoreX.Core.Services
         /// </summary>
         /// <param name="user">ApplicationUser object</param>
         /// <returns>AuthenticationResponse that includes token</returns>
-        public AuthenticationResponse CreateJwtToken(ApplicationUser user)
+        public async Task<AuthenticationResponse> CreateJwtToken(ApplicationUser user)
         {
             // Create a DateTime object representing the token expiration time by adding the number of minutes specified in the configuration to the current UTC time.
             DateTime expiration = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
@@ -47,6 +50,12 @@ namespace EStoreX.Core.Services
                 {
                     claims.Add(new Claim(JwtRegisteredClaimNames.Aud, aud));
                 }
+            }
+
+            var roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
 
             // Create a SymmetricSecurityKey object using the key specified in the configuration.
@@ -106,7 +115,8 @@ namespace EStoreX.Core.Services
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _configuration["Jwt:Issuer"],
                 ValidAudiences = _configuration.GetSection("Jwt:Audiences").Get<List<string>>(),
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]))
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"])),
+                RoleClaimType = ClaimTypes.Role
             };
 
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new JwtSecurityTokenHandler();

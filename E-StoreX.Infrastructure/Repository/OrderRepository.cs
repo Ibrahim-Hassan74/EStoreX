@@ -8,21 +8,13 @@ namespace EStoreX.Infrastructure.Repository
     /// <summary>
     /// Provides implementation for order data access using Entity Framework Core.
     /// </summary>
-    public class OrderRepository : IOrderRepository
+    public class OrderRepository : GenericRepository<Order>, IOrderRepository
     {
         private readonly ApplicationDbContext _context;
-        public OrderRepository(ApplicationDbContext context)
+        public OrderRepository(ApplicationDbContext context) : base(context)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
         }
-        /// <inheritdoc />
-        public async Task<Order> CreateOrderAsync(Order order)
-        {
-            await _context.Orders.AddAsync(order);
-            await _context.SaveChangesAsync();
-            return order;
-        }
-
         /// <inheritdoc />
         public async Task<IEnumerable<Order>> GetOrdersByBuyerEmailAsync(string buyerEmail)
         {
@@ -65,12 +57,5 @@ namespace EStoreX.Infrastructure.Repository
             return await _context.Orders
                 .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
         }
-        /// <inheritdoc />
-        public async Task DeleteOrderAsync(Order order)
-        {
-            _context.Orders.Remove(order);
-            await _context.SaveChangesAsync();
-        }
-
     }
 }

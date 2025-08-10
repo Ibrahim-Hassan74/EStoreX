@@ -6,7 +6,7 @@ namespace EStoreX.Core.ServiceContracts
 {
     public interface IJwtService
     {
-        AuthenticationResponse CreateJwtToken(ApplicationUser user);
+        Task<AuthenticationResponse> CreateJwtToken(ApplicationUser user);
         ClaimsPrincipal? GetPrincipalFromJwtToken(string? token);
     }
 }

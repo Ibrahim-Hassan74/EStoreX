@@ -1,7 +1,4 @@
-﻿using EStoreX.Core.DTO;
-using EStoreX.Core.RepositoryContracts;
-using EStoreX.Core.ServiceContracts;
-using Microsoft.AspNetCore.Http;
+﻿using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers
@@ -46,50 +43,6 @@ namespace E_StoreX.API.Controllers
                 return BadRequest();
 
             return Ok(category);
-        }
-
-        /// <summary>
-        /// Creates a new category in the database.
-        /// </summary>
-        /// <param name="categoryDTO">categoryDTO object</param>
-        /// <returns>Category created</returns>
-        [HttpPost]
-        public async Task<IActionResult> CreateCategory([FromBody] CategoryRequest categoryDTO)
-        {
-            var category = await _categoriesService.CreateCategoryAsync(categoryDTO);
-
-            return CreatedAtAction(nameof(GetCategoryById), new { Id = category.Id }, categoryDTO);
-        }
-
-        /// <summary>
-        /// Updates an existing category in the database.
-        /// </summary>
-        /// <param name="Id">category Id</param>
-        /// <param name="categoryDTO">the new value for category object</param>
-        /// <returns></returns>
-        [HttpPut("{Id:guid}")]
-        public async Task<IActionResult> UpdateCategory([FromRoute] Guid Id, [FromBody] UpdateCategoryDTO categoryDTO)
-        {
-            if (Id != categoryDTO.Id)
-                return BadRequest("Id mismatch");
-
-            var res = await _categoriesService.UpdateCategoryAsync(categoryDTO);
-
-            return NoContent();
-        }
-        /// <summary>
-        /// Deletes a category with the specified Id from the database.
-        /// </summary>
-        /// <param name="Id">Category Id</param>
-        /// <returns></returns>
-        [HttpDelete("{Id:guid}")]
-        public async Task<IActionResult> DeleteCategory(Guid Id)
-        {
-            var result = await _categoriesService.DeleteCategoryAsync(Id);
-            if (!result)
-                return BadRequest("Failed to delete category");
-
-            return NoContent();
         }
     }
 }

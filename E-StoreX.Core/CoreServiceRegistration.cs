@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using ServiceContracts;
+using System.Security.Claims;
 using System.Text;
 
 namespace EStoreX.Core
@@ -55,8 +56,14 @@ namespace EStoreX.Core
                     //ClockSkew = TimeSpan.Zero, // Prevents the default 5-minute clock drift tolerance when validating token expiration
                     ValidIssuer = configuration["Jwt:Issuer"],
                     ValidAudiences = configuration.GetSection("Jwt:Audiences").Get<List<string>>(),
+                    RoleClaimType = ClaimTypes.Role,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                 };
+            });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
             });
 
 

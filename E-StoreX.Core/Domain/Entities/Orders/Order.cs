@@ -24,7 +24,7 @@ namespace EStoreX.Core.Domain.Entities.Orders
         public Status Status { get; set; } = Status.Pending;
         public decimal GetTotal()
         {
-            return SubTotal + DeliveryMethod.Price;
+            return SubTotal + (DeliveryMethod?.Price ?? 0);
         }
     }
 }
