@@ -121,6 +121,14 @@ namespace ServiceContracts
         /// </returns>
         Task<ShippingAddressDTO?> GetAddress(string? email);
 
+        /// <summary>
+        /// Logs out the user by clearing their refresh token and signing them out of the application.
+        /// </summary>
+        /// <param name="email">The email of the user to log out. If null, only signs out without clearing refresh token.</param>
+        /// <returns>
+        /// An <see cref="AuthenticationResponse"/> indicating whether the logout operation was successful.
+        /// </returns>
+        Task<AuthenticationResponse> LogoutAsync(string? email);
 
     }
 }

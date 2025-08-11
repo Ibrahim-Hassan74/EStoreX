@@ -73,6 +73,14 @@ namespace EStoreX.Core
 
                 options.AddPolicy("AdminOrSuperAdmin", policy =>
                     policy.RequireRole("Admin", "SuperAdmin"));
+
+                options.AddPolicy("NotAuthorized", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                    {
+                        return !context.User.Identity.IsAuthenticated;
+                    });
+                });
             });
 
 

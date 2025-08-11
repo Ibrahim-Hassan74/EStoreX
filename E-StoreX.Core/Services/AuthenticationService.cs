@@ -659,5 +659,30 @@ namespace EStoreX.Core.Services
             if (address is null) return null;
             return _mapper.Map<ShippingAddressDTO>(address);
         }
+
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> LogoutAsync(string? email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    user.RefreshToken = null;
+                    user.RefreshTokenExpirationDateTime = DateTime.MinValue;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+
+            await _signInManager.SignOutAsync();
+
+            return new AuthenticationResponse
+            {
+                Success = true,
+                StatusCode = 200,
+                Message = "Logged out successfully."
+            };
+        }
+
     }
 }

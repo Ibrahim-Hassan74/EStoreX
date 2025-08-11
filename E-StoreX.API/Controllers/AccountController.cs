@@ -43,6 +43,7 @@ namespace E_StoreX.API.Controllers
         /// Returns <c>200 OK</c> if registration is successful, or <c>400/409</c> with details if it fails.
         /// </returns>
         [HttpPost("register")]
+        [Authorize("NotAuthorized")]
         public async Task<IActionResult> PostRegister([FromBody] RegisterDTO registerDTO)
         {
             var response = await _authService.RegisterAsync(registerDTO);
@@ -59,6 +60,7 @@ namespace E_StoreX.API.Controllers
         /// Returns a JWT token with <c>200 OK</c> on success or <c>401/404</c> with error details if authentication fails.
         /// </returns>
         [HttpPost("login")]
+        [Authorize("NotAuthorized")]
         public async Task<IActionResult> PostLogin([FromBody] LoginDTO loginDTO)
         {
             var response = await _authService.LoginAsync(loginDTO);
@@ -76,6 +78,7 @@ namespace E_StoreX.API.Controllers
         /// <c>400/404</c> if the token is invalid or user is not found.
         /// </returns>
         [HttpGet("confirm-email")]
+        [Authorize("NotAuthorized")]
         public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailDTO dto)
         {
             if (dto == null || string.IsNullOrEmpty(dto.UserId) || string.IsNullOrEmpty(dto.Token))
@@ -96,6 +99,7 @@ namespace E_StoreX.API.Controllers
         /// Returns <c>200 OK</c> if the reset link was sent successfully, or <c>400/429</c> with error details.
         /// </returns>
         [HttpPost("forgot-password")]
+        [Authorize("NotAuthorized")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
         {
             var response = await _authService.ForgotPasswordAsync(dto);
@@ -112,6 +116,7 @@ namespace E_StoreX.API.Controllers
         /// Returns <c>200 OK</c> if the token is valid or <c>400/404</c> if invalid/expired.
         /// </returns>
         [HttpGet("reset-password/verify")]
+        [Authorize("NotAuthorized")]
         public async Task<IActionResult> VerifyResetPassword([FromQuery] VerifyResetPasswordDTO dto)
         {
             var response = await _authService.VerifyResetPasswordTokenAsync(dto);
@@ -124,6 +129,7 @@ namespace E_StoreX.API.Controllers
         /// <param name="dto">Contains user ID, token, and new password details.</param>
         /// <returns>Returns a success or failure response based on token validity and password rules.</returns>
         [HttpPost("reset-password")]
+        [Authorize("NotAuthorized")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
         {
             var result = await _authService.ResetPasswordAsync(dto);
@@ -187,6 +193,24 @@ namespace E_StoreX.API.Controllers
             if (shippingAddress == null)
                 return BadRequest(new { message = "Failed to get address." });
             return Ok(shippingAddress);
+        }
+        /// <summary>
+        /// Logs out the currently authenticated user by clearing their refresh token 
+        /// and signing them out.
+        /// </summary>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the logout response status and message.
+        /// </returns>
+        /// <remarks>
+        /// Requires the user to be authenticated.
+        /// </remarks>
+        [HttpGet("logout")]
+        [Authorize]
+        public async Task<IActionResult> PostLogout()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            var response = await _authService.LogoutAsync(email);
+            return StatusCode(response.StatusCode, response);
         }
 
 
