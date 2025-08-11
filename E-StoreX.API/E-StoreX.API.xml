@@ -121,6 +121,18 @@
             or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if the address could not be retrieved (HTTP 400).
             </returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.AccountController.PostLogout">
+            <summary>
+            Logs out the currently authenticated user by clearing their refresh token 
+            and signing them out.
+            </summary>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the logout response status and message.
+            </returns>
+            <remarks>
+            Requires the user to be authenticated.
+            </remarks>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.AdminControllerBase">
             <summary>
             Abstract base controller for admin-related operations.

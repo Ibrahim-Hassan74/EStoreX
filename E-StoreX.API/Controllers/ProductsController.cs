@@ -46,7 +46,7 @@ namespace E_StoreX.API.Controllers
         public async Task<ActionResult<ProductResponse>> GetProductById(Guid Id)
         {
             var product = await _productsService.GetProductByIdAsync(Id);
-            return product is not null ? Ok(product) : NotFound();
+            return product is not null ? Ok(product) : NotFound(ApiResponseFactory.NotFound("Not Found Product or invalid product Id"));
         }
     }
 }

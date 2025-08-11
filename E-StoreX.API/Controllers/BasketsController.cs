@@ -29,7 +29,7 @@ namespace E_StoreX.API.Controllers
         public async Task<IActionResult> GetBasket(string id)
         {
             if (!Guid.TryParse(id, out _))
-                return BadRequest(new ResponseAPI(400, "Invalid Id format"));
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Id format"));
             var basket = await _basketService.GetBasketAsync(id);
             return Ok(basket == null ? new CustomerBasket() : basket);
         }
@@ -55,7 +55,7 @@ namespace E_StoreX.API.Controllers
         public async Task<IActionResult> DeleteBasket(string id)
         {
             if (!Guid.TryParse(id, out _))
-                return BadRequest(new ResponseAPI(400, "Invalid Id format"));
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Id format"));
 
             var result = await _basketService.DeleteBasketAsync(id);
             return result

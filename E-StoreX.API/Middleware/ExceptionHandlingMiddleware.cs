@@ -44,8 +44,10 @@ namespace E_StoreX.API.Middleware
                 httpContext.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 httpContext.Response.ContentType = "application/json";
                 var response = _host.IsDevelopment() ?
-                    new ApiExceptions((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace) :
-                    new ApiExceptions((int)HttpStatusCode.InternalServerError, ex.Message);
+                    ApiResponseFactory.InternalServerError(ex.Message, new List<string> { ex.StackTrace }) :
+                    ApiResponseFactory.InternalServerError(ex.Message);
+                    //new ApiExceptions((int)HttpStatusCode.InternalServerError, ex.Message, ex.StackTrace) :
+                    //new ApiExceptions((int)HttpStatusCode.InternalServerError, ex.Message);
 
                 var json = JsonSerializer.Serialize(response);
                 await httpContext.Response.WriteAsync(json);

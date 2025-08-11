@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using E_StoreX.API.Helper;
+using EStoreX.Core.DTO;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers
@@ -13,9 +15,9 @@ namespace E_StoreX.API.Controllers
         /// </summary>
         /// <returns>A 500 status code with a message indicating an internal server error.</returns>
         [HttpGet("error")]
-        public IActionResult GetError()
+        public ActionResult<ApiErrorResponse> GetError()
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, "Internal Server Error");
+            return ApiResponseFactory.InternalServerError("Internal Server Error");
         }
 
         /// <summary>
@@ -23,27 +25,27 @@ namespace E_StoreX.API.Controllers
         /// </summary>
         /// <returns>A 404 status code with a message indicating the resource was not found.</returns>
         [HttpGet("not-found")]
-        public IActionResult GetNotFound()
+        public ActionResult<ApiErrorResponse> GetNotFound()
         {
-            return NotFound("Resource not found");
+            return ApiResponseFactory.BadRequest("Resource not found");
         }
         ///  <summary>
         ///  Returns a 400 Bad Request response.
         ///  </summary>
         ///  <returns>A 400 status code with a message indicating the resource was bad-request</returns>
         [HttpGet("bad-request/{Id:guid}")]
-        public IActionResult GetBadRequest(Guid Id)
+        public ActionResult<ApiErrorResponse> GetBadRequest(Guid Id)
         {
-            return BadRequest($"Bad Request for Id: {Id}");
+            return ApiResponseFactory.BadRequest($"Bad Request for Id: {Id}");
         }
         ///  <summary>
         ///  Returns a 400 Bad Request response.
         ///  </summary>
         ///  <returns>A 400 status code with a message indicating the resource was bad-request</returns>
         [HttpGet("bad-request")]
-        public IActionResult GetBadRequest()
+        public ActionResult<ApiErrorResponse> GetBadRequest()
         {
-            return BadRequest();
+            return ApiResponseFactory.BadRequest();
         }
     }
 }

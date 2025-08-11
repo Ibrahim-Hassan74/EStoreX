@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Stripe;
 using Microsoft.Extensions.Options;
+using E_StoreX.API.Helper;
 
 namespace E_StoreX.API.Controllers
 {
@@ -57,16 +58,16 @@ namespace E_StoreX.API.Controllers
         {
             if (string.IsNullOrEmpty(basketId))
             {
-                return BadRequest("Basket ID cannot be null or empty.");
+                return BadRequest(ApiResponseFactory.BadRequest("Basket ID cannot be null or empty."));
             }
             if (deliveryMethodId.HasValue && deliveryMethodId.Value == Guid.Empty)
             {
-                return BadRequest("Invalid delivery method ID.");
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid delivery method ID."));
             }
             var basket = await _paymentService.CreateOrUpdatePaymentIntentAsync(basketId, deliveryMethodId);
             if (basket == null)
             {
-                return NotFound("Basket not found.");
+                return NotFound(ApiResponseFactory.NotFound("Basket not found."));
             }
             var paymentIntentDto = new PaymentIntentDTO
             {
@@ -144,7 +145,7 @@ namespace E_StoreX.API.Controllers
             catch (StripeException e)
             {
                 _logger.LogError(e, "Stripe webhook error.");
-                return BadRequest();
+                return BadRequest(ApiResponseFactory.BadRequest());
             }
         }
 

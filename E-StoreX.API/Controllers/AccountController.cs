@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities;
+using E_StoreX.API.Helper;
 using EStoreX.Core.DTO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -83,7 +84,7 @@ namespace E_StoreX.API.Controllers
         {
             if (dto == null || string.IsNullOrEmpty(dto.UserId) || string.IsNullOrEmpty(dto.Token))
             {
-                return BadRequest("Invalid confirmation data.");
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid confirmation data."));// BadRequest();
             }
             var response = await _authService.ConfirmEmailAsync(dto);
             return StatusCode(response.StatusCode, response);
@@ -170,7 +171,7 @@ namespace E_StoreX.API.Controllers
             bool ok = await _authService.UpdateAddress(email, address);
             if (ok)
                 return Ok(new { message = "Address updated successfully." });
-            return BadRequest(new { message = "Failed to update address." });
+            return BadRequest(ApiResponseFactory.BadRequest("Failed to update address."));
         }
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace E_StoreX.API.Controllers
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var shippingAddress = await _authService.GetAddress(email);
             if (shippingAddress == null)
-                return BadRequest(new { message = "Failed to get address." });
+                return BadRequest(ApiResponseFactory.BadRequest("Failed to get address." ));
             return Ok(shippingAddress);
         }
         /// <summary>

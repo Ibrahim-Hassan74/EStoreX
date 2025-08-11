@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.ServiceContracts;
+﻿using E_StoreX.API.Helper;
+using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers
@@ -40,7 +41,7 @@ namespace E_StoreX.API.Controllers
             var category = await _categoriesService.GetCategoryByIdAsync(Id);
 
             if (category is null)
-                return BadRequest();
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Category Id"));
 
             return Ok(category);
         }

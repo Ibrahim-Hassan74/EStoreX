@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.DTO;
+﻿using E_StoreX.API.Helper;
+using EStoreX.Core.DTO;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -39,7 +40,7 @@ namespace E_StoreX.API.Controllers
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
 
             if (string.IsNullOrWhiteSpace(email))
-                return BadRequest("User email not found in token.");
+                return BadRequest(ApiResponseFactory.BadRequest("User email not found in token."));
 
             var createdOrder = await _orderService.CreateOrdersAsync(order, email);
 
@@ -54,7 +55,7 @@ namespace E_StoreX.API.Controllers
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrWhiteSpace(email))
-                return NotFound();
+                return NotFound(ApiResponseFactory.NotFound("Invalid user credentials."));
             var orderResponse = await _orderService.GetAllOrdersAsync(email);
             return Ok(orderResponse);
         }
@@ -69,7 +70,7 @@ namespace E_StoreX.API.Controllers
         {
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             if (string.IsNullOrWhiteSpace(email))
-                return NotFound();
+                return NotFound(ApiResponseFactory.NotFound("Invalid user credentials."));
             var orderResponse = await _orderService.GetOrderByIdAsync(Id, email);
             return Ok(orderResponse);
         }

@@ -4,7 +4,6 @@ using EStoreX.API.Filters;
 using EStoreX.Core;
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.Domain.Options;
-using EStoreX.Core.DTO;
 using EStoreX.Infrastructure;
 using EStoreX.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -89,12 +88,7 @@ builder.Services.Configure<ApiBehaviorOptions>(options =>
             .Select(x => x.ErrorMessage)
             .ToList();
 
-        var response = new ApiErrorResponse
-        {
-            StatusCode = 400,
-            Message = "Validation failed.",
-            Errors = errors
-        };
+        var response = ApiResponseFactory.BadRequest("Validation failed.", errors);
 
         return new BadRequestObjectResult(response);
     };
