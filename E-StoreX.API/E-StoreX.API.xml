@@ -290,12 +290,12 @@
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AssignRole(EStoreX.Core.DTO.UpdateUserRoleDTO)">
             <summary>
-            Assign a role to a user SuperAdmin.
+            Assign a specified role to a user. Accessible only by Super Admin.
             </summary>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.RemoveRole(EStoreX.Core.DTO.UpdateUserRoleDTO)">
             <summary>
-            Remove a role from a user SuperAdmin.
+            Remove a specified role from a user. Accessible only by Super Admin.
             </summary>
         </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
