@@ -39,7 +39,7 @@ namespace EStoreX.Core.Services
                  new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()), //JWT unique ID
                  new Claim(JwtRegisteredClaimNames.Iat,
                     new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64), //Issued at (date and time of token generation)
-                 new Claim(ClaimTypes.NameIdentifier, user.UserName), //Unique name identifier of the user (Email)
+                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), //Unique name identifier of the user Id
                  new Claim(ClaimTypes.Email, user.Email) //Email of the user
              };
 

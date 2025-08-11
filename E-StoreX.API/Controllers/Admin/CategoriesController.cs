@@ -7,6 +7,9 @@ namespace E_StoreX.API.Controllers.Admin
     /// <summary>
     /// Controller for managing product categories in the E-StoreX application.
     /// </summary>
+    /// <remarks>This controller inherits from <see cref="AdminControllerBase"/> and is intended for use in
+    /// administrative scenarios where order-related operations are required. It serves as a base for implementing
+    /// actions related to order management.</remarks>
     public class CategoriesController : AdminControllerBase
     {
         private readonly ICategoriesService _categoriesService;

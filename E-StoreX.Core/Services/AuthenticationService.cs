@@ -2,6 +2,7 @@
 using Domain.Entities;
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO;
+using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Http;
@@ -159,20 +160,22 @@ namespace EStoreX.Core.Services
             }
             else if (result.IsLockedOut)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "Your account is temporarily locked due to multiple failed login attempts. Please try again later.",
-                    StatusCode = 423
+                    StatusCode = 423,
+                    Errors = new List<string> { "Your account is temporarily locked due to multiple failed login attempts. Please try again later." }
                 };
             }
             else if (result.IsNotAllowed)
             {
-                return new AuthenticationResponse
+                return new AuthenticationFailureResponse
                 {
                     Success = false,
                     Message = "User is not allowed to login.",
-                    StatusCode = 403
+                    StatusCode = 403,
+                    Errors = new List<string> { "User is not allowed to login." }
                 };
             }
             else

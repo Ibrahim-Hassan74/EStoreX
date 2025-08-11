@@ -40,6 +40,8 @@ namespace EStoreX.Core
 
             services.AddScoped<IApiClientService, ApiClientService>();
 
+            services.AddScoped<IUserManagementService, UserManagementService>();
+
             // JWT
             services.AddAuthentication(options =>
             {
@@ -63,7 +65,14 @@ namespace EStoreX.Core
 
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("AdminOnly", policy => policy.RequireRole("Admin"));
+                options.AddPolicy("AdminOnly", policy =>
+                    policy.RequireRole("Admin"));
+
+                options.AddPolicy("SuperAdminOnly", policy =>
+                    policy.RequireRole("SuperAdmin"));
+
+                options.AddPolicy("AdminOrSuperAdmin", policy =>
+                    policy.RequireRole("Admin", "SuperAdmin"));
             });
 
 

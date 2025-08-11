@@ -130,6 +130,9 @@
             <summary>
             api clients controller  
             </summary>
+            <remarks>This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended for use in
+            administrative scenarios where order-related operations are required. It serves as a base for implementing
+            actions related to order management.</remarks>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(EStoreX.Core.Services.IApiClientService)">
             <summary>
@@ -151,6 +154,9 @@
             <summary>
             Controller for managing product categories in the E-StoreX application.
             </summary>
+            <remarks>This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended for use in
+            administrative scenarios where order-related operations are required. It serves as a base for implementing
+            actions related to order management.</remarks>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
             <summary>
@@ -204,6 +210,9 @@
             <summary>
             products controller for admin operations in the E-StoreX application.
             </summary>
+            <remarks>This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended for use in
+            administrative scenarios where order-related operations are required. It serves as a base for implementing
+            actions related to order management.</remarks>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
             <summary>
@@ -232,6 +241,62 @@
             </summary>
             <param name="id">product Id</param>
             <returns>ok / NotFound</returns>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.UserManagementController">
+            <summary>
+            user management controller for administrative operations
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.#ctor(EStoreX.Core.ServiceContracts.IUserManagementService)">
+            <summary>
+            User management controller constructor
+            </summary>
+            <param name="userManagementService">Service responsible for management</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.GetAllUsers">
+            <summary>
+            Get all users (Admin or SuperAdmin).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.GetUserById(System.String)">
+            <summary>
+            Get a user by id (Admin or SuperAdmin).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AddAdmin(EStoreX.Core.DTO.CreateAdminDTO)">
+            <summary>
+            Create an Admin (SuperAdmin only).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.DeleteAdmin(System.String)">
+            <summary>
+            Delete an admin permanently (SuperAdmin only).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.DeleteUser(System.String)">
+            <summary>
+            Delete a user (rules depend on roles: SuperAdmin/Admin).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.DeactivateUser(System.String)">
+            <summary>
+            Deactivate a user (Admin or SuperAdmin).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.ActivateUser(System.String)">
+            <summary>
+            Activate a user (Admin or SuperAdmin).
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AssignRole(EStoreX.Core.DTO.UpdateUserRoleDTO)">
+            <summary>
+            Assign a role to a user SuperAdmin.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.RemoveRole(EStoreX.Core.DTO.UpdateUserRoleDTO)">
+            <summary>
+            Remove a role from a user SuperAdmin.
+            </summary>
         </member>
         <member name="T:E_StoreX.API.Controllers.BasketsController">
             <summary>

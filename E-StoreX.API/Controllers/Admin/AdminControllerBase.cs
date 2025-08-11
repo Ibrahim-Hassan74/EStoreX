@@ -8,7 +8,7 @@ namespace E_StoreX.API.Controllers.Admin
     /// </summary>
     [Route("api/admin/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,SuperAdmin")]
     public class AdminControllerBase : ControllerBase
     {
     }

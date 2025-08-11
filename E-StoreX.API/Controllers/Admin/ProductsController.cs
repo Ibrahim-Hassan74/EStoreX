@@ -7,6 +7,9 @@ namespace E_StoreX.API.Controllers.Admin
     /// <summary>
     /// products controller for admin operations in the E-StoreX application.
     /// </summary>
+    /// <remarks>This controller inherits from <see cref="AdminControllerBase"/> and is intended for use in
+    /// administrative scenarios where order-related operations are required. It serves as a base for implementing
+    /// actions related to order management.</remarks>
     public class ProductsController : AdminControllerBase
     {
         private readonly IProductsService _productsService;

@@ -5,6 +5,7 @@ namespace EStoreX.Core.Enums
     public enum UserTypeOptions
     {
         User,
-        Admin
+        Admin,
+        SuperAdmin,
     }
 }
