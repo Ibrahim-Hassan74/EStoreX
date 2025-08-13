@@ -47,7 +47,7 @@ builder.Services.AddRateLimiter(options =>
             factory: _ => new FixedWindowRateLimiterOptions
             {
                 PermitLimit = 30,
-                Window = TimeSpan.FromSeconds(20),
+                Window = TimeSpan.FromSeconds(10),
                 AutoReplenishment = true,
                 QueueLimit = 0
             });
@@ -58,7 +58,7 @@ builder.Services.AddRateLimiter(options =>
         context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
         context.HttpContext.Response.ContentType = "application/json";
 
-        var response = new ApiExceptions(StatusCodes.Status429TooManyRequests, "Too Many Requests. Please try again later.");
+        var response = ApiResponseFactory.TooManyRequests("Too Many Requests. Please try again later.");
         await context.HttpContext.Response.WriteAsJsonAsync(response);
     };
 });

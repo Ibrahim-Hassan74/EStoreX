@@ -192,7 +192,7 @@ namespace E_StoreX.API.Controllers
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var shippingAddress = await _authService.GetAddress(email);
             if (shippingAddress == null)
-                return BadRequest(ApiResponseFactory.BadRequest("Failed to get address." ));
+                return BadRequest(ApiResponseFactory.BadRequest("Failed to get address."));
             return Ok(shippingAddress);
         }
         /// <summary>
@@ -212,6 +212,57 @@ namespace E_StoreX.API.Controllers
             var email = User.FindFirst(ClaimTypes.Email)?.Value;
             var response = await _authService.LogoutAsync(email);
             return StatusCode(response.StatusCode, response);
+        }
+        /// <summary>
+        /// Retrieves information about the currently authenticated user.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint reads the user ID from the authentication token claims
+        /// and returns the corresponding user details.
+        /// </remarks>
+        /// <returns>
+        /// 200 OK with <see cref="ApplicationUserResponse"/> if the user exists;
+        /// 400 Bad Request if no user ID is found in claims;
+        /// 404 Not Found if the user does not exist.
+        /// </returns>
+        [HttpGet("me")]
+        [Authorize]
+        public async Task<IActionResult> GetCurrentUser()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return BadRequest(ApiResponseFactory.BadRequest("User ID not found in claims."));
+
+            var userResponse = await _authService.GetUserByIdAsync(userId);
+            if (userResponse == null)
+                return NotFound(ApiResponseFactory.NotFound("User not found."));
+
+            return Ok(userResponse);
+        }
+        /// <summary>
+        /// Updates the authenticated user's profile information, including display name, 
+        /// phone number, and optionally their password.
+        /// </summary>
+        /// <param name="dto">
+        /// An <see cref="UpdateUserDTO"/> object containing the new profile data, 
+        /// including current password and new password if the password is being changed.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="IActionResult"/> containing the result of the update operation.
+        /// On success, returns <see cref="AuthenticationResponse"/> with status code 200.
+        /// On failure, returns <see cref="AuthenticationFailureResponse"/> with appropriate error details.
+        /// </returns>
+
+        [HttpPut("update-profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUserProfile([FromBody] UpdateUserDTO dto)
+        {
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdFromToken) || userIdFromToken != dto.UserId)
+                return StatusCode(StatusCodes.Status403Forbidden, ApiResponseFactory.Forbidden());
+
+            var result = await _authService.UpdateUserProfileAsync(dto);
+            return StatusCode(result.StatusCode, result);
         }
 
 

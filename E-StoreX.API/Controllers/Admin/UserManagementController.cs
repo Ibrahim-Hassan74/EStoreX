@@ -45,8 +45,6 @@ namespace E_StoreX.API.Controllers.Admin
         [Authorize(Roles = "SuperAdmin")]
         public async Task<IActionResult> AddAdmin([FromBody] CreateAdminDTO dto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-
             var result = await _userManagementService.AddAdminAsync(dto);
             return StatusCode(result.StatusCode, result);
         }

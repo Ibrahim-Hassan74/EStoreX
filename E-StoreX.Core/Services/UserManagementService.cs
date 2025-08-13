@@ -2,6 +2,7 @@
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO;
 using EStoreX.Core.Enums;
+using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
 
@@ -37,9 +38,7 @@ namespace EStoreX.Core.Services
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
-            {
-                return FailureResponse("Failed to create admin.", result.Errors);
-            }
+                return AuthenticationResponseFactory.Failure("Failed to create admin.", 400, result.Errors.Select(x => x.Description).ToArray());
 
             if (!await _roleManager.RoleExistsAsync(UserTypeOptions.Admin.ToString()))
             {
@@ -48,12 +47,7 @@ namespace EStoreX.Core.Services
 
             await _userManager.AddToRoleAsync(user, "Admin");
 
-            return new AuthenticationResponse
-            {
-                Success = true,
-                StatusCode = 201,
-                Message = "Admin created successfully."
-            };
+            return AuthenticationResponseFactory.Success("Admin created successfully.");
         }
 
         /// <inheritdoc/>
@@ -61,7 +55,7 @@ namespace EStoreX.Core.Services
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
-                return NotFoundResponse("User not found.");
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
 
             if (!await _roleManager.RoleExistsAsync(dto.Role.ToString()))
                 await _roleManager.CreateAsync(new ApplicationRole() { Name = UserTypeOptions.Admin.ToString() });
@@ -69,8 +63,8 @@ namespace EStoreX.Core.Services
             var result = await _userManager.AddToRoleAsync(user, dto.Role.ToString());
 
             return result.Succeeded
-                ? SuccessResponse("Role assigned successfully.")
-                : FailureResponse("Failed to assign role.", result.Errors);
+                ? AuthenticationResponseFactory.Success("Role assigned successfully.")
+                : AuthenticationResponseFactory.Failure("Failed to assign role.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -78,13 +72,14 @@ namespace EStoreX.Core.Services
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
-                return NotFoundResponse("User not found.");
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+
 
             var result = await _userManager.RemoveFromRoleAsync(user, dto.Role.ToString());
 
             return result.Succeeded
-                ? SuccessResponse("Role removed successfully.")
-                : FailureResponse("Failed to remove role.", result.Errors);
+                ? AuthenticationResponseFactory.Success("Role removed successfully.")
+                : AuthenticationResponseFactory.Failure("Failed to remove role.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -92,14 +87,15 @@ namespace EStoreX.Core.Services
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return NotFoundResponse("User not found.");
+                return  AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+
 
             user.LockoutEnd = null;
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded
-                ? SuccessResponse("User activated successfully.")
-                : FailureResponse("Failed to activate user.", result.Errors);
+                ? AuthenticationResponseFactory.Success("User activated successfully.")
+                : AuthenticationResponseFactory.Failure("Failed to activate user.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -107,14 +103,15 @@ namespace EStoreX.Core.Services
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return NotFoundResponse("User not found.");
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+
 
             user.LockoutEnd = DateTimeOffset.MaxValue;
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded
-                ? SuccessResponse("User deactivated successfully.")
-                : FailureResponse("Failed to deactivate user.", result.Errors);
+                ? AuthenticationResponseFactory.Success("User deactivated successfully.")
+                : AuthenticationResponseFactory.Failure("Failed to deactivate user.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -122,11 +119,11 @@ namespace EStoreX.Core.Services
         {
             var targetUser = await _userManager.FindByIdAsync(targetUserId);
             if (targetUser == null)
-                return NotFoundResponse("User not found.");
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
 
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
             if (currentUser == null)
-                return FailureResponse("Unauthorized.", Enumerable.Empty<IdentityError>());
+                return AuthenticationResponseFactory.Failure("Unauthorized.",404);
 
             var targetRoles = await _userManager.GetRolesAsync(targetUser);
             var currentRoles = await _userManager.GetRolesAsync(currentUser);
@@ -138,19 +135,19 @@ namespace EStoreX.Core.Services
             bool isTargetSuperAdmin = targetRoles.Contains("SuperAdmin");
 
             if (isTargetSuperAdmin && !isCurrentSuperAdmin)
-                return FailureResponse("Only a Super Admin can delete another Super Admin.", Enumerable.Empty<IdentityError>());
+                return AuthenticationResponseFactory.Failure("Only a Super Admin can delete another Super Admin.", 400);
 
             if (isTargetAdmin && !isCurrentSuperAdmin)
-                return FailureResponse("Only a Super Admin can delete an Admin.", Enumerable.Empty<IdentityError>());
+                return AuthenticationResponseFactory.Failure("Only a Super Admin can delete an Admin.", 400);
 
             if (!isTargetAdmin && !isTargetSuperAdmin && !(isCurrentAdmin || isCurrentSuperAdmin))
-                return FailureResponse("Only Admin or Super Admin can delete a user.", Enumerable.Empty<IdentityError>());
+                return AuthenticationResponseFactory.Failure("Only Admin or Super Admin can delete a user.", 400);
 
             var result = await _userManager.DeleteAsync(targetUser);
 
             return result.Succeeded
-                ? SuccessResponse("User deleted successfully.")
-                : FailureResponse("Failed to delete user.", result.Errors ?? Enumerable.Empty<IdentityError>());
+                ? AuthenticationResponseFactory.Success("User deleted successfully.")
+                : AuthenticationResponseFactory.Failure("Failed to delete user.",400, result.Errors.Select(e => e.Description).ToArray());
         }
 
 
@@ -160,13 +157,13 @@ namespace EStoreX.Core.Services
         {
             var user = await _userManager.FindByIdAsync(adminUserId);
             if (user == null)
-                return NotFoundResponse("Admin not found.");
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
 
             var result = await _userManager.DeleteAsync(user);
 
             return result.Succeeded
-                ? SuccessResponse("Admin deleted successfully.")
-                : FailureResponse("Failed to delete admin.", result.Errors);
+                ? AuthenticationResponseFactory.Success("Admin deleted successfully.")
+                : AuthenticationResponseFactory.Failure("Failed to delete admin.", 400, result.Errors.Select(e => e.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -194,34 +191,5 @@ namespace EStoreX.Core.Services
             response.Roles = (await _userManager.GetRolesAsync(user)).ToList();
             return response;
         }
-
-
-
-        #region ---------- Helper methods ----------
-        private AuthenticationResponse SuccessResponse(string message) =>
-            new AuthenticationResponse
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = message
-            };
-
-        private AuthenticationResponse NotFoundResponse(string message) =>
-            new AuthenticationResponse
-            {
-                Success = false,
-                StatusCode = 404,
-                Message = message
-            };
-
-        private AuthenticationResponse FailureResponse(string message, IEnumerable<IdentityError> errors) =>
-            new AuthenticationFailureResponse
-            {
-                Success = false,
-                StatusCode = 400,
-                Message = message,
-                Errors = errors.Select(e => e.Description).ToList()
-            };
-        #endregion
     }
 }

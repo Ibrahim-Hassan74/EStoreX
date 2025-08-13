@@ -12,6 +12,7 @@ using Microsoft.IdentityModel.Tokens;
 using ServiceContracts;
 using System.Security.Claims;
 using System.Text;
+using EStoreX.Core.Helper;
 
 namespace EStoreX.Core.Services
 {
@@ -20,57 +21,32 @@ namespace EStoreX.Core.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSenderService _emailSender;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IJwtService _jwtService;
+        private readonly IUserManagementService _userManagementService;
+        private readonly RoleManager<ApplicationRole> _roleManager;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender,
             SignInManager<ApplicationUser> signInManager,
-            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper, RoleManager<ApplicationRole> roleManager) : base(unitOfWork, mapper)
+            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper, IUserManagementService userManagementService, RoleManager<ApplicationRole> roleManager) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _emailSender = emailSender;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
             _jwtService = jwtService;
+            _userManagementService = userManagementService;
             _roleManager = roleManager;
         }
         /// <inheritdoc/>
         public async Task<AuthenticationResponse> RegisterAsync(RegisterDTO registerDTO)
         {
             if (registerDTO == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid registration data.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "Registration data cannot be null." }
-                };
-            }
-
-            if (await _userManager.FindByNameAsync(registerDTO.UserName) is not null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Username is already registered.",
-                    Errors = new List<string> { "The username is already taken." },
-                    StatusCode = 409
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid registration data.", 400, "Registration data cannot be null.");
 
 
             if (await _userManager.FindByEmailAsync(registerDTO.Email) is not null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Email is already registered.",
-                    Errors = new List<string> { "This email is already in use." },
-                    StatusCode = 409
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Email is already registered.", 409, "This email is already in use.");
 
 
 
@@ -85,64 +61,30 @@ namespace EStoreX.Core.Services
             IdentityResult result = await _userManager.CreateAsync(user, registerDTO.Password);
 
             if (!result.Succeeded)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Registration failed.",
-                    Errors = result.Errors.Select(e => e.Description).ToList(),
-                    StatusCode = 400
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Registration failed.", 400, result.Errors.Select(e => e.Description).ToArray());
 
 
+            await EnsureRoleExistsAndAssignAsync(user, UserTypeOptions.User.ToString());
 
             await SendEmail(user);
 
-            return new AuthenticationResponse
-            {
-                Success = true,
-                Message = "Registration successful. Please check your email to confirm your account.",
-                StatusCode = 200
-            };
+            return AuthenticationResponseFactory.Success("Registration successful. Please check your email to confirm your account.");
         }
         /// <inheritdoc/>
         public async Task<AuthenticationResponse> LoginAsync(LoginDTO loginDTO)
         {
             if (loginDTO == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid login data.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "Login data cannot be null." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid login data.", 400, "Login data cannot be null.");
 
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (user == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "User not found.",
-                    Errors = new List<string> { "No account found with this email." },
-                    StatusCode = 404
-                };
-            }
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "No account found with this email.");
 
 
             if (!user.EmailConfirmed)
             {
                 await SendEmail(user);
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Email not confirmed.",
-                    Errors = new List<string> { "You must confirm your email before logging in." },
-                    StatusCode = 403
-                };
+                return AuthenticationResponseFactory.Failure("Email not confirmed.", 403, "You must confirm your email before logging in.");
             }
 
             var result = await _signInManager.PasswordSignInAsync(user, loginDTO.Password, loginDTO.RememberMe, true);
@@ -160,33 +102,16 @@ namespace EStoreX.Core.Services
             }
             else if (result.IsLockedOut)
             {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Your account is temporarily locked due to multiple failed login attempts. Please try again later.",
-                    StatusCode = 423,
-                    Errors = new List<string> { "Your account is temporarily locked due to multiple failed login attempts. Please try again later." }
-                };
+                string message = "Your account is temporarily locked due to multiple failed login attempts. Please try again later.";
+                return AuthenticationResponseFactory.Failure(message, 423, message);
             }
             else if (result.IsNotAllowed)
             {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "User is not allowed to login.",
-                    StatusCode = 403,
-                    Errors = new List<string> { "User is not allowed to login." }
-                };
+                return AuthenticationResponseFactory.Failure("User is not allowed to login.", 403, "User is not allowed to login.");
             }
             else
             {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid login attempt.",
-                    Errors = new List<string> { "Incorrect email or password." },
-                    StatusCode = 401
-                };
+                return AuthenticationResponseFactory.Failure("Invalid login attempt.", 401, "Incorrect email or password.");
             }
         }
 
@@ -196,37 +121,13 @@ namespace EStoreX.Core.Services
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "User not found.",
-                    StatusCode = 404,
-                    Errors = new List<string> { "User with the provided ID does not exist." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User with the provided ID does not exist.");
 
             if (await _userManager.IsEmailConfirmedAsync(user))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = true,
-                    Message = "Email is already confirmed.",
-                    StatusCode = 200,
-                    Errors = new List<string> { "Email already confirmed." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Email is already confirmed.", 200, "Email already confirmed.");
 
             if (user.LastEmailConfirmationToken != dto.Token)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid or expired confirmation token.",
-                    Errors = new List<string> { "Token mismatch or already used." },
-                    StatusCode = 400
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid or expired confirmation token.", 400, "Token mismatch or already used.");
 
             var result = await _userManager.ConfirmEmailAsync(user, dto.Token);
 
@@ -235,23 +136,9 @@ namespace EStoreX.Core.Services
                 user.LastEmailConfirmationToken = null;
                 await _userManager.UpdateAsync(user);
 
-                return new AuthenticationResponse
-                {
-                    Success = true,
-                    Message = "Email confirmed successfully.",
-                    StatusCode = 200
-                };
+                return AuthenticationResponseFactory.Success("Email confirmed successfully.");
             }
-            else
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Failed to confirm email.",
-                    Errors = result.Errors.Select(e => e.Description).ToList(),
-                    StatusCode = 400
-                };
-            }
+            return AuthenticationResponseFactory.Failure("Failed to confirm email.", 400, result.Errors.Select(e => e.Description).ToArray());
 
         }
         /// <inheritdoc/>
@@ -260,38 +147,14 @@ namespace EStoreX.Core.Services
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Incorrect email.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "Email not found." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Incorrect email.", 400, "Email not found.");
 
             if (!await _userManager.IsEmailConfirmedAsync(user))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Please confirm your email before resetting password.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "Email is not confirmed." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Please confirm your email before resetting password.", 400, "Email is not confirmed.");
 
             var logins = await _userManager.GetLoginsAsync(user);
             if (logins.Any())
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "You registered using an external provider (Google/GitHub). Use it to log in.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "External login detected." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("You registered using an external provider (Google/GitHub). Use it to log in.", 400, "External login detected.");
 
             #region Timer
             var existingToken = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "Token");
@@ -302,15 +165,7 @@ namespace EStoreX.Core.Services
                 if (!string.IsNullOrEmpty(tokenTimeStr) && DateTime.TryParse(tokenTimeStr, out var tokenTime))
                 {
                     if (DateTime.UtcNow < tokenTime.AddMinutes(5))
-                    {
-                        return new AuthenticationFailureResponse
-                        {
-                            Success = false,
-                            Message = "A password reset email was already sent recently. Please wait before trying again.",
-                            StatusCode = 429,
-                            Errors = new List<string> { "Reset already requested." }
-                        };
-                    }
+                        return AuthenticationResponseFactory.Failure("A password reset email was already sent recently. Please wait before trying again.", 429, "Reset already requested.");
                 }
             }
             #endregion
@@ -350,40 +205,19 @@ namespace EStoreX.Core.Services
 
             await _emailSender.SendEmailAsync(emailDTO);
 
-            return new AuthenticationResponse
-            {
-                Success = true,
-                Message = "A password reset link has been sent to your email.",
-                StatusCode = 200
-            };
+            return AuthenticationResponseFactory.Success("A password reset link has been sent to your email.");
         }
 
         /// <inheritdoc/>
         public async Task<AuthenticationResponse> VerifyResetPasswordTokenAsync(VerifyResetPasswordDTO dto)
         {
             if (string.IsNullOrWhiteSpace(dto.UserId) || string.IsNullOrWhiteSpace(dto.Token))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid verification request.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "UserId and token are required." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid verification request.", 400, "UserId and token are required.");
 
             var user = await _userManager.FindByIdAsync(dto.UserId);
 
             if (user == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "User not found.",
-                    StatusCode = 404,
-                    Errors = new List<string> { "No account found for the provided user ID." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "No account found for the provided user ID.");
 
             string decodedToken;
 
@@ -393,72 +227,29 @@ namespace EStoreX.Core.Services
             }
             catch
             {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid token format.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "The token format is invalid or corrupted." }
-                };
+                return AuthenticationResponseFactory.Failure("Invalid token format.",400, "The token format is invalid or corrupted.");
             }
 
             var storedToken = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "Token");
 
             if (storedToken == null || storedToken != decodedToken)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Invalid or expired token.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "The token is invalid or has already been used." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid or expired token.", 400, "The token is invalid or has already been used.");
 
             var tokenTimeStr = await _userManager.GetAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
 
             if (string.IsNullOrEmpty(tokenTimeStr) || !DateTime.TryParse(tokenTimeStr, out var tokenTime))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Token validation failed.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "The token timestamp is invalid." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Token validation failed.", 400, "The token timestamp is invalid.");
 
             if (DateTime.UtcNow > tokenTime.AddMinutes(5))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    Message = "Reset password link has expired.",
-                    StatusCode = 400,
-                    Errors = new List<string> { "The reset password link has expired. Please request a new one." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Reset password link has expired.", 400, "The reset password link has expired. Please request a new one.");
 
-            return new AuthenticationResponse
-            {
-                Success = true,
-                Message = "The reset password token is valid.",
-                StatusCode = 200
-            };
+            return AuthenticationResponseFactory.Success("The reset password token is valid.");
         }
         /// <inheritdoc/>
         public async Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordDTO dto)
         {
             if (dto == null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Invalid reset password data.",
-                    Errors = new List<string> { "Request body cannot be null." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid reset password data.", 400, "Request body cannot be null.");
 
             var verifyResponse = await VerifyResetPasswordTokenAsync(
                 new VerifyResetPasswordDTO
@@ -477,40 +268,19 @@ namespace EStoreX.Core.Services
 
 
             if (!resetResult.Succeeded)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Failed to reset password.",
-                    Errors = resetResult.Errors.Select(e => e.Description).ToList()
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Failed to reset password.", 400, resetResult.Errors.Select(e => e.Description).ToArray());
 
             await _userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "Token");
             await _userManager.RemoveAuthenticationTokenAsync(user, "ResetPassword", "TokenTime");
 
-            return new AuthenticationResponse
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = "Password has been reset successfully."
-            };
+            return AuthenticationResponseFactory.Success("Password has been reset successfully.");
         }
 
         /// <inheritdoc/>
         public async Task<AuthenticationResponse> RefreshTokenAsync(TokenModel model)
         {
             if (model is null || string.IsNullOrWhiteSpace(model.Token) || string.IsNullOrWhiteSpace(model.RefreshToken))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Invalid token model.",
-                    Errors = new List<string> { "Token and refresh token are required." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid token model.", 400, "Token and refresh token are required.");
 
             ClaimsPrincipal? principal;
 
@@ -520,60 +290,22 @@ namespace EStoreX.Core.Services
             }
             catch (SecurityTokenException)
             {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Invalid token.",
-                    Errors = new List<string> { "Access token is invalid." }
-                };
+                return AuthenticationResponseFactory.Failure("Invalid token.", 400, "Access token is invalid.");
             }
 
             if (principal is null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Invalid token.",
-                    Errors = new List<string> { "Access token is invalid." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid token.", 400, "Access token is invalid.");
 
             var email = principal.FindFirstValue(ClaimTypes.Email);
             if (string.IsNullOrWhiteSpace(email))
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Invalid token.",
-                    Errors = new List<string> { "Email claim is missing in token." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid token.", 400, "Email claim is missing in token.");
 
             var user = await _userManager.FindByEmailAsync(email);
             if (user is null)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 404,
-                    Message = "User not found.",
-                    Errors = new List<string> { "User does not exist." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "User does not exist.");
 
             if (user.RefreshToken != model.RefreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
-            {
-                return new AuthenticationFailureResponse
-                {
-                    Success = false,
-                    StatusCode = 400,
-                    Message = "Invalid refresh token.",
-                    Errors = new List<string> { "Refresh token is invalid or expired." }
-                };
-            }
+                return AuthenticationResponseFactory.Failure("Invalid refresh token.", 400, "Refresh token is invalid or expired.");
 
             var authResponse = await _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
 
@@ -588,6 +320,81 @@ namespace EStoreX.Core.Services
             authResponse.Message = "Token refreshed successfully.";
 
             return authResponse;
+        }
+
+        /// <inheritdoc/>
+        public async Task<bool> UpdateAddress(string? email, Address? address)
+        {
+            if (email is null || address is null)
+                return false;
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null)
+                return false;
+
+            return await _unitOfWork.AuthenticationRepository.UpdateAddress(user.Id, address);
+        }
+        /// <inheritdoc/>
+        public async Task<ShippingAddressDTO?> GetAddress(string? email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return null;
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user is null) return null;
+            var address = await _unitOfWork.AuthenticationRepository.GetAddress(user.Id);
+            if (address is null) return null;
+            return _mapper.Map<ShippingAddressDTO>(address);
+        }
+
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> LogoutAsync(string? email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                var user = await _userManager.FindByEmailAsync(email);
+                if (user != null)
+                {
+                    user.RefreshToken = null;
+                    user.RefreshTokenExpirationDateTime = DateTime.MinValue;
+                    await _userManager.UpdateAsync(user);
+                }
+            }
+
+            await _signInManager.SignOutAsync();
+
+            return AuthenticationResponseFactory.Success("Logged out successfully.");
+        }
+        /// <inheritdoc/>
+        public async Task<ApplicationUserResponse?> GetUserByIdAsync(string userId)
+            => await _userManagementService.GetUserByIdAsync(userId);
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> UpdateUserProfileAsync(UpdateUserDTO dto)
+        {
+            if (dto == null)
+                return AuthenticationResponseFactory.Failure("Invalid update data.", 400, "Update data cannot be null.");
+
+            var user = await _userManager.FindByIdAsync(dto.UserId);
+            if (user == null)
+                return AuthenticationResponseFactory.Failure("User not found.", 404, "No user found with the provided ID.");
+
+            if (!string.IsNullOrWhiteSpace(dto.DisplayName))
+                user.DisplayName = dto.DisplayName;
+
+            if (!string.IsNullOrWhiteSpace(dto.PhoneNumber))
+                user.PhoneNumber = dto.PhoneNumber;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+            if (!updateResult.Succeeded)
+                return AuthenticationResponseFactory.Failure("Failed to update profile.", 400, updateResult.Errors.Select(e => e.Description).ToArray());
+
+            if (!string.IsNullOrWhiteSpace(dto.CurrentPassword) && !string.IsNullOrWhiteSpace(dto.NewPassword))
+            {
+                var passwordResult = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+                if (!passwordResult.Succeeded)
+                    return AuthenticationResponseFactory.Failure("Failed to change password.", 400, passwordResult.Errors.Select(e => e.Description).ToArray());
+            }
+
+            return AuthenticationResponseFactory.Success("Profile updated successfully.");
         }
 
         private bool IsMobileDevice(HttpRequest? request)
@@ -634,54 +441,12 @@ namespace EStoreX.Core.Services
             var emailDTO = new EmailDTO(user.Email, "Confirm Your Email", html);
             await _emailSender.SendEmailAsync(emailDTO);
         }
-        /// <inheritdoc/>
-        public async Task<bool> UpdateAddress(string? email, Address? address)
+        private async Task EnsureRoleExistsAndAssignAsync(ApplicationUser user, string roleName)
         {
-            if (email is null || address is null)
-            {
-                return false;
-            }
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user is null)
-            {
-                return false;
-            }
-            return await _unitOfWork.AuthenticationRepository.UpdateAddress(user.Id, address);
-        }
-        /// <inheritdoc/>
-        public async Task<ShippingAddressDTO?> GetAddress(string? email)
-        {
-            if (string.IsNullOrEmpty(email))
-                return null;
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user is null) return null;
-            var address = await _unitOfWork.AuthenticationRepository.GetAddress(user.Id);
-            if (address is null) return null;
-            return _mapper.Map<ShippingAddressDTO>(address);
-        }
+            if (!await _roleManager.RoleExistsAsync(roleName))
+                await _roleManager.CreateAsync(new ApplicationRole { Name = roleName });
 
-        /// <inheritdoc/>
-        public async Task<AuthenticationResponse> LogoutAsync(string? email)
-        {
-            if (!string.IsNullOrEmpty(email))
-            {
-                var user = await _userManager.FindByEmailAsync(email);
-                if (user != null)
-                {
-                    user.RefreshToken = null;
-                    user.RefreshTokenExpirationDateTime = DateTime.MinValue;
-                    await _userManager.UpdateAsync(user);
-                }
-            }
-
-            await _signInManager.SignOutAsync();
-
-            return new AuthenticationResponse
-            {
-                Success = true,
-                StatusCode = 200,
-                Message = "Logged out successfully."
-            };
+            await _userManager.AddToRoleAsync(user, roleName);
         }
 
     }

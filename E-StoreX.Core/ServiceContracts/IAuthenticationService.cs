@@ -129,6 +129,31 @@ namespace ServiceContracts
         /// An <see cref="AuthenticationResponse"/> indicating whether the logout operation was successful.
         /// </returns>
         Task<AuthenticationResponse> LogoutAsync(string? email);
+        /// <summary>
+        /// Retrieves detailed information for a specific user by their unique ID.
+        /// </summary>
+        /// <param name="userId">
+        /// The unique identifier of the user to retrieve.
+        /// </param>
+        /// <returns>
+        /// An <see cref="ApplicationUserResponse"/> containing user details if found,
+        /// or <c>null</c> if the user does not exist.
+        /// </returns>
+        Task<ApplicationUserResponse?> GetUserByIdAsync(string userId);
+        /// <summary>
+        /// Updates the profile information of a specific user, including display name, phone number, 
+        /// and optionally password (if current password is provided).
+        /// </summary>
+        /// <param name="dto">
+        /// The <see cref="UpdateUserDTO"/> object containing the user's ID, updated profile details, 
+        /// and password change information.
+        /// </param>
+        /// <returns>
+        /// An <see cref="AuthenticationResponse"/> indicating whether the update was successful, 
+        /// along with any relevant messages or errors.
+        /// </returns>
+        Task<AuthenticationResponse> UpdateUserProfileAsync(UpdateUserDTO dto);
+
 
     }
 }
