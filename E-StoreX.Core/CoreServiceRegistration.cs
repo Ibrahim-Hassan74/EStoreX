@@ -61,6 +61,14 @@ namespace EStoreX.Core
                     RoleClaimType = ClaimTypes.Role,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
                 };
+            }).AddGoogle(options =>
+            {
+                options.ClientId = configuration["Authentication:Google:ClientId"];
+                options.ClientSecret = configuration["Authentication:Google:ClientSecret"];
+            }).AddGitHub(options =>
+            {
+                options.ClientId = configuration["Authentication:Github:ClientId"];
+                options.ClientSecret = configuration["Authentication:Github:ClientSecret"];
             });
 
             services.AddAuthorization(options =>

@@ -154,6 +154,27 @@ namespace ServiceContracts
         /// </returns>
         Task<AuthenticationResponse> UpdateUserProfileAsync(UpdateUserDTO dto);
 
+        /// <summary>
+        /// Handles the callback from an external login provider (e.g., Google, GitHub).
+        /// </summary>
+        /// <param name="remoteError">
+        /// Optional error message returned by the external provider during the authentication process.
+        /// </param>
+        /// <returns>
+        /// An <see cref="AuthenticationResponse"/> indicating whether the login was successful or failed,
+        /// along with any relevant error messages or authentication tokens.
+        /// </returns>
+        /// <remarks>
+        /// This method:
+        /// <list type="number">
+        /// <item>Validates if an error was returned by the external provider.</item>
+        /// <item>Retrieves external login info from the authentication manager.</item>
+        /// <item>Checks if the external login is already linked to an existing user.</item>
+        /// <item>Attempts to create a new user if none exists with the provided external login information.</item>
+        /// <item>Returns HTTP 400 if the provider does not supply enough information to create a user (e.g., no email or name).</item>
+        /// </list>
+        /// </remarks>
+        Task<AuthenticationResponse> ExternalLoginCallbackAsync(string remoteError = "");
 
     }
 }

@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Domain.Entities;
 using E_StoreX.API.Helper;
+using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using ServiceContracts;
 using System.Security.Claims;
@@ -17,6 +19,7 @@ namespace E_StoreX.API.Controllers
     {
         private readonly IAuthenticationService _authService;
         private readonly IMapper _mapper;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
@@ -28,10 +31,14 @@ namespace E_StoreX.API.Controllers
         /// <param name="mapper">
         /// mapper instance for mapping between DTOs and domain entities.
         /// </param>
-        public AccountController(IAuthenticationService authService, IMapper mapper)
+        /// <param name="signInManager">
+        /// sign-in manager for handling user sign-in operations,
+        /// </param>
+        public AccountController(IAuthenticationService authService, IMapper mapper, SignInManager<ApplicationUser> signInManager)
         {
             _authService = authService;
             _mapper = mapper;
+            _signInManager = signInManager;
         }
 
         /// <summary>
@@ -263,6 +270,51 @@ namespace E_StoreX.API.Controllers
 
             var result = await _authService.UpdateUserProfileAsync(dto);
             return StatusCode(result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Initiates the external login process by redirecting the user to the chosen authentication provider (e.g., Google, GitHub).
+        /// </summary>
+        /// <param name="provider">
+        /// The external authentication provider to use (e.g., "Google", "GitHub").
+        /// </param>
+        /// <returns>
+        /// A challenge result that redirects the user to the external provider's login page.
+        /// </returns>
+        /// <remarks>
+        /// This method configures the external authentication properties, sets the redirect URL 
+        /// to handle the provider's callback, and prompts the user to select an account.
+        /// </remarks>
+        [HttpGet("external-login")]
+        public IActionResult ExternalLogin([FromQuery] string provider)
+        {
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), nameof(AccountController)) ?? "api/Account/external-login-callback";
+
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            properties.Items["prompt"] = "select_account";
+
+            return Challenge(properties, provider);
+        }
+
+        /// <summary>
+        /// Handles the callback from the external login provider after the authentication attempt.
+        /// </summary>
+        /// <param name="remoteError">
+        /// Optional error message returned by the external provider during the authentication process.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the authentication response, 
+        /// including status code and any relevant data or error messages.
+        /// </returns>
+        /// <remarks>
+        /// This method calls <see cref="_authService.ExternalLoginCallbackAsync"/> to process the 
+        /// external login result and return the final authentication response.
+        /// </remarks>
+        [HttpGet("external-login-callback")]
+        public async Task<IActionResult> ExternalLoginCallback(string remoteError = "")
+        {
+            var response = await _authService.ExternalLoginCallbackAsync(remoteError);
+            return StatusCode(response.StatusCode, response);
         }
 
 

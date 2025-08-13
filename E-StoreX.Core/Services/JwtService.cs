@@ -81,7 +81,7 @@ namespace EStoreX.Core.Services
             {
                 Token = token,
                 Email = user.Email,
-                UserName = user.UserName,
+                UserName = user.DisplayName,
                 Expiration = expiration,
                 RefreshToken = GenerateRefreshToken(),
                 RefreshTokenExpirationDateTime = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"])),

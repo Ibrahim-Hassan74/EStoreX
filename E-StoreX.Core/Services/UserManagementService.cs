@@ -58,7 +58,7 @@ namespace EStoreX.Core.Services
                 return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
 
             if (!await _roleManager.RoleExistsAsync(dto.Role.ToString()))
-                await _roleManager.CreateAsync(new ApplicationRole() { Name = UserTypeOptions.Admin.ToString() });
+                await _roleManager.CreateAsync(new ApplicationRole() { Name = dto.Role.ToString() });
 
             var result = await _userManager.AddToRoleAsync(user, dto.Role.ToString());
 

@@ -91,14 +91,7 @@ namespace EStoreX.Core.Services
 
             if (result.Succeeded)
             {
-                var tokenResponse = await _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
-                user.RefreshToken = tokenResponse?.RefreshToken;
-                user.RefreshTokenExpirationDateTime = tokenResponse.RefreshTokenExpirationDateTime;
-                await _userManager.UpdateAsync(user);
-                tokenResponse.Success = true;
-                tokenResponse.Message = "Login successful.";
-                tokenResponse.StatusCode = 200;
-                return tokenResponse;
+                return await CreateSuccessLoginResponseAsync (user);
             }
             else if (result.IsLockedOut)
             {
@@ -396,6 +389,82 @@ namespace EStoreX.Core.Services
 
             return AuthenticationResponseFactory.Success("Profile updated successfully.");
         }
+        /// <inheritdoc/>
+        public async Task<AuthenticationResponse> ExternalLoginCallbackAsync(string remoteError = "")
+        {
+            if (!string.IsNullOrEmpty(remoteError))
+                return AuthenticationResponseFactory.Failure($"Error from external login provider: {remoteError}", 400, remoteError);
+
+            var info = await _signInManager.GetExternalLoginInfoAsync();
+            if (info == null)
+                return AuthenticationResponseFactory.Failure("Error loading external login information.", 400, "Error loading external login information.");
+
+            var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+            if (user != null)
+            {
+                return await CreateSuccessLoginResponseAsync(user);
+            }
+
+
+            var email = info.Principal.FindFirstValue(ClaimTypes.Email);
+
+            if (string.IsNullOrEmpty(email))
+            {
+                var uniqueName = info.Principal.FindFirstValue(ClaimTypes.Name)
+                                 ?? info.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+
+                if (string.IsNullOrEmpty(uniqueName))
+                {
+                    return AuthenticationResponseFactory.Failure(
+                        "External provider did not supply enough information to create an account.",
+                        400,
+                        "Missing email and username from external provider."
+                    );
+                }
+                email = $"{uniqueName}@{info.LoginProvider.ToLower()}.placeholder.local";
+            }
+
+
+
+            user = await _userManager.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                return AuthenticationResponseFactory.Failure(
+                    "This email is already registered. Please log in with your email and password, then link your external account from account settings.",
+                    409,
+                    "Account already exists without external login."
+                );
+            }
+
+            user = new ApplicationUser
+            {
+                UserName = email,
+                Email = email,
+                DisplayName = info.Principal.FindFirstValue(ClaimTypes.Name),
+                EmailConfirmed = true
+            };
+
+            var createResult = await _userManager.CreateAsync(user);
+            if (!createResult.Succeeded)
+            {
+                return AuthenticationResponseFactory.Failure("Failed to create account from external login.", 500, 
+                    createResult.Errors.Select(e => e.Description).ToArray());
+            }
+
+            await EnsureRoleExistsAndAssignAsync(user, UserTypeOptions.User.ToString());
+
+            var loginResult = await _userManager.AddLoginAsync(user, info);
+            if (!loginResult.Succeeded)
+            {
+                return AuthenticationResponseFactory.Failure("Failed to link external login.", 500, 
+                    loginResult.Errors.Select(e => e.Description).ToArray());
+            }
+
+            return await CreateSuccessLoginResponseAsync(user);
+        }
+
+
 
         private bool IsMobileDevice(HttpRequest? request)
         {
@@ -447,6 +516,17 @@ namespace EStoreX.Core.Services
                 await _roleManager.CreateAsync(new ApplicationRole { Name = roleName });
 
             await _userManager.AddToRoleAsync(user, roleName);
+        }
+        private async Task<AuthenticationSuccessResponse> CreateSuccessLoginResponseAsync (ApplicationUser user)
+        {
+            var tokenResponse = await _jwtService.CreateJwtToken(user) as AuthenticationSuccessResponse;
+            user.RefreshToken = tokenResponse?.RefreshToken;
+            user.RefreshTokenExpirationDateTime = tokenResponse.RefreshTokenExpirationDateTime;
+            await _userManager.UpdateAsync(user);
+            tokenResponse.Success = true;
+            tokenResponse.Message = "Login successful.";
+            tokenResponse.StatusCode = 200;
+            return tokenResponse;
         }
 
     }

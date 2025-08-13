@@ -15,7 +15,10 @@ namespace E_StoreX.API.Middleware
         private readonly List<string> allowedStaticPaths = new List<string>
         {
             "/reset-password", "/password-reset-success", "/password-reset-failed",
-            "/invalid-reset-link", "/index"
+            "/invalid-reset-link", "/index",
+            //"/api/account/external-login",
+            "/api/account/external-login-callback",
+            "/signin-google"
         };
         private readonly List<string> allowedStaticExtensions = new List<string>
         {
@@ -43,12 +46,21 @@ namespace E_StoreX.API.Middleware
 
             if (allowedStaticPaths.Any(p => path.StartsWith(p)) ||
                 allowedStaticExtensions.Any(ext => path.EndsWith(ext)) ||
-                context.Request.Method == HttpMethods.Options || 
+                context.Request.Method == HttpMethods.Options ||
                 context.Request.Path.StartsWithSegments("/api/frontend/reset") ||
                 context.Request.Path.StartsWithSegments("/favicon.ico"))
             {
                 await _next(context);
                 return;
+            }
+
+            if (path.StartsWith("/api/account/external-login"))
+            {
+                if (context.Request.Query.ContainsKey(API_KEY_HEADER_NAME))
+                {
+                    await _next(context);
+                    return;
+                }
             }
 
             if (!context.Request.Headers.TryGetValue(API_KEY_HEADER_NAME, out var extractedApiKey))
