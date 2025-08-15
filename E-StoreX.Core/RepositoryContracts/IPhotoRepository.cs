@@ -1,6 +1,5 @@
 ﻿using Domain.Entities.Product;
-using EStoreX.Core.DTO;
-using Microsoft.AspNetCore.Http;
+using EStoreX.Core.DTO.Products.Responses;
 
 namespace EStoreX.Core.RepositoryContracts
 {

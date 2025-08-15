@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities.Product;
-using EStoreX.Core.DTO;
+using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;

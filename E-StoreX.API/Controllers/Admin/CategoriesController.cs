@@ -1,4 +1,4 @@
-﻿using EStoreX.Core.DTO;
+﻿using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
 

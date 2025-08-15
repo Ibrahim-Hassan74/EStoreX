@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.DTO;
+﻿using EStoreX.Core.DTO.Orders.Requests;
+using EStoreX.Core.DTO.Orders.Responses;
 
 namespace EStoreX.Core.ServiceContracts
 {

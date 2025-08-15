@@ -1,5 +1,6 @@
 ﻿using EStoreX.Core.Domain.Entities;
 using EStoreX.Core.RepositoryContracts;
+using ServiceContracts;
 
 namespace EStoreX.Core.Services
 {

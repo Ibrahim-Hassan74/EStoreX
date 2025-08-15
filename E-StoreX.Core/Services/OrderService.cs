@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
+using EStoreX.Core.DTO.Orders.Requests;
+using EStoreX.Core.DTO.Orders.Responses;
 using EStoreX.Core.Domain.Entities.Orders;
-using EStoreX.Core.DTO;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
 

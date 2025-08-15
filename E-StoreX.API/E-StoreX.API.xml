@@ -4,198 +4,6 @@
         <name>E-StoreX.API</name>
     </assembly>
     <members>
-        <member name="T:E_StoreX.API.Controllers.AccountController">
-            <summary>
-            Controller responsible for handling user authentication-related actions
-            such as registration, login, email confirmation, and password reset for the E-StoreX API.
-            </summary>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.#ctor(ServiceContracts.IAuthenticationService,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.SignInManager{EStoreX.Core.Domain.IdentityEntities.ApplicationUser})">
-            <summary>
-            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.AccountController"/> class.
-            </summary>
-            <param name="authService">
-            The authentication service that handles user registration, login, 
-            email confirmation, and password reset logic.
-            </param>
-            <param name="mapper">
-            mapper instance for mapping between DTOs and domain entities.
-            </param>
-            <param name="signInManager">
-            sign-in manager for handling user sign-in operations,
-            </param>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.PostRegister(EStoreX.Core.DTO.RegisterDTO)">
-            <summary>
-            Registers a new user in the system.
-            </summary>
-            <param name="registerDTO">
-            An object containing user registration details like username, email, and password.
-            </param>
-            <returns>
-            Returns <c>200 OK</c> if registration is successful, or <c>400/409</c> with details if it fails.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.PostLogin(EStoreX.Core.DTO.LoginDTO)">
-            <summary>
-            Authenticates an existing user and generates a JWT token.
-            </summary>
-            <param name="loginDTO">
-            The user's login credentials (email and password).
-            </param>
-            <returns>
-            Returns a JWT token with <c>200 OK</c> on success or <c>401/404</c> with error details if authentication fails.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.ConfirmEmail(EStoreX.Core.DTO.ConfirmEmailDTO)">
-            <summary>
-            Confirms a user's email using the provided user ID and token.
-            </summary>
-            <param name="dto">
-            Contains the user ID, email confirmation token, and an optional redirect URL.
-            </param>
-            <returns>
-            Returns <c>200 OK</c> if the email confirmation is successful, or 
-            <c>400/404</c> if the token is invalid or user is not found.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.ForgotPassword(EStoreX.Core.DTO.ForgotPasswordDTO)">
-            <summary>
-            Sends a password reset link to the user's email address.
-            </summary>
-            <param name="dto">
-            Contains the email address of the user who requested a password reset.
-            </param>
-            <returns>
-            Returns <c>200 OK</c> if the reset link was sent successfully, or <c>400/429</c> with error details.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.VerifyResetPassword(EStoreX.Core.DTO.VerifyResetPasswordDTO)">
-            <summary>
-            Verifies the validity of a reset password token for a given user.
-            </summary>
-            <param name="dto">
-            Contains the User ID and reset token to validate.
-            </param>
-            <returns>
-            Returns <c>200 OK</c> if the token is valid or <c>400/404</c> if invalid/expired.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.ResetPassword(EStoreX.Core.DTO.ResetPasswordDTO)">
-            <summary>
-            Resets the user's password using a valid token.
-            </summary>
-            <param name="dto">Contains user ID, token, and new password details.</param>
-            <returns>Returns a success or failure response based on token validity and password rules.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.RefreshToken(EStoreX.Core.DTO.TokenModel)">
-            <summary>
-            Generates a new access token (and refresh token) using a valid refresh token.
-            </summary>
-            <param name="model">The current (expired) access token and refresh token.</param>
-            <returns>Returns a new JWT token pair on success or an error response on failure.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.UpdateAddress(EStoreX.Core.DTO.ShippingAddressDTO)">
-            <summary>
-            Updates the authenticated user's address.
-            </summary>
-            <param name="addressDTO">
-            The new <see cref="T:EStoreX.Core.DTO.ShippingAddressDTO"/> object containing the updated address details.
-            </param>
-            <returns>
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with a success message if the update succeeds,
-            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if it fails.
-            </returns>
-            <remarks>
-            The method retrieves the user's email from the JWT claims and uses it to update the address.
-            The user must be authenticated for this operation.
-            </remarks>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.GetAddress">
-            <summary>
-            Retrieves the shipping address of the currently authenticated user.
-            </summary>
-            <remarks>
-            Requires the user to be authenticated. The user's email is extracted from the JWT claims,
-            and used to fetch the associated shipping address from the authentication service.
-            </remarks>
-            <returns>
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the shipping address on success (HTTP 200),
-            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if the address could not be retrieved (HTTP 400).
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.PostLogout">
-            <summary>
-            Logs out the currently authenticated user by clearing their refresh token 
-            and signing them out.
-            </summary>
-            <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the logout response status and message.
-            </returns>
-            <remarks>
-            Requires the user to be authenticated.
-            </remarks>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.GetCurrentUser">
-            <summary>
-            Retrieves information about the currently authenticated user.
-            </summary>
-            <remarks>
-            This endpoint reads the user ID from the authentication token claims
-            and returns the corresponding user details.
-            </remarks>
-            <returns>
-            200 OK with <see cref="T:EStoreX.Core.DTO.ApplicationUserResponse"/> if the user exists;
-            400 Bad Request if no user ID is found in claims;
-            404 Not Found if the user does not exist.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.UpdateUserProfile(EStoreX.Core.DTO.UpdateUserDTO)">
-            <summary>
-            Updates the authenticated user's profile information, including display name, 
-            phone number, and optionally their password.
-            </summary>
-            <param name="dto">
-            An <see cref="T:EStoreX.Core.DTO.UpdateUserDTO"/> object containing the new profile data, 
-            including current password and new password if the password is being changed.
-            </param>
-            <returns>
-            Returns an <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the result of the update operation.
-            On success, returns <see cref="T:EStoreX.Core.DTO.AuthenticationResponse"/> with status code 200.
-            On failure, returns <see cref="T:EStoreX.Core.DTO.AuthenticationFailureResponse"/> with appropriate error details.
-            </returns>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.ExternalLogin(System.String)">
-            <summary>
-            Initiates the external login process by redirecting the user to the chosen authentication provider (e.g., Google, GitHub).
-            </summary>
-            <param name="provider">
-            The external authentication provider to use (e.g., "Google", "GitHub").
-            </param>
-            <returns>
-            A challenge result that redirects the user to the external provider's login page.
-            </returns>
-            <remarks>
-            This method configures the external authentication properties, sets the redirect URL 
-            to handle the provider's callback, and prompts the user to select an account.
-            </remarks>
-        </member>
-        <member name="M:E_StoreX.API.Controllers.AccountController.ExternalLoginCallback(System.String)">
-            <summary>
-            Handles the callback from the external login provider after the authentication attempt.
-            </summary>
-            <param name="remoteError">
-            Optional error message returned by the external provider during the authentication process.
-            </param>
-            <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the authentication response, 
-            including status code and any relevant data or error messages.
-            </returns>
-            <remarks>
-            This method calls <see cref="!:_authService.ExternalLoginCallbackAsync"/> to process the 
-            external login result and return the final authentication response.
-            </remarks>
-        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.AdminControllerBase">
             <summary>
             Abstract base controller for admin-related operations.
@@ -209,7 +17,7 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(EStoreX.Core.Services.IApiClientService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(ServiceContracts.IApiClientService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.ApiClientsController"/> class with the specified API client
             service.
@@ -218,7 +26,7 @@
             service for API client management.</remarks>
             <param name="clientService">The service used to manage API client data and operations. Cannot be <c>null</c>.</param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RegisterClient(EStoreX.Core.DTO.RegisterApiClientRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RegisterClient(EStoreX.Core.DTO.Account.Requests.RegisterApiClientRequest)">
             <summary>
             Registers a new API client and returns its API key.
             </summary>
@@ -239,14 +47,14 @@
             </summary>
             <param name="categoriesService"></param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.CreateCategory(EStoreX.Core.DTO.CategoryRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.CreateCategory(EStoreX.Core.DTO.Categories.Requests.CategoryRequest)">
             <summary>
             Creates a new category in the database.
             </summary>
             <param name="categoryDTO">categoryDTO object</param>
             <returns>Category created</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.UpdateCategory(System.Guid,EStoreX.Core.DTO.UpdateCategoryDTO)">
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.UpdateCategory(System.Guid,EStoreX.Core.DTO.Categories.Requests.UpdateCategoryDTO)">
             <summary>
             Updates an existing category in the database.
             </summary>
@@ -295,14 +103,14 @@
             </summary>
             <param name="productsService"></param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.CreateProduct(EStoreX.Core.DTO.ProductAddRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.CreateProduct(EStoreX.Core.DTO.Products.Requests.ProductAddRequest)">
             <summary>
             Create new product in database
             </summary>
             <param name="productRequest"></param>
             <returns></returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.UpdateProduct(System.Guid,EStoreX.Core.DTO.ProductUpdateRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.UpdateProduct(System.Guid,EStoreX.Core.DTO.Products.Requests.ProductUpdateRequest)">
             <summary>
             Updates an existing product in the database.
             </summary>
@@ -338,7 +146,7 @@
             Get a user by id (Admin or SuperAdmin).
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AddAdmin(EStoreX.Core.DTO.CreateAdminDTO)">
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AddAdmin(EStoreX.Core.DTO.Account.Requests.CreateAdminDTO)">
             <summary>
             Create an Admin (SuperAdmin only).
             </summary>
@@ -363,117 +171,309 @@
             Activate a user (Admin or SuperAdmin).
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AssignRole(EStoreX.Core.DTO.UpdateUserRoleDTO)">
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AssignRole(EStoreX.Core.DTO.Account.Requests.UpdateUserRoleDTO)">
             <summary>
             Assign a specified role to a user. Accessible only by Super Admin.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.RemoveRole(EStoreX.Core.DTO.UpdateUserRoleDTO)">
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.RemoveRole(EStoreX.Core.DTO.Account.Requests.UpdateUserRoleDTO)">
             <summary>
             Remove a specified role from a user. Accessible only by Super Admin.
             </summary>
         </member>
-        <member name="T:E_StoreX.API.Controllers.BasketsController">
+        <member name="T:E_StoreX.API.Controllers.Public.AccountController">
+            <summary>
+            Controller responsible for handling user authentication-related actions
+            such as registration, login, email confirmation, and password reset for the E-StoreX API.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.#ctor(ServiceContracts.IAuthenticationService,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.SignInManager{EStoreX.Core.Domain.IdentityEntities.ApplicationUser})">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.AccountController"/> class.
+            </summary>
+            <param name="authService">
+            The authentication service that handles user registration, login, 
+            email confirmation, and password reset logic.
+            </param>
+            <param name="mapper">
+            mapper instance for mapping between DTOs and domain entities.
+            </param>
+            <param name="signInManager">
+            sign-in manager for handling user sign-in operations,
+            </param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.PostRegister(EStoreX.Core.DTO.Account.Requests.RegisterDTO)">
+            <summary>
+            Registers a new user in the system.
+            </summary>
+            <param name="registerDTO">
+            An object containing user registration details like username, email, and password.
+            </param>
+            <returns>
+            Returns <c>200 OK</c> if registration is successful, or <c>400/409</c> with details if it fails.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.PostLogin(EStoreX.Core.DTO.Account.Requests.LoginDTO)">
+            <summary>
+            Authenticates an existing user and generates a JWT token.
+            </summary>
+            <param name="loginDTO">
+            The user's login credentials (email and password).
+            </param>
+            <returns>
+            Returns a JWT token with <c>200 OK</c> on success or <c>401/404</c> with error details if authentication fails.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ConfirmEmail(EStoreX.Core.DTO.Account.Requests.ConfirmEmailDTO)">
+            <summary>
+            Confirms a user's email using the provided user ID and token.
+            </summary>
+            <param name="dto">
+            Contains the user ID, email confirmation token, and an optional redirect URL.
+            </param>
+            <returns>
+            Returns <c>200 OK</c> if the email confirmation is successful, or 
+            <c>400/404</c> if the token is invalid or user is not found.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ForgotPassword(EStoreX.Core.DTO.Account.Requests.ForgotPasswordDTO)">
+            <summary>
+            Sends a password reset link to the user's email address.
+            </summary>
+            <param name="dto">
+            Contains the email address of the user who requested a password reset.
+            </param>
+            <returns>
+            Returns <c>200 OK</c> if the reset link was sent successfully, or <c>400/429</c> with error details.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.VerifyResetPassword(EStoreX.Core.DTO.Account.Requests.VerifyResetPasswordDTO)">
+            <summary>
+            Verifies the validity of a reset password token for a given user.
+            </summary>
+            <param name="dto">
+            Contains the User ID and reset token to validate.
+            </param>
+            <returns>
+            Returns <c>200 OK</c> if the token is valid or <c>400/404</c> if invalid/expired.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ResetPassword(EStoreX.Core.DTO.Account.Requests.ResetPasswordDTO)">
+            <summary>
+            Resets the user's password using a valid token.
+            </summary>
+            <param name="dto">Contains user ID, token, and new password details.</param>
+            <returns>Returns a success or failure response based on token validity and password rules.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.RefreshToken(EStoreX.Core.DTO.Account.Responses.TokenModel)">
+            <summary>
+            Generates a new access token (and refresh token) using a valid refresh token.
+            </summary>
+            <param name="model">The current (expired) access token and refresh token.</param>
+            <returns>Returns a new JWT token pair on success or an error response on failure.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.UpdateAddress(EStoreX.Core.DTO.Orders.Requests.ShippingAddressDTO)">
+            <summary>
+            Updates the authenticated user's address.
+            </summary>
+            <param name="addressDTO">
+            The new <see cref="T:EStoreX.Core.DTO.Orders.Requests.ShippingAddressDTO"/> object containing the updated address details.
+            </param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with a success message if the update succeeds,
+            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if it fails.
+            </returns>
+            <remarks>
+            The method retrieves the user's email from the JWT claims and uses it to update the address.
+            The user must be authenticated for this operation.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.GetAddress">
+            <summary>
+            Retrieves the shipping address of the currently authenticated user.
+            </summary>
+            <remarks>
+            Requires the user to be authenticated. The user's email is extracted from the JWT claims,
+            and used to fetch the associated shipping address from the authentication service.
+            </remarks>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the shipping address on success (HTTP 200),
+            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if the address could not be retrieved (HTTP 400).
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.PostLogout">
+            <summary>
+            Logs out the currently authenticated user by clearing their refresh token 
+            and signing them out.
+            </summary>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the logout response status and message.
+            </returns>
+            <remarks>
+            Requires the user to be authenticated.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.GetCurrentUser">
+            <summary>
+            Retrieves information about the currently authenticated user.
+            </summary>
+            <remarks>
+            This endpoint reads the user ID from the authentication token claims
+            and returns the corresponding user details.
+            </remarks>
+            <returns>
+            200 OK with <see cref="T:EStoreX.Core.DTO.Account.Responses.ApplicationUserResponse"/> if the user exists;
+            400 Bad Request if no user ID is found in claims;
+            404 Not Found if the user does not exist.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.UpdateUserProfile(EStoreX.Core.DTO.Account.Requests.UpdateUserDTO)">
+            <summary>
+            Updates the authenticated user's profile information, including display name, 
+            phone number, and optionally their password.
+            </summary>
+            <param name="dto">
+            An <see cref="T:EStoreX.Core.DTO.Account.Requests.UpdateUserDTO"/> object containing the new profile data, 
+            including current password and new password if the password is being changed.
+            </param>
+            <returns>
+            Returns an <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the result of the update operation.
+            On success, returns <see cref="!:ApiResponse"/> with status code 200.
+            On failure, returns <see cref="!:ApiErrorResponse"/> with appropriate error details.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLogin(System.String)">
+            <summary>
+            Initiates the external login process by redirecting the user to the chosen authentication provider (e.g., Google, GitHub).
+            </summary>
+            <param name="provider">
+            The external authentication provider to use (e.g., "Google", "GitHub").
+            </param>
+            <returns>
+            A challenge result that redirects the user to the external provider's login page.
+            </returns>
+            <remarks>
+            This method configures the external authentication properties, sets the redirect URL 
+            to handle the provider's callback, and prompts the user to select an account.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLoginCallback(System.String)">
+            <summary>
+            Handles the callback from the external login provider after the authentication attempt.
+            </summary>
+            <param name="remoteError">
+            Optional error message returned by the external provider during the authentication process.
+            </param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the authentication response, 
+            including status code and any relevant data or error messages.
+            </returns>
+            <remarks>
+            This method calls <see cref="!:_authService.ExternalLoginCallbackAsync"/> to process the 
+            external login result and return the final authentication response.
+            </remarks>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Public.BasketsController">
             <summary>
             API controller for managing customer baskets.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BasketsController.#ctor(EStoreX.Core.ServiceContracts.IBasketService)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.#ctor(EStoreX.Core.ServiceContracts.IBasketService)">
             <summary>
-            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.BasketsController"/> class.
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.BasketsController"/> class.
             </summary>
             <param name="basketService">basket service</param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BasketsController.GetBasket(System.String)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.GetBasket(System.String)">
             <summary>
             Retrieves a customer basket by ID.
             </summary>
             <param name="id">The customer ID.</param>
             <returns>The customer basket.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BasketsController.AddOrUpdateBasket(EStoreX.Core.Domain.Entities.CustomerBasket)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.Domain.Entities.CustomerBasket)">
             <summary>
             Adds or updates a customer basket.
             </summary>
             <param name="basket">The basket to add or update.</param>
             <returns>The updated basket.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BasketsController.DeleteBasket(System.String)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.DeleteBasket(System.String)">
             <summary>
             Deletes a customer basket by ID.
             </summary>
             <param name="id">The customer ID.</param>
             <returns>Status of the deletion.</returns>
         </member>
-        <member name="T:E_StoreX.API.Controllers.BugController">
+        <member name="T:E_StoreX.API.Controllers.Public.BugController">
             <summary>
             Controller for handling bug-related operations.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BugController.GetError">
+        <member name="M:E_StoreX.API.Controllers.Public.BugController.GetError">
             <summary>
             Returns a 500 Internal Server Error response.
             </summary>
             <returns>A 500 status code with a message indicating an internal server error.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BugController.GetNotFound">
+        <member name="M:E_StoreX.API.Controllers.Public.BugController.GetNotFound">
             <summary>
             Returns a 404 Not Found response.
             </summary>
             <returns>A 404 status code with a message indicating the resource was not found.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BugController.GetBadRequest(System.Guid)">
+        <member name="M:E_StoreX.API.Controllers.Public.BugController.GetBadRequest(System.Guid)">
              <summary>
              Returns a 400 Bad Request response.
              </summary>
              <returns>A 400 status code with a message indicating the resource was bad-request</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.BugController.GetBadRequest">
+        <member name="M:E_StoreX.API.Controllers.Public.BugController.GetBadRequest">
              <summary>
              Returns a 400 Bad Request response.
              </summary>
              <returns>A 400 status code with a message indicating the resource was bad-request</returns>
         </member>
-        <member name="T:E_StoreX.API.Controllers.CategoriesController">
+        <member name="T:E_StoreX.API.Controllers.Public.CategoriesController">
             <summary>
             Controller for managing product categories in the E-StoreX application.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
+        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
             <summary>
             Constructor for CategoriesController.
             </summary>
             <param name="categoriesService"></param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.GetCategories">
+        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.GetCategories">
             <summary>
             Retrieves all categories from the database.
             </summary>
             <returns>return </returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.CategoriesController.GetCategoryById(System.Guid)">
+        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.GetCategoryById(System.Guid)">
             <summary>
             Retrieve category with specific Id 
             </summary>
             <param name="Id">Category Id</param>
             <returns>Category with Id or BadRequest</returns>
         </member>
-        <member name="T:E_StoreX.API.Controllers.CustomControllerBase">
+        <member name="T:E_StoreX.API.Controllers.Public.CustomControllerBase">
             <summary>
             Base controller for the E-StoreX API, providing common functionality for all controllers.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.CustomControllerBase.#ctor">
+        <member name="M:E_StoreX.API.Controllers.Public.CustomControllerBase.#ctor">
             <summary>
             Constructor for CustomControllerBase, initializing the unit of work.
             </summary>
         </member>
-        <member name="T:E_StoreX.API.Controllers.ErrorController">
+        <member name="T:E_StoreX.API.Controllers.Public.ErrorController">
             <summary>
             
             </summary>
         </member>
-        <member name="T:E_StoreX.API.Controllers.FrontendProxyController">
+        <member name="T:E_StoreX.API.Controllers.Public.FrontendProxyController">
             <summary>
             Controller that acts as a proxy between the frontend and backend for password reset functionality.
             </summary>
@@ -482,9 +482,9 @@
             such as the need to hide the API key.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.FrontendProxyController.#ctor(System.Net.Http.IHttpClientFactory,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
+        <member name="M:E_StoreX.API.Controllers.Public.FrontendProxyController.#ctor(System.Net.Http.IHttpClientFactory,Microsoft.Extensions.Configuration.IConfiguration,Microsoft.AspNetCore.Http.IHttpContextAccessor)">
             <summary>
-            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.FrontendProxyController"/> class.
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.FrontendProxyController"/> class.
             </summary>
             <param name="httpClientFactory">The factory used to create <see cref="T:System.Net.Http.HttpClient"/> instances.</param>
             <param name="configuration">The configuration provider used to access API settings.</param>
@@ -493,7 +493,7 @@
             such as the scheme, host, and path for constructing full URLs.
             </param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.FrontendProxyController.ResetPasswordProxy(EStoreX.Core.DTO.ResetPasswordDTO)">
+        <member name="M:E_StoreX.API.Controllers.Public.FrontendProxyController.ResetPasswordProxy(EStoreX.Core.DTO.Account.Requests.ResetPasswordDTO)">
             <summary>
             Acts as a proxy endpoint that forwards a password reset request from the frontend to the backend API.
             </summary>
@@ -510,12 +510,12 @@
             current HTTP request context, and forwards the request to the backend with the necessary headers.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.FrontendProxyController.VerifyResetPassword(EStoreX.Core.DTO.VerifyResetPasswordDTO)">
+        <member name="M:E_StoreX.API.Controllers.Public.FrontendProxyController.VerifyResetPassword(EStoreX.Core.DTO.Account.Requests.VerifyResetPasswordDTO)">
             <summary>
             Acts as a proxy endpoint that forwards a verify reset password request from the frontend to the backend API.
             </summary>
             <param name="request">
-            A <see cref="T:EStoreX.Core.DTO.VerifyResetPasswordDTO"/> that contains the user's ID and the reset token.
+            A <see cref="T:EStoreX.Core.DTO.Account.Requests.VerifyResetPasswordDTO"/> that contains the user's ID and the reset token.
             These parameters are passed from the frontend via query string.
             </param>
             <returns>
@@ -530,19 +530,19 @@
             appends the API key in the headers, and relays the GET request with query parameters.
             </remarks>
         </member>
-        <member name="T:E_StoreX.API.Controllers.OrdersController">
+        <member name="T:E_StoreX.API.Controllers.Public.OrdersController">
             <summary>
             Controller responsible for handling order-related operations.
             Requires the user to be authenticated.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.OrdersController.#ctor(EStoreX.Core.ServiceContracts.IOrderService)">
+        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.#ctor(EStoreX.Core.ServiceContracts.IOrderService)">
             <summary>
-            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.OrdersController"/> class.
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.OrdersController"/> class.
             </summary>
             <param name="orderService">The service that handles order-related operations.</param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.OrdersController.CreateOrder(EStoreX.Core.DTO.OrderAddRequest)">
+        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.CreateOrder(EStoreX.Core.DTO.Orders.Requests.OrderAddRequest)">
             <summary>
             Creates a new order for the authenticated user.
             </summary>
@@ -554,26 +554,26 @@
             <response code="200">Returns the newly created order.</response>
             <response code="400">If the user email is not present in the JWT token.</response>
         </member>
-        <member name="M:E_StoreX.API.Controllers.OrdersController.GetOrders">
+        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.GetOrders">
             <summary>
             Retrieves all orders associated with the currently authenticated user.
             </summary>
-            <returns>A list of <see cref="T:EStoreX.Core.DTO.OrderResponse"/> objects representing the user's orders.</returns>
+            <returns>A list of <see cref="!:OrderResponse"/> objects representing the user's orders.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.OrdersController.GetOrdersById(System.Guid)">
+        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.GetOrdersById(System.Guid)">
             <summary>
             Retrieves a specific order by its ID for the currently authenticated user.
             </summary>
             <param name="Id">The unique identifier of the order.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.OrderResponse"/> object representing the order, or NotFound if not found.</returns>
+            <returns>An <see cref="!:OrderResponse"/> object representing the order, or NotFound if not found.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.OrdersController.GetDeliveryMethods">
+        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.GetDeliveryMethods">
             <summary>
             Retrieves all available delivery methods.
             </summary>
-            <returns>A list of <see cref="T:EStoreX.Core.DTO.DeliveryMethodResponse"/> objects representing delivery options.</returns>
+            <returns>A list of <see cref="!:DeliveryMethodResponse"/> objects representing delivery options.</returns>
         </member>
-        <member name="T:E_StoreX.API.Controllers.PaymentsController">
+        <member name="T:E_StoreX.API.Controllers.Public.PaymentsController">
             <summary>
             Handles payment-related operations such as creating or updating Stripe payment intents.
             </summary>
@@ -582,9 +582,9 @@
             Typically called before placing an order to prepare or update the payment.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.PaymentsController.#ctor(EStoreX.Core.ServiceContracts.IPaymentService,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.StripeSettings},Microsoft.Extensions.Logging.ILogger{E_StoreX.API.Controllers.PaymentsController})">
+        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.#ctor(EStoreX.Core.ServiceContracts.IPaymentService,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.StripeSettings},Microsoft.Extensions.Logging.ILogger{E_StoreX.API.Controllers.Public.PaymentsController})">
             <summary>
-            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.PaymentsController"/> class.
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.PaymentsController"/> class.
             Handles payment operations including creating payment intents and processing webhooks.
             </summary>
             <param name="paymentService">Service for handling payment-related business logic.</param>
@@ -592,7 +592,7 @@
             <param name="logger">Logger instance for logging payment events and errors.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if Stripe signing secret is not provided in configuration.</exception>
         </member>
-        <member name="M:E_StoreX.API.Controllers.PaymentsController.CreateOrUpdatePaymentIntent(System.String,System.Nullable{System.Guid})">
+        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.CreateOrUpdatePaymentIntent(System.String,System.Nullable{System.Guid})">
             <summary>
             Creates or updates a Stripe payment intent for the specified basket and delivery method.
             </summary>
@@ -608,7 +608,7 @@
             This endpoint is called by the frontend before initiating payment through Stripe.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.PaymentsController.UpdateStatusWithStripe">
+        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.UpdateStatusWithStripe">
             <summary>
             Handles incoming Stripe webhook events to update the order status based on the payment result.
             </summary>
@@ -633,24 +633,24 @@
             Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> (400) if there's an error validating or processing the event.
             </returns>
         </member>
-        <member name="T:E_StoreX.API.Controllers.ProductsController">
+        <member name="T:E_StoreX.API.Controllers.Public.ProductsController">
             <summary>
             Controller for managing products in the E-StoreX application.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
             <summary>
             Constructor for ProductsController.
             </summary>
             <param name="productsService"></param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.GetAllProducts(EStoreX.Core.DTO.ProductQueryDTO)">
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.GetAllProducts(EStoreX.Core.DTO.Products.Responses.ProductQueryDTO)">
             <summary>
             Retrieves all products from the database.
             </summary>
             <returns>products</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.ProductsController.GetProductById(System.Guid)">
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.GetProductById(System.Guid)">
             <summary>
             Retrieves a product by its ID.
             </summary>
@@ -668,7 +668,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 400.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 400.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Unauthorized(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -676,7 +676,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 401.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 401.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Forbidden(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -684,7 +684,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 403.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 403.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.NotFound(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -692,7 +692,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 404.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 404.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Conflict(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -700,7 +700,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 409.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 409.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Gone(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -708,7 +708,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 410.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 410.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.UnsupportedMediaType(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -716,7 +716,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 415.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 415.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.TooManyRequests(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -724,7 +724,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 429.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 429.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.InternalServerError(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -732,7 +732,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 500.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 500.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.ServiceUnavailable(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -740,7 +740,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 503.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 503.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.NotImplemented(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -748,7 +748,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 501.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 501.</returns>
         </member>
         <member name="M:E_StoreX.API.Helper.ApiResponseFactory.RequestTimeout(System.String,System.Collections.Generic.List{System.String})">
             <summary>
@@ -756,7 +756,7 @@
             </summary>
             <param name="message">The error message.</param>
             <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.ApiErrorResponse"/> with status 408.</returns>
+            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 408.</returns>
         </member>
         <member name="T:E_StoreX.API.Middleware.ApiKeyMiddleware">
             <summary>
@@ -769,7 +769,7 @@
             </summary>
             <param name="next">The next middleware in the pipeline.</param>
         </member>
-        <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,EStoreX.Core.Services.IApiClientService)">
+        <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,ServiceContracts.IApiClientService)">
             <summary>
             Invokes the middleware to check for a valid API key.
             </summary>

@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using EStoreX.Core.DTO;
-using System.Linq;
-using System.Threading.Tasks;
+using EStoreX.Core.DTO.Common;
 
 namespace EStoreX.API.Filters
 {
@@ -30,7 +28,7 @@ namespace EStoreX.API.Filters
                     .Select(e => e.ErrorMessage)
                     .ToList();
 
-                var response = new AuthenticationFailureResponse
+                var response = new ApiErrorResponse
                 {
                     Success = false,
                     StatusCode = 400,

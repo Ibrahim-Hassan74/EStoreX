@@ -1,5 +1,8 @@
 ﻿using Domain.Entities;
-using EStoreX.Core.DTO;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Orders.Requests;
+using EStoreX.Core.DTO.Account.Requests;
+using EStoreX.Core.DTO.Account.Responses;
 
 namespace ServiceContracts
 {
@@ -16,11 +19,11 @@ namespace ServiceContracts
         /// Data required for registering a new user.
         /// </param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> indicating whether the 
+        /// Returns an <see cref="ApiResponse"/> indicating whether the 
         /// registration was successful (StatusCode 200) or failed with details 
         /// (e.g., StatusCode 400 or 409 if username/email is already in use).
         /// </returns>
-        Task<AuthenticationResponse> RegisterAsync(RegisterDTO registerDTO);
+        Task<ApiResponse> RegisterAsync(RegisterDTO registerDTO);
 
         /// <summary>
         /// Authenticates a user with the provided login credentials.
@@ -29,11 +32,11 @@ namespace ServiceContracts
         /// Login data including email and password.
         /// </param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> indicating whether the 
+        /// Returns an <see cref="ApiResponse"/> indicating whether the 
         /// login was successful (StatusCode 200) or failed due to invalid credentials, 
         /// unconfirmed email, or locked account.
         /// </returns>
-        Task<AuthenticationResponse> LoginAsync(LoginDTO loginDTO);
+        Task<ApiResponse> LoginAsync(LoginDTO loginDTO);
 
         /// <summary>
         /// Confirms a user's email address using the confirmation token.
@@ -42,11 +45,11 @@ namespace ServiceContracts
         /// Contains the user ID and email confirmation token.
         /// </param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> indicating whether the 
+        /// Returns an <see cref="ApiResponse"/> indicating whether the 
         /// email confirmation was successful (StatusCode 200) or failed due to an 
         /// invalid/expired token (StatusCode 400 or 404).
         /// </returns>
-        Task<AuthenticationResponse> ConfirmEmailAsync(ConfirmEmailDTO dto);
+        Task<ApiResponse> ConfirmEmailAsync(ConfirmEmailDTO dto);
 
         /// <summary>
         /// Initiates the forgot password process by generating a reset token and 
@@ -56,11 +59,11 @@ namespace ServiceContracts
         /// Contains the email address of the user requesting password reset.
         /// </param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> indicating whether the 
+        /// Returns an <see cref="ApiResponse"/> indicating whether the 
         /// reset email was sent successfully (StatusCode 200) or failed due to 
         /// invalid email or unconfirmed account.
         /// </returns>
-        Task<AuthenticationResponse> ForgotPasswordAsync(ForgotPasswordDTO dto);
+        Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordDTO dto);
 
         /// <summary>
         /// Verifies the validity of a reset password token for a specific user.
@@ -70,10 +73,10 @@ namespace ServiceContracts
         /// reset password token that needs to be verified.
         /// </param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> indicating whether the 
+        /// Returns an <see cref="ApiResponse"/> indicating whether the 
         /// token is valid (StatusCode 200) or invalid/expired (StatusCode 400 or 404).
         /// </returns>
-        Task<AuthenticationResponse> VerifyResetPasswordTokenAsync(VerifyResetPasswordDTO dto);
+        Task<ApiResponse> VerifyResetPasswordTokenAsync(VerifyResetPasswordDTO dto);
 
         /// <summary>
         /// Resets the user's password using a valid reset token.
@@ -82,20 +85,20 @@ namespace ServiceContracts
         /// Contains user ID, reset token, new password, and confirmation password.
         /// </param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> indicating whether the 
+        /// Returns an <see cref="ApiResponse"/> indicating whether the 
         /// password reset was successful (StatusCode 200) or failed due to token 
         /// issues or validation errors (StatusCode 400 or 404).
         /// </returns>
-        Task<AuthenticationResponse> ResetPasswordAsync(ResetPasswordDTO dto);
+        Task<ApiResponse> ResetPasswordAsync(ResetPasswordDTO dto);
         /// <summary>
         /// Generates a new JWT (and refresh token) using a valid refresh token.
         /// </summary>
         /// <param name="model">The current (expired) access token and the refresh token.</param>
         /// <returns>
-        /// Returns an <see cref="AuthenticationResponse"/> with a new access token on success,
+        /// Returns an <see cref="ApiResponse"/> with a new access token on success,
         /// or a failure response when the refresh token is invalid or expired.
         /// </returns>
-        Task<AuthenticationResponse> RefreshTokenAsync(TokenModel model);
+        Task<ApiResponse> RefreshTokenAsync(TokenModel model);
         /// <summary>
         /// Updates the address information associated with a specific user.
         /// </summary>
@@ -126,9 +129,9 @@ namespace ServiceContracts
         /// </summary>
         /// <param name="email">The email of the user to log out. If null, only signs out without clearing refresh token.</param>
         /// <returns>
-        /// An <see cref="AuthenticationResponse"/> indicating whether the logout operation was successful.
+        /// An <see cref="ApiResponse"/> indicating whether the logout operation was successful.
         /// </returns>
-        Task<AuthenticationResponse> LogoutAsync(string? email);
+        Task<ApiResponse> LogoutAsync(string? email);
         /// <summary>
         /// Retrieves detailed information for a specific user by their unique ID.
         /// </summary>
@@ -149,10 +152,10 @@ namespace ServiceContracts
         /// and password change information.
         /// </param>
         /// <returns>
-        /// An <see cref="AuthenticationResponse"/> indicating whether the update was successful, 
+        /// An <see cref="ApiResponse"/> indicating whether the update was successful, 
         /// along with any relevant messages or errors.
         /// </returns>
-        Task<AuthenticationResponse> UpdateUserProfileAsync(UpdateUserDTO dto);
+        Task<ApiResponse> UpdateUserProfileAsync(UpdateUserDTO dto);
 
         /// <summary>
         /// Handles the callback from an external login provider (e.g., Google, GitHub).
@@ -161,7 +164,7 @@ namespace ServiceContracts
         /// Optional error message returned by the external provider during the authentication process.
         /// </param>
         /// <returns>
-        /// An <see cref="AuthenticationResponse"/> indicating whether the login was successful or failed,
+        /// An <see cref="ApiResponse"/> indicating whether the login was successful or failed,
         /// along with any relevant error messages or authentication tokens.
         /// </returns>
         /// <remarks>
@@ -174,7 +177,7 @@ namespace ServiceContracts
         /// <item>Returns HTTP 400 if the provider does not supply enough information to create a user (e.g., no email or name).</item>
         /// </list>
         /// </remarks>
-        Task<AuthenticationResponse> ExternalLoginCallbackAsync(string remoteError = "");
+        Task<ApiResponse> ExternalLoginCallbackAsync(string remoteError = "");
 
     }
 }

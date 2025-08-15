@@ -1,5 +1,5 @@
 ﻿using EStoreX.Core.Domain.IdentityEntities;
-using EStoreX.Core.DTO;
+using EStoreX.Core.DTO.Common;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -27,7 +27,7 @@ namespace EStoreX.Core.Services
         /// </summary>
         /// <param name="user">ApplicationUser object</param>
         /// <returns>AuthenticationResponse that includes token</returns>
-        public async Task<AuthenticationResponse> CreateJwtToken(ApplicationUser user)
+        public async Task<ApiResponse> CreateJwtToken(ApplicationUser user)
         {
             // Create a DateTime object representing the token expiration time by adding the number of minutes specified in the configuration to the current UTC time.
             DateTime expiration = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
@@ -77,7 +77,7 @@ namespace EStoreX.Core.Services
             string token = tokenHandler.WriteToken(tokenGenerator);
 
             // Create and return an AuthenticationResponse object containing the token, user email, user name, and token expiration time.
-            return new AuthenticationSuccessResponse()
+            return new ApiSuccessResponse()
             {
                 Token = token,
                 Email = user.Email,

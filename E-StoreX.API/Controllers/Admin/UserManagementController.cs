@@ -1,4 +1,4 @@
-﻿using EStoreX.Core.DTO;
+﻿using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

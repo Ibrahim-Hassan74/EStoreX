@@ -15,6 +15,12 @@ using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
+var configPath = Path.Combine(builder.Environment.ContentRootPath, "Configurations");
+builder.Configuration
+    .AddJsonFile(Path.Combine(configPath, "appsettings.json"), optional: false, reloadOnChange: true)
+    .AddJsonFile(Path.Combine(configPath, $"appsettings.{builder.Environment.EnvironmentName}.json"), optional: true);
+
 // Add services to the container.
 
 builder.Services.AddControllers();

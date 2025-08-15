@@ -1,4 +1,4 @@
-﻿using EStoreX.Core.DTO;
+﻿using EStoreX.Core.DTO.Common;
 
 namespace E_StoreX.API.Helper
 {

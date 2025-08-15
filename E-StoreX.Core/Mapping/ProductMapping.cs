@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Domain.Entities.Product;
-using EStoreX.Core.DTO;
+using EStoreX.Core.DTO.Products.Requests;
+using EStoreX.Core.DTO.Products.Responses;
 
 namespace EStoreX.Core.Mapping
 {

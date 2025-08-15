@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
+using EStoreX.Core.DTO.Account.Responses;
 using EStoreX.Core.Domain.IdentityEntities;
-using EStoreX.Core.DTO;
 
 namespace EStoreX.Core.Mapping
 {

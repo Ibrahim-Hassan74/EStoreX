@@ -1,7 +1,7 @@
-﻿using EStoreX.Core.DTO;
-using EStoreX.Core.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.DTO.Account.Requests;
+using EStoreX.Core.DTO.Account.Responses;
+using ServiceContracts;
 
 namespace E_StoreX.API.Controllers.Admin
 {

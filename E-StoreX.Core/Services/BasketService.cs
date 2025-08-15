@@ -1,11 +1,6 @@
 ﻿using EStoreX.Core.Domain.Entities;
 using EStoreX.Core.RepositoryContracts;
 using EStoreX.Core.ServiceContracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EStoreX.Core.Services
 {

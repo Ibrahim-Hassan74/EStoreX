@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
-using EStoreX.Core.Domain.IdentityEntities;
-using EStoreX.Core.DTO;
 using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
-using EStoreX.Core.ServiceContracts;
+using EStoreX.Core.DTO.Common;
 using Microsoft.AspNetCore.Identity;
+using EStoreX.Core.ServiceContracts;
+using EStoreX.Core.DTO.Account.Requests;
+using EStoreX.Core.DTO.Account.Responses;
+using EStoreX.Core.Domain.IdentityEntities;
 
 namespace EStoreX.Core.Services
 {
@@ -24,7 +26,7 @@ namespace EStoreX.Core.Services
             _mapper = mapper;
         }
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> AddAdminAsync(CreateAdminDTO dto)
+        public async Task<ApiResponse> AddAdminAsync(CreateAdminDTO dto)
         {
             var user = new ApplicationUser
             {
@@ -38,7 +40,7 @@ namespace EStoreX.Core.Services
             var result = await _userManager.CreateAsync(user, dto.Password);
 
             if (!result.Succeeded)
-                return AuthenticationResponseFactory.Failure("Failed to create admin.", 400, result.Errors.Select(x => x.Description).ToArray());
+                return ApiResponseFactory.Failure("Failed to create admin.", 400, result.Errors.Select(x => x.Description).ToArray());
 
             if (!await _roleManager.RoleExistsAsync(UserTypeOptions.Admin.ToString()))
             {
@@ -47,15 +49,15 @@ namespace EStoreX.Core.Services
 
             await _userManager.AddToRoleAsync(user, "Admin");
 
-            return AuthenticationResponseFactory.Success("Admin created successfully.");
+            return ApiResponseFactory.Success("Admin created successfully.");
         }
 
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> AssignRoleToUserAsync(UpdateUserRoleDTO dto)
+        public async Task<ApiResponse> AssignRoleToUserAsync(UpdateUserRoleDTO dto)
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
-                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+                return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
             if (!await _roleManager.RoleExistsAsync(dto.Role.ToString()))
                 await _roleManager.CreateAsync(new ApplicationRole() { Name = dto.Role.ToString() });
@@ -63,67 +65,67 @@ namespace EStoreX.Core.Services
             var result = await _userManager.AddToRoleAsync(user, dto.Role.ToString());
 
             return result.Succeeded
-                ? AuthenticationResponseFactory.Success("Role assigned successfully.")
-                : AuthenticationResponseFactory.Failure("Failed to assign role.",400, result.Errors.Select(error => error.Description).ToArray());
+                ? ApiResponseFactory.Success("Role assigned successfully.")
+                : ApiResponseFactory.Failure("Failed to assign role.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> RemoveRoleFromUserAsync(UpdateUserRoleDTO dto)
+        public async Task<ApiResponse> RemoveRoleFromUserAsync(UpdateUserRoleDTO dto)
         {
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
-                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+                return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
 
             var result = await _userManager.RemoveFromRoleAsync(user, dto.Role.ToString());
 
             return result.Succeeded
-                ? AuthenticationResponseFactory.Success("Role removed successfully.")
-                : AuthenticationResponseFactory.Failure("Failed to remove role.",400, result.Errors.Select(error => error.Description).ToArray());
+                ? ApiResponseFactory.Success("Role removed successfully.")
+                : ApiResponseFactory.Failure("Failed to remove role.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> ActivateUserAsync(string userId)
+        public async Task<ApiResponse> ActivateUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return  AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+                return  ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
 
             user.LockoutEnd = null;
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded
-                ? AuthenticationResponseFactory.Success("User activated successfully.")
-                : AuthenticationResponseFactory.Failure("Failed to activate user.",400, result.Errors.Select(error => error.Description).ToArray());
+                ? ApiResponseFactory.Success("User activated successfully.")
+                : ApiResponseFactory.Failure("Failed to activate user.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> DeactivateUserAsync(string userId)
+        public async Task<ApiResponse> DeactivateUserAsync(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+                return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
 
             user.LockoutEnd = DateTimeOffset.MaxValue;
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded
-                ? AuthenticationResponseFactory.Success("User deactivated successfully.")
-                : AuthenticationResponseFactory.Failure("Failed to deactivate user.",400, result.Errors.Select(error => error.Description).ToArray());
+                ? ApiResponseFactory.Success("User deactivated successfully.")
+                : ApiResponseFactory.Failure("Failed to deactivate user.",400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> DeleteUserAsync(string targetUserId, string currentUserId)
+        public async Task<ApiResponse> DeleteUserAsync(string targetUserId, string currentUserId)
         {
             var targetUser = await _userManager.FindByIdAsync(targetUserId);
             if (targetUser == null)
-                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+                return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
             if (currentUser == null)
-                return AuthenticationResponseFactory.Failure("Unauthorized.",404);
+                return ApiResponseFactory.Failure("Unauthorized.",404);
 
             var targetRoles = await _userManager.GetRolesAsync(targetUser);
             var currentRoles = await _userManager.GetRolesAsync(currentUser);
@@ -135,35 +137,35 @@ namespace EStoreX.Core.Services
             bool isTargetSuperAdmin = targetRoles.Contains("SuperAdmin");
 
             if (isTargetSuperAdmin && !isCurrentSuperAdmin)
-                return AuthenticationResponseFactory.Failure("Only a Super Admin can delete another Super Admin.", 400);
+                return ApiResponseFactory.Failure("Only a Super Admin can delete another Super Admin.", 400);
 
             if (isTargetAdmin && !isCurrentSuperAdmin)
-                return AuthenticationResponseFactory.Failure("Only a Super Admin can delete an Admin.", 400);
+                return ApiResponseFactory.Failure("Only a Super Admin can delete an Admin.", 400);
 
             if (!isTargetAdmin && !isTargetSuperAdmin && !(isCurrentAdmin || isCurrentSuperAdmin))
-                return AuthenticationResponseFactory.Failure("Only Admin or Super Admin can delete a user.", 400);
+                return ApiResponseFactory.Failure("Only Admin or Super Admin can delete a user.", 400);
 
             var result = await _userManager.DeleteAsync(targetUser);
 
             return result.Succeeded
-                ? AuthenticationResponseFactory.Success("User deleted successfully.")
-                : AuthenticationResponseFactory.Failure("Failed to delete user.",400, result.Errors.Select(e => e.Description).ToArray());
+                ? ApiResponseFactory.Success("User deleted successfully.")
+                : ApiResponseFactory.Failure("Failed to delete user.",400, result.Errors.Select(e => e.Description).ToArray());
         }
 
 
 
         /// <inheritdoc/>
-        public async Task<AuthenticationResponse> DeleteAdminAsync(string adminUserId)
+        public async Task<ApiResponse> DeleteAdminAsync(string adminUserId)
         {
             var user = await _userManager.FindByIdAsync(adminUserId);
             if (user == null)
-                return AuthenticationResponseFactory.Failure("User not found.", 404, "User not found.");
+                return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
             var result = await _userManager.DeleteAsync(user);
 
             return result.Succeeded
-                ? AuthenticationResponseFactory.Success("Admin deleted successfully.")
-                : AuthenticationResponseFactory.Failure("Failed to delete admin.", 400, result.Errors.Select(e => e.Description).ToArray());
+                ? ApiResponseFactory.Success("Admin deleted successfully.")
+                : ApiResponseFactory.Failure("Failed to delete admin.", 400, result.Errors.Select(e => e.Description).ToArray());
         }
 
         /// <inheritdoc/>

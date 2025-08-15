@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Options;
+﻿using MimeKit;
+using Microsoft.Extensions.Options;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.ServiceContracts;
-using EStoreX.Core.DTO;
-using MimeKit;
+using EStoreX.Core.DTO.Account.Requests;
 
 
 namespace EStoreX.Core.Services

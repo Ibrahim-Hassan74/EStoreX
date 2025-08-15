@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using Domain.Entities.Product;
-using EStoreX.Core.DTO;
 using EStoreX.Core.Helper;
-using EStoreX.Core.RepositoryContracts;
+using Domain.Entities.Product;
 using EStoreX.Core.ServiceContracts;
+using EStoreX.Core.RepositoryContracts;
+using EStoreX.Core.DTO.Categories.Requests;
+using EStoreX.Core.DTO.Categories.Responses;
 
 namespace EStoreX.Core.Services
 {

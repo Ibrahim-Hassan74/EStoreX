@@ -1,6 +1,6 @@
-﻿using EStoreX.Core.Services;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using ServiceContracts;
 using System.Threading.Tasks;
 
 namespace E_StoreX.API.Middleware

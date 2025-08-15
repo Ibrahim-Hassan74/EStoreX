@@ -1,6 +1,7 @@
-﻿using EStoreX.Core.DTO;
+﻿using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.ServiceContracts;
-using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.DTO.Products.Requests;
+using EStoreX.Core.DTO.Products.Responses;
 
 namespace E_StoreX.API.Controllers.Admin
 {
