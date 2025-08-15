@@ -1,4 +1,4 @@
-﻿using EStoreX.Core.Domain.Entities;
+﻿using Domain.Entities.Common;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 

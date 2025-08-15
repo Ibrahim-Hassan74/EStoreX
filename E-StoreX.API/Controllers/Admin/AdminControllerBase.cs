@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using EStoreX.Core.Enums;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -8,7 +9,7 @@ namespace E_StoreX.API.Controllers.Admin
     /// </summary>
     [Route("api/admin/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin,SuperAdmin")]
+    [Authorize(Roles = $"{nameof(UserTypeOptions.Admin)},{nameof(UserTypeOptions.SuperAdmin)}")]
     public class AdminControllerBase : ControllerBase
     {
     }

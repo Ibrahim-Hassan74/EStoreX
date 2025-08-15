@@ -1,7 +1,7 @@
-﻿using E_StoreX.API.Helper;
-using EStoreX.Core.Domain.Entities;
-using EStoreX.Core.ServiceContracts;
+﻿using Domain.Entities.Baskets;
+using E_StoreX.API.Helper;
 using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.ServiceContracts.Basket;
 
 namespace E_StoreX.API.Controllers.Public
 {

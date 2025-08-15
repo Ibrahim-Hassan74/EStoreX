@@ -1,7 +1,8 @@
 ﻿using EStoreX.Core.DTO.Account.Requests;
-using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.ServiceContracts.Account;
+using EStoreX.Core.Enums;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -42,7 +43,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// Create an Admin (SuperAdmin only).
         /// </summary>
         [HttpPost("add-admin")]
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
         public async Task<IActionResult> AddAdmin([FromBody] CreateAdminDTO dto)
         {
             var result = await _userManagementService.AddAdminAsync(dto);
@@ -52,7 +53,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// Delete an admin permanently (SuperAdmin only).
         /// </summary>
         [HttpDelete("admin/{id}")]
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
         public async Task<IActionResult> DeleteAdmin(string id)
         {
             var result = await _userManagementService.DeleteAdminAsync(id);
@@ -94,7 +95,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// Assign a specified role to a user. Accessible only by Super Admin.
         /// </summary>
         [HttpPost("assign-role")]
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
         public async Task<IActionResult> AssignRole([FromBody] UpdateUserRoleDTO dto)
         {
             var result = await _userManagementService.AssignRoleToUserAsync(dto);
@@ -105,7 +106,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// Remove a specified role from a user. Accessible only by Super Admin.
         /// </summary>
         [HttpPost("remove-role")]
-        [Authorize(Roles = "SuperAdmin")]
+        [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
         public async Task<IActionResult> RemoveRole([FromBody] UpdateUserRoleDTO dto)
         {
             var result = await _userManagementService.RemoveRoleFromUserAsync(dto);

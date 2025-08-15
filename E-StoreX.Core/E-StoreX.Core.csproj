@@ -20,4 +20,8 @@
     <PackageReference Include="Stripe.net" Version="45.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Domain\Entities\Favourites\" />
+  </ItemGroup>
+
 </Project>

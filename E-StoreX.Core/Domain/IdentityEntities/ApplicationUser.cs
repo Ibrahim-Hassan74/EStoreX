@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
-using Domain.Entities;
+using Domain.Entities.Common;
 
 namespace EStoreX.Core.Domain.IdentityEntities
 {

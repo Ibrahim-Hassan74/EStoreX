@@ -1,6 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Entities.Common;
 using Domain.Entities.Product;
-using EStoreX.Core.Domain.Entities;
 using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;

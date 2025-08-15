@@ -1,6 +1,6 @@
 ﻿using EStoreX.Core.DTO.Categories.Requests;
-using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.ServiceContracts.Categories;
 
 namespace E_StoreX.API.Controllers.Admin
 {

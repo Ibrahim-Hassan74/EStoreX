@@ -1,9 +1,9 @@
-﻿using EStoreX.Core.RepositoryContracts;
-using EStoreX.Infrastructure.Data;
-using EStoreX.Infrastructure.Repository;
+﻿using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using EStoreX.Core.Repository.Common;
+using EStoreX.Core.RepositoryContracts.Common;
 using StackExchange.Redis;
 
 namespace EStoreX.Infrastructure

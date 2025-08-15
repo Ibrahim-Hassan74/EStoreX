@@ -17,7 +17,7 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(ServiceContracts.IApiClientService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(EStoreX.Core.ServiceContracts.Account.IApiClientService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.ApiClientsController"/> class with the specified API client
             service.
@@ -41,7 +41,7 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.Categories.ICategoriesService)">
             <summary>
             Constructor for CategoriesController.
             </summary>
@@ -77,7 +77,7 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.#ctor(EStoreX.Core.ServiceContracts.IOrderService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.#ctor(EStoreX.Core.ServiceContracts.Orders.IOrderService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.OrdersController"/> class with the specified order service.
             </summary>
@@ -97,7 +97,7 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.Products.IProductsService)">
             <summary>
             Constructor for ProductsController.
             </summary>
@@ -130,7 +130,7 @@
             user management controller for administrative operations
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.#ctor(EStoreX.Core.ServiceContracts.IUserManagementService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.#ctor(EStoreX.Core.ServiceContracts.Account.IUserManagementService)">
             <summary>
             User management controller constructor
             </summary>
@@ -187,7 +187,7 @@
             such as registration, login, email confirmation, and password reset for the E-StoreX API.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.AccountController.#ctor(ServiceContracts.IAuthenticationService,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.SignInManager{EStoreX.Core.Domain.IdentityEntities.ApplicationUser})">
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.#ctor(EStoreX.Core.ServiceContracts.Account.IAuthenticationService,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.SignInManager{EStoreX.Core.Domain.IdentityEntities.ApplicationUser})">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.AccountController"/> class.
             </summary>
@@ -378,7 +378,7 @@
             API controller for managing customer baskets.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.#ctor(EStoreX.Core.ServiceContracts.IBasketService)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.#ctor(EStoreX.Core.ServiceContracts.Basket.IBasketService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.BasketsController"/> class.
             </summary>
@@ -391,7 +391,7 @@
             <param name="id">The customer ID.</param>
             <returns>The customer basket.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.Domain.Entities.CustomerBasket)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(Domain.Entities.Baskets.CustomerBasket)">
             <summary>
             Adds or updates a customer basket.
             </summary>
@@ -439,7 +439,7 @@
             Controller for managing product categories in the E-StoreX application.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.ICategoriesService)">
+        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.Categories.ICategoriesService)">
             <summary>
             Constructor for CategoriesController.
             </summary>
@@ -536,7 +536,7 @@
             Requires the user to be authenticated.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.#ctor(EStoreX.Core.ServiceContracts.IOrderService)">
+        <member name="M:E_StoreX.API.Controllers.Public.OrdersController.#ctor(EStoreX.Core.ServiceContracts.Orders.IOrderService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.OrdersController"/> class.
             </summary>
@@ -582,7 +582,7 @@
             Typically called before placing an order to prepare or update the payment.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.#ctor(EStoreX.Core.ServiceContracts.IPaymentService,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.StripeSettings},Microsoft.Extensions.Logging.ILogger{E_StoreX.API.Controllers.Public.PaymentsController})">
+        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.#ctor(EStoreX.Core.ServiceContracts.Common.IPaymentService,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.StripeSettings},Microsoft.Extensions.Logging.ILogger{E_StoreX.API.Controllers.Public.PaymentsController})">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.PaymentsController"/> class.
             Handles payment operations including creating payment intents and processing webhooks.
@@ -599,7 +599,7 @@
             <param name="basketId">The ID of the customer's basket. Cannot be null or empty.</param>
             <param name="deliveryMethodId">The ID of the selected delivery method. Optional.</param>
             <returns>
-            Returns the updated <see cref="T:EStoreX.Core.Domain.Entities.CustomerBasket"/> including the client secret for Stripe payment.
+            Returns the updated <see cref="T:Domain.Entities.Baskets.CustomerBasket"/> including the client secret for Stripe payment.
             Returns <c>BadRequest</c> if basketId is invalid.
             Returns <c>NotFound</c> if the basket does not exist.
             Returns <c>Ok</c> with the updated basket if successful.
@@ -638,7 +638,7 @@
             Controller for managing products in the E-StoreX application.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.#ctor(EStoreX.Core.ServiceContracts.IProductsService)">
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.#ctor(EStoreX.Core.ServiceContracts.Products.IProductsService)">
             <summary>
             Constructor for ProductsController.
             </summary>
@@ -769,7 +769,7 @@
             </summary>
             <param name="next">The next middleware in the pipeline.</param>
         </member>
-        <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,ServiceContracts.IApiClientService)">
+        <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,EStoreX.Core.ServiceContracts.Account.IApiClientService)">
             <summary>
             Invokes the middleware to check for a valid API key.
             </summary>

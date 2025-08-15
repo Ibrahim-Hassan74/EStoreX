@@ -1,8 +1,8 @@
 ﻿using E_StoreX.API.Helper;
 using EStoreX.Core.DTO.Orders.Requests;
-using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.ServiceContracts.Orders;
 using System.Security.Claims;
 
 namespace E_StoreX.API.Controllers.Public

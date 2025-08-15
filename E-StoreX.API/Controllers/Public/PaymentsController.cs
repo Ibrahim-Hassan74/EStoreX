@@ -4,9 +4,9 @@ using EStoreX.Core.DTO.Common;
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.Domain.Options;
 using Microsoft.Extensions.Options;
-using EStoreX.Core.Domain.Entities;
-using EStoreX.Core.ServiceContracts;
 using Microsoft.AspNetCore.Authorization;
+using Domain.Entities.Baskets;
+using EStoreX.Core.ServiceContracts.Common;
 
 namespace E_StoreX.API.Controllers.Public
 {

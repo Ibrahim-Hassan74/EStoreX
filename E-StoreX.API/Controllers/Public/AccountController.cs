@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using Domain.Entities;
-using ServiceContracts;
 using E_StoreX.API.Helper;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +8,8 @@ using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
 using Microsoft.AspNetCore.Authorization;
 using EStoreX.Core.Domain.IdentityEntities;
+using Domain.Entities.Common;
+using EStoreX.Core.ServiceContracts.Account;
 
 namespace E_StoreX.API.Controllers.Public
 {

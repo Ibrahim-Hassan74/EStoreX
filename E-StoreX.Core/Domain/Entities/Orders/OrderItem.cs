@@ -1,4 +1,6 @@
-﻿namespace EStoreX.Core.Domain.Entities.Orders
+﻿using Domain.Entities.Common;
+
+namespace EStoreX.Core.Domain.Entities.Orders
 {
     public class OrderItem : BaseEntity<Guid>
     {

@@ -1,13 +1,22 @@
 ﻿using EStoreX.Core.Domain.Options;
-using EStoreX.Core.ServiceContracts;
-using EStoreX.Core.Services;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using ServiceContracts;
+using EStoreX.Core.ServiceContracts.Account;
+using EStoreX.Core.ServiceContracts.Basket;
+using EStoreX.Core.ServiceContracts.Categories;
+using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Core.ServiceContracts.Orders;
+using EStoreX.Core.ServiceContracts.Products;
+using EStoreX.Core.Services.Account;
+using EStoreX.Core.Services.Basket;
+using EStoreX.Core.Services.Categories;
+using EStoreX.Core.Services.Common;
+using EStoreX.Core.Services.Orders;
+using EStoreX.Core.Services.Products;
 using System.Security.Claims;
 using System.Text;
 

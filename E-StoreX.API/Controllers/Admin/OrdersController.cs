@@ -1,5 +1,5 @@
-﻿using EStoreX.Core.ServiceContracts;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using EStoreX.Core.ServiceContracts.Orders;
 
 namespace E_StoreX.API.Controllers.Admin
 {

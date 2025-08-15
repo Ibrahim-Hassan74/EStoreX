@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.Enums;
+﻿using Domain.Entities.Common;
+using EStoreX.Core.Enums;
 
 namespace EStoreX.Core.Domain.Entities.Orders
 {
