@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.ServiceContracts.Products;
+using EStoreX.Core.Helper;
 
 namespace E_StoreX.API.Controllers.Public
 {

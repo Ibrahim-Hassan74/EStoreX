@@ -391,7 +391,7 @@
             <param name="id">The customer ID.</param>
             <returns>The customer basket.</returns>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(Domain.Entities.Baskets.CustomerBasket)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.DTO.Basket.CustomerBasketDTO)">
             <summary>
             Adds or updates a customer basket.
             </summary>
@@ -404,6 +404,13 @@
             </summary>
             <param name="id">The customer ID.</param>
             <returns>Status of the deletion.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.MergeBasket(System.String)">
+            <summary>
+            Merges the guest basket (created before login) with the authenticated user's basket.
+            </summary>
+            <param name="guestId">The basket ID generated for the guest session before login.</param>
+            <returns>The merged customer basket associated with the logged-in user.</returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.BugController">
             <summary>
@@ -656,107 +663,6 @@
             </summary>
             <param name="Id">Product Id</param>
             <returns>Product or NotFound</returns>
-        </member>
-        <member name="T:E_StoreX.API.Helper.ApiResponseFactory">
-            <summary>
-            Provides factory methods to create standardized API error responses with common HTTP status codes.
-            </summary>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.BadRequest(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 400 Bad Request error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 400.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Unauthorized(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 401 Unauthorized error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 401.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Forbidden(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 403 Forbidden error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 403.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.NotFound(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 404 Not Found error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 404.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Conflict(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 409 Conflict error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 409.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.Gone(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 410 Gone error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 410.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.UnsupportedMediaType(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 415 Unsupported Media Type error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 415.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.TooManyRequests(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 429 Too Many Requests error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 429.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.InternalServerError(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 500 Internal Server Error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 500.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.ServiceUnavailable(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 503 Service Unavailable error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 503.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.NotImplemented(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 501 Not Implemented error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 501.</returns>
-        </member>
-        <member name="M:E_StoreX.API.Helper.ApiResponseFactory.RequestTimeout(System.String,System.Collections.Generic.List{System.String})">
-            <summary>
-            Creates a 408 Request Timeout error response.
-            </summary>
-            <param name="message">The error message.</param>
-            <param name="errors">Optional detailed error list.</param>
-            <returns>An <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with status 408.</returns>
         </member>
         <member name="T:E_StoreX.API.Middleware.ApiKeyMiddleware">
             <summary>

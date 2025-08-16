@@ -6,12 +6,8 @@ namespace Domain.Entities.Baskets
     public class CustomerBasket : BaseEntity<string>
     {
         public List<BasketItem> BasketItems { get; set; } = new List<BasketItem>();
-        [System.ComponentModel.DataAnnotations.Schema.NotMapped] 
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)] 
         public string PaymentIntentId { get; set; } = string.Empty;
 
-        [System.ComponentModel.DataAnnotations.Schema.NotMapped]
-        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
         public string ClientSecret { get; set; } = string.Empty;
 
 

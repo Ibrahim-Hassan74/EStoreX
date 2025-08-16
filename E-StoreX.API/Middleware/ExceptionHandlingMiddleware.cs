@@ -1,4 +1,4 @@
-﻿using E_StoreX.API.Helper;
+﻿using EStoreX.Core.Helper;
 using Microsoft.Extensions.Caching.Memory;
 using System.Net;
 using System.Text.Json;

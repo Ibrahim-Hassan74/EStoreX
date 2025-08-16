@@ -1,9 +1,9 @@
-﻿using E_StoreX.API.Helper;
-using E_StoreX.API.Middleware;
+﻿using E_StoreX.API.Middleware;
 using EStoreX.API.Filters;
 using EStoreX.Core;
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.Domain.Options;
+using EStoreX.Core.Helper;
 using EStoreX.Infrastructure;
 using EStoreX.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;

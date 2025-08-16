@@ -1,6 +1,6 @@
-﻿using E_StoreX.API.Helper;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.ServiceContracts.Categories;
+using EStoreX.Core.Helper;
 
 namespace E_StoreX.API.Controllers.Public
 {

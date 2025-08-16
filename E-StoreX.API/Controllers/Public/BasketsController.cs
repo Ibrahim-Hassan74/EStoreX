@@ -1,7 +1,10 @@
 ﻿using Domain.Entities.Baskets;
-using E_StoreX.API.Helper;
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.ServiceContracts.Basket;
+using EStoreX.Core.Helper;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using EStoreX.Core.DTO.Basket;
 
 namespace E_StoreX.API.Controllers.Public
 {
@@ -40,9 +43,14 @@ namespace E_StoreX.API.Controllers.Public
         /// <param name="basket">The basket to add or update.</param>
         /// <returns>The updated basket.</returns>
         [HttpPost]
-        public async Task<IActionResult> AddOrUpdateBasket([FromBody] CustomerBasket basket)
+        public async Task<IActionResult> AddOrUpdateBasket([FromBody] CustomerBasketDTO basket)
         {
+            if (!Guid.TryParse(basket.Id, out _))
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Id format"));
+
             var updatedBasket = await _basketService.UpdateBasketAsync(basket);
+            if (updatedBasket == null)
+                return BadRequest(ApiResponseFactory.BadRequest("No valid items to update the basket"));
             return Ok(updatedBasket);
         }
 
@@ -59,8 +67,29 @@ namespace E_StoreX.API.Controllers.Public
 
             var result = await _basketService.DeleteBasketAsync(id);
             return result
-                ? Ok(new ResponseAPI(200, "Item Deleted"))
-                : BadRequest(new ResponseAPI(400, "Basket not found or already deleted"));
+                ? Ok(ApiResponseFactory.Success("Item Deleted"))
+                : BadRequest(ApiResponseFactory.NotFound("Basket not found or already deleted"));
         }
+        /// <summary>
+        /// Merges the guest basket (created before login) with the authenticated user's basket.
+        /// </summary>
+        /// <param name="guestId">The basket ID generated for the guest session before login.</param>
+        /// <returns>The merged customer basket associated with the logged-in user.</returns>
+        [Authorize]
+        [HttpPost("merge")]
+        public async Task<IActionResult> MergeBasket(string guestId)
+        {
+            if (!Guid.TryParse(guestId, out _))
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Id format"));
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userId))
+                return Unauthorized(ApiResponseFactory.Unauthorized("User not logged in"));
+
+            var mergedBasket = await _basketService.MergeBasketsAsync(guestId, userId);
+
+            return Ok(mergedBasket);
+        }
+
     }
 }

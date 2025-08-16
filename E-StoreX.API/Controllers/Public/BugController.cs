@@ -1,7 +1,6 @@
-﻿using E_StoreX.API.Helper;
-using EStoreX.Core.DTO.Common;
+﻿using EStoreX.Core.DTO.Common;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
+using EStoreX.Core.Helper;
 
 namespace E_StoreX.API.Controllers.Public
 {
