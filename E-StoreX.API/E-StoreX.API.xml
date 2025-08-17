@@ -480,6 +480,47 @@
             
             </summary>
         </member>
+        <member name="T:E_StoreX.API.Controllers.Public.FavouritesController">
+            <summary>
+            Controller responsible for managing user's favourite products.
+            Provides endpoints to add, remove, and retrieve favourites for the authenticated user.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.#ctor(EStoreX.Core.ServiceContracts.Favourites.IFavouriteService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.FavouritesController"/> class.
+            </summary>
+            <param name="favouriteService">The service that handles favourite-related operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.AddToFavourite(System.Guid)">
+            <summary>
+            Adds a product to the authenticated user's list of favourites.
+            </summary>
+            <param name="productId">The unique identifier of the product to add.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the operation result.
+            Returns <c>401 Unauthorized</c> if the user is not authenticated.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.RemoveFromFavourite(System.Guid)">
+            <summary>
+            Removes a product from the authenticated user's list of favourites.
+            </summary>
+            <param name="productId">The unique identifier of the product to remove.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the operation result.
+            Returns <c>401 Unauthorized</c> if the user is not authenticated.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.GetUserFavourites">
+            <summary>
+            Retrieves all products in the authenticated user's favourites list.
+            </summary>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the list of favourites.
+            Returns <c>401 Unauthorized</c> if the user is not authenticated.
+            </returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.FrontendProxyController">
             <summary>
             Controller that acts as a proxy between the frontend and backend for password reset functionality.

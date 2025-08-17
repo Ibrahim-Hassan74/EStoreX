@@ -304,7 +304,10 @@ namespace EStoreX.Core.Services.Account
             if (user.RefreshToken != model.RefreshToken || user.RefreshTokenExpirationDateTime <= DateTime.UtcNow)
                 return ApiResponseFactory.Failure("Invalid refresh token.", 400, "Refresh token is invalid or expired.");
 
-            var authResponse = await _jwtService.CreateJwtToken(user) as ApiSuccessResponse;
+            bool rememberMe = bool.TryParse(principal.FindFirst("remember_me")?.Value, out var rm) && rm;
+
+            var authResponse = await _jwtService.CreateJwtToken(user, rememberMe) as ApiSuccessResponse;
+
 
             // Rotate refresh token
             user.RefreshToken = authResponse?.RefreshToken;

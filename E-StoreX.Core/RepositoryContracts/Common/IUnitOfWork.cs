@@ -1,6 +1,7 @@
 ﻿using EStoreX.Core.RepositoryContracts.Account;
 using EStoreX.Core.RepositoryContracts.Basket;
 using EStoreX.Core.RepositoryContracts.Categories;
+using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.RepositoryContracts.Products;
 
@@ -15,6 +16,7 @@ namespace EStoreX.Core.RepositoryContracts.Common
         IOrderRepository OrderRepository { get; }
         IAuthenticationRepository AuthenticationRepository { get; }
         IApiClientRepository ApiClientRepository { get; }
+        IFavouriteRepository FavouriteRepository { get; }
         Task<int> CompleteAsync();
     }
 }

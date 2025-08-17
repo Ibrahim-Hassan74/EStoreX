@@ -27,10 +27,13 @@ namespace EStoreX.Core.Helper
                 StatusCode = 200
             };
         }
-
+        public static ApiResponseWithData<T> Success<T>(string message, T data)
+        {
+            return new ApiResponseWithData<T>(message, data);
+        }
         /// <summary>
         /// Creates a 400 Bad Request error response.
-        /// </summary>
+        /// </summary>ئ
         /// <param name="message">The error message.</param>
         /// <param name="errors">Optional detailed error list.</param>
         /// <returns>An <see cref="ApiErrorResponse"/> with status 400.</returns>

@@ -14,6 +14,8 @@ using Repository.Products;
 using EStoreX.Core.Repository.Basket;
 using EStoreX.Core.Repository.Orders;
 using EStoreX.Core.Repository.Account;
+using EStoreX.Core.RepositoryContracts.Favourites;
+using EStoreX.Core.Repository.Favourites;
 
 namespace EStoreX.Core.Repository.Common
 {
@@ -35,6 +37,8 @@ namespace EStoreX.Core.Repository.Common
 
         public IApiClientRepository ApiClientRepository { get; }
 
+        public IFavouriteRepository FavouriteRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
             _context = context;
@@ -48,6 +52,7 @@ namespace EStoreX.Core.Repository.Common
             OrderRepository = new OrderRepository(_context);
             AuthenticationRepository = new AuthenticationRepository(_context);
             ApiClientRepository = new ApiClientRepository(_context);
+            FavouriteRepository = new FavouriteRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

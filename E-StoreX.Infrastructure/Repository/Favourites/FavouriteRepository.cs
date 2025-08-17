@@ -1,6 +1,8 @@
 ﻿using Domain.Entities.Product;
 using EStoreX.Infrastructure.Data;
 using EStoreX.Core.RepositoryContracts.Favourites;
+using EStoreX.Core.Domain.Entities.Favourites;
+using Microsoft.EntityFrameworkCore;
 
 namespace EStoreX.Core.Repository.Favourites
 {
@@ -12,24 +14,48 @@ namespace EStoreX.Core.Repository.Favourites
         {
             _context = context;
         }
-        public Task AddToFavouriteAsync(string userId, int productId)
+        /// <inheritdoc/>
+        public async Task<Favourite> AddToFavouriteAsync(Favourite favourite)
         {
-            throw new NotImplementedException();
+            _context.Favourites.Add(favourite);
+            await _context.SaveChangesAsync(); 
+            return favourite;
         }
 
-        public Task<List<Product>> GetUserFavouritesAsync(string userId)
+        /// <inheritdoc/>
+        public async Task<List<Product>> GetUserFavouritesAsync(Guid userId)
         {
-            throw new NotImplementedException();
+            return await _context.Favourites
+                .Where(f => f.UserId == userId)
+                .Include(f => f.Product)
+                    .ThenInclude(p => p.Category)
+                .Include(f => f.Product)
+                    .ThenInclude(p => p.Photos)
+                .Select(f => f.Product)
+                .ToListAsync();
         }
 
-        public Task<bool> IsFavouriteAsync(string userId, int productId)
+
+        /// <inheritdoc/>
+        public async Task<bool> IsFavouriteAsync(Favourite favourite)
         {
-            throw new NotImplementedException();
+            return await _context.Favourites
+                .AsNoTracking()
+                .AnyAsync(f => f.UserId == favourite.UserId && f.ProductId == favourite.ProductId);
         }
 
-        public Task RemoveFromFavouriteAsync(string userId, int productId)
+        /// <inheritdoc/>
+        public async Task<bool> RemoveFromFavouriteAsync(Favourite favourite)
         {
-            throw new NotImplementedException();
+            var existingFavourite = await _context.Favourites
+                .FirstOrDefaultAsync(f => f.UserId == favourite.UserId && f.ProductId == favourite.ProductId);
+            
+            if (existingFavourite != null)
+            {
+                _context.Favourites.Remove(existingFavourite);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            return false;
         }
     }
 }

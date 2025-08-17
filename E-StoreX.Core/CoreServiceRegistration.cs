@@ -19,6 +19,8 @@ using EStoreX.Core.Services.Orders;
 using EStoreX.Core.Services.Products;
 using System.Security.Claims;
 using System.Text;
+using EStoreX.Core.ServiceContracts.Favourites;
+using EStoreX.Core.Services.Favourites;
 
 namespace EStoreX.Core
 {
@@ -50,6 +52,8 @@ namespace EStoreX.Core
             services.AddScoped<IApiClientService, ApiClientService>();
 
             services.AddScoped<IUserManagementService, UserManagementService>();
+
+            services.AddScoped<IFavouriteService, FavouriteService>();
 
             // JWT
             services.AddAuthentication(options =>
