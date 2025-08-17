@@ -24,10 +24,13 @@ namespace EStoreX.Core.Services.Common
         }
 
         /// <inheritdoc/>
-        public async Task<ApiResponse> CreateJwtToken(ApplicationUser user)
+        public async Task<ApiResponse> CreateJwtToken(ApplicationUser user, bool rememberMe)
         {
             // Create a DateTime object representing the token expiration time by adding the number of minutes specified in the configuration to the current UTC time.
             DateTime expiration = DateTime.Now.AddMinutes(Convert.ToDouble(_configuration["Jwt:EXPIRATION_MINUTES"]));
+            var refreshTokenExpiryMinutes = rememberMe
+                    ? Convert.ToDouble(_configuration["RefreshToken:LONG_EXPIRATION_MINUTES"])
+                    : Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"]);   
 
             // Create an array of Claim objects representing the user's claims, such as their ID, name, email, etc.
             List<Claim> claims = new List<Claim>
@@ -37,7 +40,8 @@ namespace EStoreX.Core.Services.Common
                  new Claim(JwtRegisteredClaimNames.Iat,
                     new DateTimeOffset(DateTime.UtcNow).ToUnixTimeSeconds().ToString(), ClaimValueTypes.Integer64), //Issued at (date and time of token generation)
                  new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()), //Unique name identifier of the user Id
-                 new Claim(ClaimTypes.Email, user.Email) //Email of the user
+                 new Claim(ClaimTypes.Email, user.Email), //Email of the user
+                 new Claim("remember_me", rememberMe.ToString().ToLower())
              };
 
             var audienceClaims = _configuration.GetSection("Jwt:Audiences").Get<string[]>();
@@ -81,7 +85,7 @@ namespace EStoreX.Core.Services.Common
                 UserName = user.DisplayName,
                 Expiration = expiration,
                 RefreshToken = GenerateRefreshToken(),
-                RefreshTokenExpirationDateTime = DateTime.UtcNow.AddMinutes(Convert.ToDouble(_configuration["RefreshToken:EXPIRATION_MINUTES"])),
+                RefreshTokenExpirationDateTime = DateTime.UtcNow.AddMinutes(refreshTokenExpiryMinutes),
             };
         }
 

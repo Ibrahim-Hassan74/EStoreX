@@ -95,7 +95,7 @@ namespace EStoreX.Core.Services.Account
 
             if (result.Succeeded)
             {
-                return await CreateSuccessLoginResponseAsync (user);
+                return await CreateSuccessLoginResponseAsync (user, loginDTO.RememberMe);
             }
             else if (result.IsLockedOut)
             {
@@ -406,7 +406,7 @@ namespace EStoreX.Core.Services.Account
             var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
             if (user != null)
             {
-                return await CreateSuccessLoginResponseAsync(user);
+                return await CreateSuccessLoginResponseAsync(user, false);
             }
 
 
@@ -465,7 +465,7 @@ namespace EStoreX.Core.Services.Account
                     loginResult.Errors.Select(e => e.Description).ToArray());
             }
 
-            return await CreateSuccessLoginResponseAsync(user);
+            return await CreateSuccessLoginResponseAsync(user, false);
         }
 
 
@@ -521,9 +521,9 @@ namespace EStoreX.Core.Services.Account
 
             await _userManager.AddToRoleAsync(user, roleName);
         }
-        private async Task<ApiSuccessResponse> CreateSuccessLoginResponseAsync (ApplicationUser user)
+        private async Task<ApiSuccessResponse> CreateSuccessLoginResponseAsync (ApplicationUser user, bool rememberMe)
         {
-            var tokenResponse = await _jwtService.CreateJwtToken(user) as ApiSuccessResponse;
+            var tokenResponse = await _jwtService.CreateJwtToken(user, rememberMe) as ApiSuccessResponse;
             user.RefreshToken = tokenResponse?.RefreshToken;
             user.RefreshTokenExpirationDateTime = tokenResponse.RefreshTokenExpirationDateTime;
             await _userManager.UpdateAsync(user);
