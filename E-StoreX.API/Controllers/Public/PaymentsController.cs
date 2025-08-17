@@ -17,7 +17,6 @@ namespace E_StoreX.API.Controllers.Public
     /// This controller is secured with [Authorize], meaning all endpoints require authenticated users.
     /// Typically called before placing an order to prepare or update the payment.
     /// </remarks>
-    [Authorize]
     public class PaymentsController : CustomControllerBase
     {
         private readonly IPaymentService _paymentService;
@@ -43,7 +42,7 @@ namespace E_StoreX.API.Controllers.Public
         /// Creates or updates a Stripe payment intent for the specified basket and delivery method.
         /// </summary>
         /// <param name="basketId">The ID of the customer's basket. Cannot be null or empty.</param>
-        /// <param name="deliveryMethodId">The ID of the selected delivery method. Optional.</param>
+        /// <param name="deliveryMethodId">The ID of the selected delivery method.</param>
         /// <returns>
         /// Returns the updated <see cref="CustomerBasket"/> including the client secret for Stripe payment.
         /// Returns <c>BadRequest</c> if basketId is invalid.
@@ -54,13 +53,14 @@ namespace E_StoreX.API.Controllers.Public
         /// This endpoint is called by the frontend before initiating payment through Stripe.
         /// </remarks>
         [HttpPost]
-        public async Task<ActionResult<PaymentIntentDTO>> CreateOrUpdatePaymentIntent(string basketId, Guid? deliveryMethodId)
+        [Authorize]
+        public async Task<ActionResult<PaymentIntentDTO>> CreateOrUpdatePaymentIntent(string basketId, Guid deliveryMethodId)
         {
             if (string.IsNullOrEmpty(basketId))
             {
                 return BadRequest(ApiResponseFactory.BadRequest("Basket ID cannot be null or empty."));
             }
-            if (deliveryMethodId.HasValue && deliveryMethodId.Value == Guid.Empty)
+            if (deliveryMethodId == Guid.Empty)
             {
                 return BadRequest(ApiResponseFactory.BadRequest("Invalid delivery method ID."));
             }
@@ -137,7 +137,7 @@ namespace E_StoreX.API.Controllers.Public
                 }
                 else
                 {
-                    _logger.LogInformation("Unhandled Stripe event type: {EventType}", stripeEvent.Type);
+                    Console.WriteLine($"Unhandled Stripe event type: {stripeEvent.Type}");
                 }
 
                 return Ok();

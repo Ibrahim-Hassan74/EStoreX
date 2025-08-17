@@ -48,7 +48,8 @@ namespace E_StoreX.API.Middleware
                 allowedStaticExtensions.Any(ext => path.EndsWith(ext)) ||
                 context.Request.Method == HttpMethods.Options ||
                 context.Request.Path.StartsWithSegments("/api/frontend/reset") ||
-                context.Request.Path.StartsWithSegments("/favicon.ico"))
+                context.Request.Path.StartsWithSegments("/favicon.ico") ||
+                path.Contains("webhook"))
             {
                 await _next(context);
                 return;

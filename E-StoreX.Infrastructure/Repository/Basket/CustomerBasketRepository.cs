@@ -32,12 +32,14 @@ namespace EStoreX.Core.Repository.Basket
         /// <inheritdoc/>
         public async Task<CustomerBasket?> UpdateBasketAsync(CustomerBasket basket)
         {
-            var _basket = await _db.StringSetAsync(basket.Id, JsonSerializer.Serialize(basket), TimeSpan.FromDays(3));
-            if (_basket)
-            {
-                return await GetBasketAsync(basket.Id);
-            }
-            return null;
+            var saved = await _db.StringSetAsync(
+                basket.Id,
+                JsonSerializer.Serialize(basket),
+                TimeSpan.FromDays(3)
+            );
+
+            return saved ? await GetBasketAsync(basket.Id) : null;
         }
+
     }
 }

@@ -28,10 +28,12 @@ namespace EStoreX.Core.Services.Basket
         public async Task<CustomerBasketDTO?> UpdateBasketAsync(CustomerBasketDTO basket)
         {
             var basketItems = new List<BasketItem>();
+
             foreach (var item in basket.BasketItems)
             {
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
                 if (product is null) continue;
+
                 basketItems.Add(new BasketItem()
                 {
                     Id = item.Id,
@@ -43,17 +45,74 @@ namespace EStoreX.Core.Services.Basket
                     Image = item.Image,
                 });
             }
+
             if (basketItems.Count == 0)
             {
                 return null;
             }
-            var newBasket = new CustomerBasket(basket.Id)
+
+            var existingBasket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basket.Id);
+
+            if (existingBasket != null)
             {
-                BasketItems = basketItems,
-            };
-            var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
-            return _mapper.Map<CustomerBasketDTO>(basketResponse);
+                foreach (var newItem in basketItems)
+                {
+                    var existingItem = existingBasket.BasketItems.FirstOrDefault(x => x.Id == newItem.Id);
+                    if (existingItem != null)
+                    {
+                        existingItem.Qunatity += newItem.Qunatity;
+                        existingItem.Price = newItem.Price; 
+                    }
+                    else
+                    {
+                        existingBasket.BasketItems.Add(newItem);
+                    }
+                }
+
+                var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(existingBasket);
+                return _mapper.Map<CustomerBasketDTO>(updatedBasket);
+            }
+            else
+            {
+                var newBasket = new CustomerBasket(basket.Id)
+                {
+                    BasketItems = basketItems,
+                };
+
+                var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
+                return _mapper.Map<CustomerBasketDTO>(basketResponse);
+            }
         }
+
+        //public async Task<CustomerBasketDTO?> UpdateBasketAsync(CustomerBasketDTO basket)
+        //{
+        //    var basketItems = new List<BasketItem>();
+        //    foreach (var item in basket.BasketItems)
+        //    {
+        //        var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
+        //        if (product is null) continue;
+        //        basketItems.Add(new BasketItem()
+        //        {
+        //            Id = item.Id,
+        //            Name = product.Name,
+        //            Price = product.NewPrice,
+        //            Description = product.Description,
+        //            Qunatity = item.Qunatity,
+        //            Category = item.Category,
+        //            Image = item.Image,
+        //        });
+        //    }
+        //    if (basketItems.Count == 0)
+        //    {
+        //        return null;
+        //    }
+        //    var newBasket = new CustomerBasket(basket.Id)
+        //    {
+        //        BasketItems = basketItems,
+        //    };
+        //    var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
+        //    return _mapper.Map<CustomerBasketDTO>(basketResponse);
+        //}
 
         /// <inheritdoc/>
         public async Task<bool> DeleteBasketAsync(string id)

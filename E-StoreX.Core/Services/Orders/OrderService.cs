@@ -40,13 +40,16 @@ namespace EStoreX.Core.Services.Orders
             foreach (var item in basket.BasketItems)
             {
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
+                if(product is null)
+                    throw new InvalidOperationException($"Product with ID {item.Id} not found");
+
                 var orderItem = new OrderItem
                 (
-                    item.Price,
+                    product.NewPrice,
                     item.Qunatity,
                     item.Id,
                     item.Image,
-                    product?.Name ?? "Unknown Product"
+                    product.Name ?? "Unknown Product"
                 );
                 orderItems.Add(orderItem);
             }

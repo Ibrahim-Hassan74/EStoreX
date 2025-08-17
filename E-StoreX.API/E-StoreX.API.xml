@@ -599,12 +599,12 @@
             <param name="logger">Logger instance for logging payment events and errors.</param>
             <exception cref="T:System.ArgumentNullException">Thrown if Stripe signing secret is not provided in configuration.</exception>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.CreateOrUpdatePaymentIntent(System.String,System.Nullable{System.Guid})">
+        <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.CreateOrUpdatePaymentIntent(System.String,System.Guid)">
             <summary>
             Creates or updates a Stripe payment intent for the specified basket and delivery method.
             </summary>
             <param name="basketId">The ID of the customer's basket. Cannot be null or empty.</param>
-            <param name="deliveryMethodId">The ID of the selected delivery method. Optional.</param>
+            <param name="deliveryMethodId">The ID of the selected delivery method.</param>
             <returns>
             Returns the updated <see cref="T:Domain.Entities.Baskets.CustomerBasket"/> including the client secret for Stripe payment.
             Returns <c>BadRequest</c> if basketId is invalid.

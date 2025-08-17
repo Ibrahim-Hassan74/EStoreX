@@ -34,7 +34,7 @@ namespace E_StoreX.API.Controllers.Public
             if (!Guid.TryParse(id, out _))
                 return BadRequest(ApiResponseFactory.BadRequest("Invalid Id format"));
             var basket = await _basketService.GetBasketAsync(id);
-            return Ok(basket == null ? new CustomerBasket() : basket);
+            return Ok(basket);
         }
 
         /// <summary>
