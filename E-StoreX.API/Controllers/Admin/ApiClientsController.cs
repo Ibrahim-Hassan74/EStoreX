@@ -2,6 +2,7 @@
 using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
 using EStoreX.Core.ServiceContracts.Account;
+using Asp.Versioning;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -11,6 +12,7 @@ namespace E_StoreX.API.Controllers.Admin
     /// <remarks>This controller inherits from <see cref="AdminControllerBase"/> and is intended for use in
     /// administrative scenarios where order-related operations are required. It serves as a base for implementing
     /// actions related to order management.</remarks>
+    [ApiVersion(2.0)]
     public class ApiClientsController : AdminControllerBase
     {
         private readonly IApiClientService _clientService;

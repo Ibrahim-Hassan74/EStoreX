@@ -3,12 +3,15 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.ServiceContracts.Account;
 using EStoreX.Core.Enums;
+using Asp.Versioning;
 
 namespace E_StoreX.API.Controllers.Admin
 {
     /// <summary>
     /// user management controller for administrative operations
     /// </summary>
+    [Route("api/v{version:apiVersion}/admin/user-management")]
+    [ApiVersion(2.0)]
     public class UserManagementController : AdminControllerBase
     {
         private readonly IUserManagementService _userManagementService;

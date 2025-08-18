@@ -1,6 +1,7 @@
 ﻿using EStoreX.Core.DTO.Categories.Requests;
 using Microsoft.AspNetCore.Mvc;
 using EStoreX.Core.ServiceContracts.Categories;
+using Asp.Versioning;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -10,6 +11,8 @@ namespace E_StoreX.API.Controllers.Admin
     /// <remarks>This controller inherits from <see cref="AdminControllerBase"/> and is intended for use in
     /// administrative scenarios where order-related operations are required. It serves as a base for implementing
     /// actions related to order management.</remarks>
+    [ApiVersion(2.0)]
+
     public class CategoriesController : AdminControllerBase
     {
         private readonly ICategoriesService _categoriesService;

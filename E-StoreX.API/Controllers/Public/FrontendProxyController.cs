@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
 using EStoreX.Core.DTO.Account.Requests;
+using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Public
 {
@@ -10,8 +11,9 @@ namespace E_StoreX.API.Controllers.Public
     /// This controller is useful when the frontend cannot directly call the backend API due to security restrictions,
     /// such as the need to hide the API key.
     /// </remarks>
-    [Route("api/frontend/reset")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/frontend/reset")]
+    [ApiVersion(2.0)]
     public class FrontendProxyController : ControllerBase
     {
         private readonly IHttpClientFactory _httpClientFactory;

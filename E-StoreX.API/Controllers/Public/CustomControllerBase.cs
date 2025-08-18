@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Public
 {
     /// <summary>
     /// Base controller for the E-StoreX API, providing common functionality for all controllers.
     /// </summary>
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class CustomControllerBase : ControllerBase
     {
         /// <summary>

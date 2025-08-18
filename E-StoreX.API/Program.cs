@@ -1,4 +1,5 @@
-﻿using E_StoreX.API.Middleware;
+﻿using Asp.Versioning;
+using E_StoreX.API.Middleware;
 using EStoreX.API.Filters;
 using EStoreX.Core;
 using EStoreX.Core.Domain.IdentityEntities;
@@ -155,7 +156,23 @@ builder.Services.AddSwaggerGen(options =>
                     new string[] {}
                 }
             });
+    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "E-StoreX.API.xml"));
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "E-StoreX Web API", Version = "1.0" });
+    options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "E-StoreX Web API", Version = "2.0" });
 });
+
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ReportApiVersions = true;
+})
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";
+    options.SubstituteApiVersionInUrl = true;
+});
+
 
 builder.Services.AddSingleton<IFileProvider>(
     new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
@@ -172,7 +189,11 @@ var app = builder.Build();
 //if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "1.0");
+        options.SwaggerEndpoint("/swagger/v2/swagger.json", "2.0");
+    });
 }
 
 app.UseApiKeyMiddleware();
