@@ -8,5 +8,6 @@ namespace Domain.Entities.Common
         [Required(ErrorMessage = "API Key is required.")]
         public string ApiKey { get; set; }
         public bool IsActive { get; set; } = true;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }

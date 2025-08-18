@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using EStoreX.Core.ServiceContracts.Account;
 using System.Threading.Tasks;
+using EStoreX.Core.Helper;
 
 namespace E_StoreX.API.Middleware
 {
@@ -67,14 +68,14 @@ namespace E_StoreX.API.Middleware
             if (!context.Request.Headers.TryGetValue(API_KEY_HEADER_NAME, out var extractedApiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("API Key is missing.");
+                await context.Response.WriteAsJsonAsync(ApiResponseFactory.Unauthorized("API Key is missing."));
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(extractedApiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsync("API Key cannot be empty.");
+                await context.Response.WriteAsJsonAsync(ApiResponseFactory.BadRequest("API Key cannot be empty."));
                 return;
             }
 
@@ -83,7 +84,21 @@ namespace E_StoreX.API.Middleware
             if (client == null)
             {
                 context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("Invalid API Key.");
+                await context.Response.WriteAsJsonAsync(ApiResponseFactory.Forbidden("Invalid API Key.", new List<string>
+                {
+                    "Invalid API Key."
+                }));
+                return;
+            }
+
+            if (!client.IsActive)
+            {
+                context.Response.StatusCode = StatusCodes.Status403Forbidden;
+                await context.Response.WriteAsJsonAsync(ApiResponseFactory.Forbidden( "API Key is deactivated. Please contact support to reactivate it.", 
+                new List<string>
+                {
+                    "API Key is deactivated. Please contact support to reactivate it."
+                }));
                 return;
             }
 

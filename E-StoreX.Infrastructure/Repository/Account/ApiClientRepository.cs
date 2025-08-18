@@ -1,14 +1,15 @@
 ﻿using Domain.Entities.Common;
+using EStoreX.Core.Repository.Common;
+using EStoreX.Core.RepositoryContracts.Account;
 using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using EStoreX.Core.RepositoryContracts.Account;
 
 namespace EStoreX.Core.Repository.Account
 {
     /// <summary>
     /// Repository for accessing and managing API clients.
     /// </summary>
-    public class ApiClientRepository : IApiClientRepository
+    public class ApiClientRepository : GenericRepository<ApiClient>, IApiClientRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -16,7 +17,7 @@ namespace EStoreX.Core.Repository.Account
         /// Constructor for ApiClientRepository.
         /// </summary>
         /// <param name="context">The application's DbContext.</param>
-        public ApiClientRepository(ApplicationDbContext context)
+        public ApiClientRepository(ApplicationDbContext context) : base(context) 
         {
             _context = context;
         }
@@ -32,12 +33,6 @@ namespace EStoreX.Core.Repository.Account
         {
             return await _context.ApiClients
                 .FirstOrDefaultAsync(c => c.ApiKey == apiKey);
-        }
-
-        /// <inheritdoc />
-        public async Task AddAsync(ApiClient client)
-        {
-            await _context.ApiClients.AddAsync(client);
         }
     }
 }

@@ -1,11 +1,12 @@
 ﻿using Domain.Entities.Common;
+using EStoreX.Core.RepositoryContracts.Common;
 
 namespace EStoreX.Core.RepositoryContracts.Account
 {
     /// <summary>
     /// Interface for managing API clients in the data store.
     /// </summary>
-    public interface IApiClientRepository
+    public interface IApiClientRepository : IGenericRepository<ApiClient>
     {
         /// <summary>
         /// Checks if an API key already exists.
@@ -20,11 +21,5 @@ namespace EStoreX.Core.RepositoryContracts.Account
         /// <param name="apiKey">The API key of the client.</param>
         /// <returns>The matching ApiClient, or null if not found.</returns>
         Task<ApiClient?> GetByApiKeyAsync(string apiKey);
-
-        /// <summary>
-        /// Adds a new API client to the data store.
-        /// </summary>
-        /// <param name="client">The ApiClient to add.</param>
-        Task AddAsync(ApiClient client);
     }
 }

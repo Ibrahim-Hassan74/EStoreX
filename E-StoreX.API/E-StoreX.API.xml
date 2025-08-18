@@ -33,6 +33,73 @@
             <param name="request">Client name info.</param>
             <returns>Client name and API key.</returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.GetClientByKey(System.String)">
+            <summary>
+            Retrieves client details by its API key.
+            </summary>
+            <param name="apiKey">The API key used to identify the client.</param>
+            <returns>
+            200 OK: Returns the client details if the API key is valid.  
+            404 Not Found: If no client is associated with the provided API key.  
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.GetAllClients">
+            <summary>
+            Retrieves all registered API clients.
+            </summary>
+            <returns>A list of <see cref="T:Domain.Entities.Common.ApiClient"/> entities.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.ActiveClient(System.Guid)">
+            <summary>
+            Activates an API client by its unique identifier.
+            </summary>
+            <param name="clientId">The unique identifier of the API client to activate.</param>
+            <returns>200 OK if activated successfully; 404 if the client is not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.DeActivateClient(System.Guid)">
+            <summary>
+            Deactivates an API client by its unique identifier.
+            </summary>
+            <param name="clientId">The unique identifier of the API client to deactivate.</param>
+            <returns>200 OK if deactivated successfully; 404 if the client is not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.GetClient(System.Guid)">
+            <summary>
+            Retrieves a specific API client by its unique identifier.
+            </summary>
+            <param name="clientId">The unique identifier of the API client.</param>
+            <returns>200 OK with the <see cref="T:Domain.Entities.Common.ApiClient"/> data if found; 404 if not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RemoveClient(System.Guid)">
+            <summary>
+            Removes an API client by its unique identifier.
+            </summary>
+            <param name="clientId">The unique identifier of the client to remove.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> indicating the outcome of the operation.  
+            Returns <c>200 OK</c> if the client was removed successfully,  
+            or <c>404 Not Found</c> if the client does not exist.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.UpdateClient(System.Guid,EStoreX.Core.DTO.Common.UpdateClientRequest)">
+            <summary>
+            Updates an API client by its unique identifier.
+            </summary>
+            <param name="clientId">The unique identifier of the client.</param>
+            <param name="request">The updated client data.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> indicating the outcome of the update operation.  
+            Returns <c>200 OK</c> if updated successfully,  
+            or <c>404 Not Found</c> if the client does not exist.
+            </returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RotateApiKey(System.Guid)">
+            <summary>
+            Rotates the API key of a specific client.
+            </summary>
+            <param name="clientId">The ID of the client.</param>
+            <returns>Newly generated API key.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.CategoriesController">
             <summary>
             Controller for managing product categories in the E-StoreX application.
