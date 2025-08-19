@@ -19,6 +19,7 @@ namespace E_StoreX.API.Middleware
             "/invalid-reset-link", "/index",
             //"/api/account/external-login",
             "/api/v1/account/external-login-callback",
+            "/api/v1/account/confirm-email",
             "/signin-google"
         };
         private readonly List<string> allowedStaticExtensions = new List<string>
@@ -68,14 +69,20 @@ namespace E_StoreX.API.Middleware
             if (!context.Request.Headers.TryGetValue(API_KEY_HEADER_NAME, out var extractedApiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsJsonAsync(ApiResponseFactory.Unauthorized("API Key is missing."));
+                await context.Response.WriteAsJsonAsync(ApiResponseFactory.Unauthorized("API Key is missing.", new List<string>
+                {
+                    "API Key is required for authentication. Please provide a valid API Key in the request headers."
+                }));
                 return;
             }
 
             if (string.IsNullOrWhiteSpace(extractedApiKey))
             {
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
-                await context.Response.WriteAsJsonAsync(ApiResponseFactory.BadRequest("API Key cannot be empty."));
+                await context.Response.WriteAsJsonAsync(ApiResponseFactory.BadRequest("API Key cannot be empty.", new List<string>
+                {
+                    "API Key cannot be empty. Please provide a valid API Key in the request headers."
+                }));
                 return;
             }
 

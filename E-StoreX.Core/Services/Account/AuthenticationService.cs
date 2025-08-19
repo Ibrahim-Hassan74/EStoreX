@@ -510,7 +510,7 @@ namespace EStoreX.Core.Services.Account
             {
                 redirectUrl = "https://loaclhost:4200/active";
             }
-            string confirmationLink = $"{scheme}://{host}/api/account/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
+            string confirmationLink = $"{scheme}://{host}/api/v1/account/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
 
             string html = EmailTemplateService.GetConfirmationEmailTemplate(confirmationLink);
 
