@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Repository.Products;
+using StackExchange.Redis;
 using EStoreX.Infrastructure.Data;
 using EStoreX.Core.RepositoryContracts.Account;
 using EStoreX.Core.RepositoryContracts.Basket;
@@ -7,15 +9,15 @@ using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.ServiceContracts.Common;
-using StackExchange.Redis;
 using EStoreX.Core.Repository.Categories;
 using EStoreX.Core.Repository.Products;
-using Repository.Products;
 using EStoreX.Core.Repository.Basket;
 using EStoreX.Core.Repository.Orders;
 using EStoreX.Core.Repository.Account;
 using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.Repository.Favourites;
+using EStoreX.Core.RepositoryContracts.Ratings;
+using EStoreX.Infrastructure.Repository.Ratings;
 
 namespace EStoreX.Core.Repository.Common
 {
@@ -39,6 +41,8 @@ namespace EStoreX.Core.Repository.Common
 
         public IFavouriteRepository FavouriteRepository { get; }
 
+        public IRatingRepository RatingRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
             _context = context;
@@ -53,6 +57,7 @@ namespace EStoreX.Core.Repository.Common
             AuthenticationRepository = new AuthenticationRepository(_context);
             ApiClientRepository = new ApiClientRepository(_context);
             FavouriteRepository = new FavouriteRepository(_context);
+            RatingRepository = new RatingRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

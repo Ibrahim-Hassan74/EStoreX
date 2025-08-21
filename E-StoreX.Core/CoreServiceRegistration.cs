@@ -21,6 +21,8 @@ using System.Security.Claims;
 using System.Text;
 using EStoreX.Core.ServiceContracts.Favourites;
 using EStoreX.Core.Services.Favourites;
+using EStoreX.Core.Services.Ratings;
+using EStoreX.Core.ServiceContracts.Ratings;
 
 namespace EStoreX.Core
 {
@@ -54,6 +56,8 @@ namespace EStoreX.Core
             services.AddScoped<IUserManagementService, UserManagementService>();
 
             services.AddScoped<IFavouriteService, FavouriteService>();
+
+            services.AddScoped<IRatingService, RatingService>();
 
             // JWT
             services.AddAuthentication(options =>

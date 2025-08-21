@@ -2,6 +2,7 @@
 using Domain.Entities.Product;
 using EStoreX.Core.Domain.Entities.Favourites;
 using EStoreX.Core.Domain.Entities.Orders;
+using EStoreX.Core.Domain.Entities.Rating;
 using EStoreX.Core.Domain.IdentityEntities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -29,5 +30,6 @@ namespace EStoreX.Infrastructure.Data
         public virtual DbSet<OrderItem> OrderItems { get; set; }
         public virtual DbSet<ApiClient> ApiClients { get; set; }
         public virtual DbSet<Favourite> Favourites { get; set; }
+        public virtual DbSet<Rating> Ratings { get; set; }
     }
 }

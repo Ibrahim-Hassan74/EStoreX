@@ -772,6 +772,55 @@
             <param name="Id">Product Id</param>
             <returns>Product or NotFound</returns>
         </member>
+        <member name="T:E_StoreX.API.Controllers.Public.RatingsController">
+            <summary>
+            Handles all operations related to product ratings,
+            including creating, updating, deleting, and retrieving ratings and summaries.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.#ctor(EStoreX.Core.ServiceContracts.Ratings.IRatingService)">
+            <summary>
+            Initializes a new instance of <see cref="T:E_StoreX.API.Controllers.Public.RatingsController"/>.
+            </summary>
+            <param name="ratingService">The service responsible for rating operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.AddRating(EStoreX.Core.DTO.Ratings.Requests.RatingAddRequest)">
+            <summary>
+            Adds a new rating for a given product by the logged-in user.
+            </summary>
+            <param name="request">The rating details including score, comment, and product ID.</param>
+            <returns>The created rating as a <see cref="T:EStoreX.Core.DTO.Ratings.Response.RatingResponse"/>.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.UpdateRating(System.Guid,EStoreX.Core.DTO.Ratings.Requests.RatingUpdateRequest)">
+            <summary>
+            Updates an existing rating owned by the logged-in user.
+            </summary>
+            <param name="id">The ID of the rating to update.</param>
+            <param name="request">The updated rating details.</param>
+            <returns>The updated rating as a <see cref="T:EStoreX.Core.DTO.Ratings.Response.RatingResponse"/> or 404 if not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.DeleteRating(System.Guid)">
+            <summary>
+            Deletes a rating owned by the logged-in user.
+            </summary>
+            <param name="id">The ID of the rating to delete.</param>
+            <returns>No content if successful, otherwise 404 if not found.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.GetRatingsForProduct(System.Guid)">
+            <summary>
+            Retrieves all ratings for a specific product.
+            </summary>
+            <param name="productId">The ID of the product.</param>
+            <returns>A list of ratings as <see cref="T:EStoreX.Core.DTO.Ratings.Response.RatingResponse"/>.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.GetProductRatingSummary(System.Guid)">
+            <summary>
+            Retrieves a summary of ratings for a specific product,
+            including average score and total number of ratings.
+            </summary>
+            <param name="productId">The ID of the product.</param>
+            <returns>A <see cref="T:EStoreX.Core.DTO.Ratings.Response.ProductRatingResponse"/> containing rating summary.</returns>
+        </member>
         <member name="T:E_StoreX.API.Middleware.ApiKeyMiddleware">
             <summary>
             Middleware to validate API key from incoming HTTP requests.

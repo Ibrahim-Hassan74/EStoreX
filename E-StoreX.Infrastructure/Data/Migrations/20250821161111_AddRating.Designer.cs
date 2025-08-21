@@ -4,6 +4,7 @@ using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EStoreX.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250821161111_AddRating")]
+    partial class AddRating
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,7 +99,7 @@ namespace EStoreX.Infrastructure.Migrations
                             ApiKey = "ovuPaA2bJcgksW6yONrlDYtKweqihHfGnd9pI1FMVRmCTzE7UBx03SXZ8QL5j4",
                             ClientName = "E-StoreX flutter Client",
                             IsActive = true,
-                            UpdatedAt = new DateTime(2025, 8, 21, 16, 53, 6, 220, DateTimeKind.Utc).AddTicks(1683)
+                            UpdatedAt = new DateTime(2025, 8, 21, 16, 11, 10, 504, DateTimeKind.Utc).AddTicks(3083)
                         });
                 });
 
@@ -334,7 +337,7 @@ namespace EStoreX.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Ratings");
+                    b.ToTable("Rating");
                 });
 
             modelBuilder.Entity("EStoreX.Core.Domain.IdentityEntities.ApplicationRole", b =>

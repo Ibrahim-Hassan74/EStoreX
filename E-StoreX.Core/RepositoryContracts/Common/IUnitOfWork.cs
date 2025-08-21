@@ -4,6 +4,7 @@ using EStoreX.Core.RepositoryContracts.Categories;
 using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.RepositoryContracts.Products;
+using EStoreX.Core.RepositoryContracts.Ratings;
 
 namespace EStoreX.Core.RepositoryContracts.Common
 {
@@ -17,6 +18,7 @@ namespace EStoreX.Core.RepositoryContracts.Common
         IAuthenticationRepository AuthenticationRepository { get; }
         IApiClientRepository ApiClientRepository { get; }
         IFavouriteRepository FavouriteRepository { get; }
+        IRatingRepository RatingRepository { get; }
         Task<int> CompleteAsync();
     }
 }
