@@ -32,6 +32,7 @@ namespace EStoreX.Core.Services.Ratings
             rating.UserId = userId;
 
             await _ratingRepository.AddAsync(rating);
+            await _unitOfWork.CompleteAsync();
 
             var ratingWithUser = await _ratingRepository.GetUserRatingForProductAsync(request.ProductId, userId);
 
@@ -49,6 +50,7 @@ namespace EStoreX.Core.Services.Ratings
             rating.Comment = request.Comment;
 
             await _ratingRepository.UpdateAsync(rating);
+            await _unitOfWork.CompleteAsync();
 
             var ratingWithUser = await _ratingRepository.GetUserRatingForProductAsync(rating.ProductId, userId);
 
@@ -63,6 +65,7 @@ namespace EStoreX.Core.Services.Ratings
                 return false;
 
             await _ratingRepository.DeleteAsync(ratingId);
+            await _unitOfWork.CompleteAsync();
 
             return true;
         }

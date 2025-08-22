@@ -24,7 +24,6 @@ namespace EStoreX.Core.Repository.Common
                 throw new ArgumentNullException(nameof(entity), "Entity cannot be null");
             }
             await _db.AddAsync(entity);
-            await _context.SaveChangesAsync();
             return entity;
         }
 
@@ -47,8 +46,7 @@ namespace EStoreX.Core.Repository.Common
                 return false;
             }
             _db.Remove(entity);
-            int res = await _context.SaveChangesAsync();
-            return res > 0;
+            return true;
         }
 
         /// <inheritdoc/>

@@ -72,6 +72,7 @@ namespace Repository.Products
         public async Task<Product> UpdateProductAsync(Product product, IFormFileCollection formFiles)
         {
             var res = await UpdateAsync(product);
+            await _context.SaveChangesAsync();
 
             PhotosDTO photosDTO = new PhotosDTO()
             {

@@ -30,6 +30,7 @@ namespace EStoreX.Core.Services.Categories
             category.Id = Guid.NewGuid(); // Ensure a new ID is generated for the category
 
             await _categoryRepository.AddAsync(category);
+            await _unitOfWork.CompleteAsync();
 
             return _mapper.Map<CategoryResponse>(category);
         }
@@ -44,6 +45,7 @@ namespace EStoreX.Core.Services.Categories
                 return false;
 
             var res = await _categoryRepository.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
 
             return res;
         }
@@ -80,6 +82,7 @@ namespace EStoreX.Core.Services.Categories
             _mapper.Map(updateCategoryDto, category);
 
             var res = await _categoryRepository.UpdateAsync(category);
+            await _unitOfWork.CompleteAsync();
 
             return _mapper.Map<CategoryResponse>(category);
         }

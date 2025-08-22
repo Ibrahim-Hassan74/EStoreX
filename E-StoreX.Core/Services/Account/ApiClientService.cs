@@ -37,6 +37,7 @@ namespace EStoreX.Core.Services.Account
             };
 
             await _clientRepository.AddAsync(client);
+            await _unitOfWork.CompleteAsync();
 
 
             return client;
@@ -63,6 +64,7 @@ namespace EStoreX.Core.Services.Account
             client.UpdatedAt = DateTime.UtcNow;
              
             await _clientRepository.UpdateAsync(client);
+            await _unitOfWork.CompleteAsync();
 
             return true;
         }
@@ -78,6 +80,7 @@ namespace EStoreX.Core.Services.Account
             client.UpdatedAt = DateTime.UtcNow;
 
             await _clientRepository.UpdateAsync(client);
+            await _unitOfWork.CompleteAsync();
 
             return true;
         }
@@ -93,6 +96,7 @@ namespace EStoreX.Core.Services.Account
             if (client == null)
                 return false;
             await _clientRepository.DeleteAsync(clientId);
+            await _unitOfWork.CompleteAsync();
             return true;
         }
         /// <inheritdoc/>
@@ -109,6 +113,7 @@ namespace EStoreX.Core.Services.Account
             client.UpdatedAt = DateTime.UtcNow;
 
             await _clientRepository.UpdateAsync(client);
+            await _unitOfWork.CompleteAsync();
 
             return true;
         }
@@ -130,6 +135,7 @@ namespace EStoreX.Core.Services.Account
             client.UpdatedAt = DateTime.UtcNow;
 
             await _clientRepository.UpdateAsync(client);
+            await _unitOfWork.CompleteAsync();
 
             return client;
         }

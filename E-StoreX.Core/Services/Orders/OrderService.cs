@@ -66,11 +66,13 @@ namespace EStoreX.Core.Services.Orders
             if (existingOrder is not null)
             {
                 await _orderRepository.DeleteAsync(existingOrder.Id);
+                await _unitOfWork.CompleteAsync();
                 await _paymentService.CreateOrUpdatePaymentIntentAsync(basket.Id, deliveryMethod.Id);
             }
 
             var orderEntity = new Order(buyerEmail, subTotal, shippingAddress, deliveryMethod, orderItems, basket.PaymentIntentId);
             var createdOrder = await _orderRepository.AddAsync(orderEntity);
+            await _unitOfWork.CompleteAsync();
 
             await _unitOfWork.CustomerBasketRepository.DeleteBasketAsync(order.BasketId);
 
