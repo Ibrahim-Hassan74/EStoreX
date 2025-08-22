@@ -17,6 +17,9 @@ namespace Domain.Entities.Product
         public decimal NewPrice { get; set; }
         [Range(0, double.MaxValue, ErrorMessage = "Price must be non-negative.")]
         public decimal OldPrice { get; set; }
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must be non-negative.")]
+        public int QuantityAvailable { get; set; }
+
         public Guid CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
         public virtual Category Category { get; set; }

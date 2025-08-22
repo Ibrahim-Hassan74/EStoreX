@@ -8,6 +8,8 @@
         public decimal NewPrice { get; set; }
         public decimal OldPrice { get; set; }
         public string CategoryName { get; set; }
+        public int QuantityAvailable { get; set; }
+
         public IEnumerable<PhotoResponse> Photos { get; set; }
 
         public ProductResponse() { } 

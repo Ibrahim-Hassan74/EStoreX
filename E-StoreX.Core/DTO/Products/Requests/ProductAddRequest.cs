@@ -16,6 +16,8 @@ namespace EStoreX.Core.DTO.Products.Requests
         [Range(0, double.MaxValue, ErrorMessage = "Price must be non-negative.")]
         public decimal OldPrice { get; set; }
         [Required(ErrorMessage = "{0} can't be blank")]
+        [Range(0, int.MaxValue, ErrorMessage = "Quantity must be non-negative.")]
+        public int QuantityAvailable { get; set; }
         public Guid CategoryId { get; set; }
         [MinLength(1, ErrorMessage = "At least one photo is required.")]
         public IFormFileCollection Photos { get; set; }

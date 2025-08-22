@@ -55,7 +55,7 @@ namespace EStoreX.Core.Repository.Orders
             {
                 return null;
             }
-            return await _context.Orders
+            return await _context.Orders.Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
         }
     }

@@ -39,6 +39,9 @@ namespace EStoreX.Core.Services.Common
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
                 if (product is null)
                     throw new Exception($"Product with ID {item.Id} not found.");
+                if(product.QuantityAvailable < item.Qunatity)
+                    throw new Exception($"Not enough stock for product {product.Name}");
+
                 item.Price = product.NewPrice;
             }
 
@@ -82,6 +85,21 @@ namespace EStoreX.Core.Services.Common
         {
             var order = await _unitOfWork.OrderRepository.GetOrderByPaymentIntentIdAsync(paymentIntentId);
             if (order is null) return false;
+
+            if (order.Status != Status.Pending)
+                throw new InvalidOperationException("Order is not in a pending state.");
+
+            foreach (var item in order.OrderItems)
+            {
+                var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.ProductItemId);
+                if (product == null) continue;
+
+                if (product.QuantityAvailable < item.Quantity)
+                    throw new InvalidOperationException($"Not enough stock for product {product.Name}");
+
+                product.QuantityAvailable -= item.Quantity;
+                await _unitOfWork.ProductRepository.UpdateAsync(product);
+            }
 
             order.Status = Status.PaymentReceived;
             await _unitOfWork.CompleteAsync();

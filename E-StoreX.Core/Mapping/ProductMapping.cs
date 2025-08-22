@@ -19,7 +19,8 @@ namespace EStoreX.Core.Mapping
                 .ForMember(dest => dest.CategoryName,
                     opt => opt.MapFrom(src => src.Category != null ? src.Category.Name : string.Empty))
                 .ForMember(dest => dest.Photos,
-                    opt => opt.MapFrom(src => src.Photos));
+                    opt => opt.MapFrom(src => src.Photos))
+                .ForMember(dest => dest.QuantityAvailable, opt => opt.MapFrom(src => src.QuantityAvailable));
 
 
             CreateMap<Photo, PhotoResponse>();

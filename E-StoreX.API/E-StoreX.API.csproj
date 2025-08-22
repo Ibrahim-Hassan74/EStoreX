@@ -23,6 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\E-StoreX.Core\E-StoreX.Core.csproj" />
     <ProjectReference Include="..\E-StoreX.Infrastructure\E-StoreX.Infrastructure.csproj" />
   </ItemGroup>
 
