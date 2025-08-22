@@ -18,6 +18,7 @@ using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.Repository.Favourites;
 using EStoreX.Core.RepositoryContracts.Ratings;
 using EStoreX.Infrastructure.Repository.Ratings;
+using EStoreX.Infrastructure.Repository.Products;
 
 namespace EStoreX.Core.Repository.Common
 {
@@ -43,6 +44,8 @@ namespace EStoreX.Core.Repository.Common
 
         public IRatingRepository RatingRepository { get; }
 
+        public IBrandRepository BrandRepository { get; }
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
             _context = context;
@@ -58,6 +61,7 @@ namespace EStoreX.Core.Repository.Common
             ApiClientRepository = new ApiClientRepository(_context);
             FavouriteRepository = new FavouriteRepository(_context);
             RatingRepository = new RatingRepository(_context);
+            BrandRepository = new BrandRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {

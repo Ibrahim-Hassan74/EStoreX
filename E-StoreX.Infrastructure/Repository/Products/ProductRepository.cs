@@ -95,7 +95,8 @@ namespace Repository.Products
         {
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Category)
-                .Include(p => p.Photos);
+                .Include(p => p.Photos)
+                .Include(p => p.Brand);
 
             products = ApplyFiltering(products, query);
             products = ApplySorting(products, query);
@@ -136,6 +137,11 @@ namespace Repository.Products
             if (query.MaxPrice.HasValue)
             {
                 products = products.Where(p => p.NewPrice <= query.MaxPrice.Value);
+            }
+
+            if (query.BrandId.HasValue)
+            {
+                products = products.Where(p => p.BrandId == query.BrandId.Value);
             }
 
             return products;

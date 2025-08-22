@@ -31,5 +31,6 @@ namespace EStoreX.Infrastructure.Data
         public virtual DbSet<ApiClient> ApiClients { get; set; }
         public virtual DbSet<Favourite> Favourites { get; set; }
         public virtual DbSet<Rating> Ratings { get; set; }
+        public virtual DbSet<Brand> Brands { get; set; }
     }
 }

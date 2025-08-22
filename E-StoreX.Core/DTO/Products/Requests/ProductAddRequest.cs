@@ -18,6 +18,8 @@ namespace EStoreX.Core.DTO.Products.Requests
         [Required(ErrorMessage = "{0} can't be blank")]
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must be non-negative.")]
         public int QuantityAvailable { get; set; }
+        [Required(ErrorMessage = "{0} can't be blank")]
+        public Guid BrandId { get; set; }
         public Guid CategoryId { get; set; }
         [MinLength(1, ErrorMessage = "At least one photo is required.")]
         public IFormFileCollection Photos { get; set; }

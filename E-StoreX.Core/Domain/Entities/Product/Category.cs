@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Common;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Domain.Entities.Product
 {
@@ -10,6 +11,7 @@ namespace Domain.Entities.Product
         public string? Name { get; set; }
         [MaxLength(300)]
         public string? Description { get; set; }
+        [JsonIgnore]
         public ICollection<Product> Products { get; set; } = new HashSet<Product>();
     }
 }

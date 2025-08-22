@@ -14,6 +14,7 @@ namespace EStoreX.Core.DTO.Products.Responses
         public Guid? CategoryId { get; set; }
 
         public string SortBy { get; set; } = nameof(Product.Name);
+        public Guid? BrandId { get; set; }
         public SortOrderOptions SortOrder { get; set; } = SortOrderOptions.ASC;
 
         public int PageNumber { get; set; } = 1;

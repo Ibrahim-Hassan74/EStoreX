@@ -46,7 +46,7 @@ namespace EStoreX.Core.Services.Products
 
         public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync()
         {
-            var products = await _productRepository.GetAllAsync(x => x.Category, y => y.Photos);
+            var products = await _productRepository.GetAllAsync(x => x.Category, y => y.Photos, b => b.Brand);
             var productResponses = _mapper.Map<IEnumerable<ProductResponse>>(products);
             return productResponses;
         }
@@ -58,7 +58,7 @@ namespace EStoreX.Core.Services.Products
                 throw new ArgumentException("Product ID cannot be empty.", nameof(id));
             }
 
-            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos);
+            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos, b => b.Brand);
 
             if (product == null)
                 return null;
@@ -76,7 +76,7 @@ namespace EStoreX.Core.Services.Products
 
             ValidationHelper.ModelValidation(productUpdateRequest);
 
-            var findProduct = await _productRepository.GetByIdAsync(productUpdateRequest.Id, x => x.Category, x => x.Photos);
+            var findProduct = await _productRepository.GetByIdAsync(productUpdateRequest.Id, x => x.Category, x => x.Photos, b => b.Brand);
 
             if (findProduct == null)
             {
@@ -89,6 +89,7 @@ namespace EStoreX.Core.Services.Products
             findProduct.OldPrice = productUpdateRequest.OldPrice;
             findProduct.NewPrice = productUpdateRequest.NewPrice;
             findProduct.CategoryId = productUpdateRequest.CategoryId;
+            findProduct.BrandId = productUpdateRequest.BrandId;
 
             var productResponse = await _productRepository.UpdateProductAsync(findProduct, productUpdateRequest.Photos);
 

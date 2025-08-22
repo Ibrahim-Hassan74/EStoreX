@@ -100,6 +100,45 @@
             <param name="clientId">The ID of the client.</param>
             <returns>Newly generated API key.</returns>
         </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.BrandsController">
+            <summary>
+            Controller for managing brands (Admin only) in API version 2.0.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.#ctor(EStoreX.Core.ServiceContracts.Products.IBrandService)">
+            <summary>
+            Initializes a new instance of <see cref="T:E_StoreX.API.Controllers.Admin.BrandsController"/>.
+            </summary>
+            <param name="brandService">Service to manage brand operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Create(System.String)">
+            <summary>
+            Creates a new brand.
+            </summary>
+            <param name="name">The name of the brand.</param>
+            <returns>The created brand.</returns>
+            <response code="200">Brand created successfully.</response>
+            <response code="400">Brand name is empty or invalid.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Update(System.Guid,System.String)">
+            <summary>
+            Updates an existing brand.
+            </summary>
+            <param name="id">The ID of the brand to update.</param>
+            <param name="newName">The new name for the brand.</param>
+            <returns>The updated brand.</returns>
+            <response code="200">Brand updated successfully.</response>
+            <response code="400">New name is empty or invalid.</response>
+            <response code="404">Brand not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Delete(System.Guid)">
+            <summary>
+            Deletes a brand by ID.
+            </summary>
+            <param name="id">The ID of the brand to delete.</param>
+            <response code="204">Brand deleted successfully.</response>
+            <response code="404">Brand not found.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.CategoriesController">
             <summary>
             Controller for managing product categories in the E-StoreX application.
@@ -478,6 +517,33 @@
             </summary>
             <param name="guestId">The basket ID generated for the guest session before login.</param>
             <returns>The merged customer basket associated with the logged-in user.</returns>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Public.BrandsController">
+            <summary>
+            Public controller for retrieving brand information in API version 1.0.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BrandsController.#ctor(EStoreX.Core.ServiceContracts.Products.IBrandService)">
+            <summary>
+            Initializes a new instance of <see cref="T:E_StoreX.API.Controllers.Public.BrandsController"/>.
+            </summary>
+            <param name="brandService">Service to manage brand operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BrandsController.GetAll">
+            <summary>
+            Retrieves all brands.
+            </summary>
+            <returns>List of all brands.</returns>
+            <response code="200">Returns the list of brands.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BrandsController.GetById(System.Guid)">
+            <summary>
+            Retrieves a brand by its unique ID.
+            </summary>
+            <param name="id">The ID of the brand to retrieve.</param>
+            <returns>The brand details if found.</returns>
+            <response code="200">Brand found and returned successfully.</response>
+            <response code="404">Brand not found.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.BugController">
             <summary>
