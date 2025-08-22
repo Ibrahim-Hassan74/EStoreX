@@ -57,6 +57,17 @@ namespace EStoreX.Core.ServiceContracts.Ratings
         /// A <see cref="ProductRatingResponse"/> containing rating summary information.
         /// </returns>
         Task<ProductRatingResponse> GetProductRatingSummaryAsync(Guid productId);
+        /// <summary>
+        /// Retrieves the rating given by a specific user for a specific product.
+        /// </summary>
+        /// <param name="productId">The unique identifier of the product.</param>
+        /// <param name="userId">The unique identifier of the user.</param>
+        /// <returns>
+        /// A <see cref="RatingResponse"/> representing the user's rating for the product,
+        /// or <c>null</c> if the user hasn't rated the product yet.
+        /// </returns>
+        Task<RatingResponse?> GetUserRatingForProductAsync(Guid productId, Guid userId);
+
     }
 
 }

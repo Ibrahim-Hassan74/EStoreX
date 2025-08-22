@@ -887,6 +887,16 @@
             <param name="productId">The ID of the product.</param>
             <returns>A <see cref="T:EStoreX.Core.DTO.Ratings.Response.ProductRatingResponse"/> containing rating summary.</returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.RatingsController.GetMyRatingForProduct(System.Guid)">
+            <summary>
+            Retrieves the current logged-in user's rating for a specific product.
+            </summary>
+            <param name="productId">The unique identifier of the product.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.ActionResult`1"/> containing the user's rating,
+            or a 404 Not Found response if the user hasn't rated the product yet.
+            </returns>
+        </member>
         <member name="T:E_StoreX.API.Middleware.ApiKeyMiddleware">
             <summary>
             Middleware to validate API key from incoming HTTP requests.

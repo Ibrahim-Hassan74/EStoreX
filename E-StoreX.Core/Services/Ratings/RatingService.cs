@@ -95,5 +95,15 @@ namespace EStoreX.Core.Services.Ratings
 
             return summary;
         }
+        /// <inheritdoc/>
+        public async Task<RatingResponse?> GetUserRatingForProductAsync(Guid productId, Guid userId)
+        {
+            var rating = await _ratingRepository.GetUserRatingForProductAsync(productId, userId);
+            if (rating == null)
+                return null;
+
+            return _mapper.Map<RatingResponse>(rating);
+        }
+
     }
 }
