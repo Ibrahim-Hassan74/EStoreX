@@ -1,4 +1,6 @@
-﻿using EStoreX.Core.Helper;
+﻿using Asp.Versioning;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Favourites;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +13,7 @@ namespace E_StoreX.API.Controllers.Public
     /// Provides endpoints to add, remove, and retrieve favourites for the authenticated user.
     /// </summary>
     [Authorize]
+    [ApiVersion(1.0)]
     public class FavouritesController : CustomControllerBase
     {
         private readonly IFavouriteService _favouriteService;
@@ -29,10 +32,18 @@ namespace E_StoreX.API.Controllers.Public
         /// </summary>
         /// <param name="productId">The unique identifier of the product to add.</param>
         /// <returns>
-        /// An <see cref="IActionResult"/> containing the operation result.
-        /// Returns <c>401 Unauthorized</c> if the user is not authenticated.
+        /// <c>200 OK</c> if the product was successfully added to favourites;
+        /// <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
+        /// <c>409 Conflict</c> if the product is already in the user's favourites;
+        /// <c>500 Internal Server Error</c> for unexpected server errors.
         /// </returns>
+        /// <response code="200">Product successfully added to favourites.</response>
+        /// <response code="401">User is not authenticated or has an invalid identifier.</response>
+        /// <response code="409">The product is already in the user's favourites.</response>
         [HttpPost("{productId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status409Conflict)]
         public async Task<IActionResult> AddToFavourite(Guid productId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -50,10 +61,18 @@ namespace E_StoreX.API.Controllers.Public
         /// </summary>
         /// <param name="productId">The unique identifier of the product to remove.</param>
         /// <returns>
-        /// An <see cref="IActionResult"/> containing the operation result.
-        /// Returns <c>401 Unauthorized</c> if the user is not authenticated.
+        /// <c>200 OK</c> if the product was successfully removed from favourites;
+        /// <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
+        /// <c>404 Not Found</c> if the product is not in the user's favourites;
+        /// <c>500 Internal Server Error</c> for unexpected server errors.
         /// </returns>
+        /// <response code="200">Product successfully removed from favourites.</response>
+        /// <response code="401">User is not authenticated or has an invalid identifier.</response>
+        /// <response code="404">The product was not found in the user's favourites.</response>
         [HttpDelete("{productId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveFromFavourite(Guid productId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -70,10 +89,15 @@ namespace E_StoreX.API.Controllers.Public
         /// Retrieves all products in the authenticated user's favourites list.
         /// </summary>
         /// <returns>
-        /// An <see cref="IActionResult"/> containing the list of favourites.
-        /// Returns <c>401 Unauthorized</c> if the user is not authenticated.
+        /// <c>200 OK</c> with the list of favourites if the user is authenticated;
+        /// <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
+        /// <c>500 Internal Server Error</c> for unexpected server errors.
         /// </returns>
+        /// <response code="200">Successfully retrieved the list of favourite products.</response>
+        /// <response code="401">User is not authenticated or has an invalid identifier.</response>
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetUserFavourites()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);

@@ -1,4 +1,7 @@
 ﻿using Asp.Versioning;
+using Domain.Entities.Product;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Products;
 using Microsoft.AspNetCore.Mvc;
 
@@ -27,6 +30,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <returns>List of all brands.</returns>
         /// <response code="200">Returns the list of brands.</response>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<Brand>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var brands = await _brandService.GetAllBrandsAsync();
@@ -41,11 +45,13 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="200">Brand found and returned successfully.</response>
         /// <response code="404">Brand not found.</response>
         [HttpGet("{id:guid}")]
+        [ProducesResponseType(typeof(Brand), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
             var brand = await _brandService.GetBrandByIdAsync(id);
             if (brand == null)
-                return NotFound(new { message = "Brand not found." });
+                return NotFound(ApiResponseFactory.NotFound("Brand not found."));
 
             return Ok(brand);
         }

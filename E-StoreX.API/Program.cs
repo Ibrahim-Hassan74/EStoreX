@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using E_StoreX.API.Filters;
 using E_StoreX.API.Middleware;
 using EStoreX.API.Filters;
 using EStoreX.Core;
@@ -24,7 +25,10 @@ builder.Configuration
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(new ProducesAttribute("application/json"));
+});
 
 builder.Services.AddMemoryCache();
 
@@ -159,6 +163,7 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, "E-StoreX.API.xml"));
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "E-StoreX Web API", Version = "1.0" });
     options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "E-StoreX Web API", Version = "2.0" });
+    options.OperationFilter<AddInternalServerErrorResponseOperationFilter>();
 });
 
 builder.Services.AddApiVersioning(options =>

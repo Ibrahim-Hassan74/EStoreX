@@ -1,16 +1,19 @@
-﻿using Domain.Entities.Baskets;
-using Microsoft.AspNetCore.Mvc;
-using EStoreX.Core.ServiceContracts.Basket;
-using EStoreX.Core.Helper;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Asp.Versioning;
+using Domain.Entities.Baskets;
 using EStoreX.Core.DTO.Basket;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Basket;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace E_StoreX.API.Controllers.Public
 {
     /// <summary>
     /// API controller for managing customer baskets.
     /// </summary>
+    [ApiVersion(1.0)]
     public class BasketsController : CustomControllerBase
     {
         private readonly IBasketService _basketService;
@@ -26,9 +29,25 @@ namespace E_StoreX.API.Controllers.Public
         /// <summary>
         /// Retrieves a customer basket by ID.
         /// </summary>
-        /// <param name="id">The customer ID.</param>
-        /// <returns>The customer basket.</returns>
+        /// <param name="id">
+        /// The customer ID (must be a valid GUID).
+        /// </param>
+        /// <returns>
+        /// Returns the basket data or an error response depending on the outcome.
+        /// </returns>
+        /// <response code="200">
+        /// Basket found. Returns <see cref="CustomerBasketDTO"/> containing the basket details.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – The provided ID is null or not a valid GUID format.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – No basket exists for the given ID.
+        /// </response>
+
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetBasket(string id)
         {
             if (!Guid.TryParse(id, out _))
@@ -40,9 +59,23 @@ namespace E_StoreX.API.Controllers.Public
         /// <summary>
         /// Adds or updates a customer basket.
         /// </summary>
-        /// <param name="basket">The basket to add or update.</param>
-        /// <returns>The updated basket.</returns>
+        /// <param name="basket">
+        /// The basket to add or update, represented as a <see cref="CustomerBasketDTO"/>.
+        /// </param>
+        /// <returns>
+        /// Returns the updated or newly created basket, or an error response depending on the outcome.
+        /// </returns>
+        /// <response code="200">
+        /// OK – Basket successfully created or updated.  
+        /// Returns <see cref="CustomerBasketDTO"/> containing the basket details.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – The basket ID format is invalid, or there are no valid items to update.
+        /// </response>
+
         [HttpPost]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddOrUpdateBasket([FromBody] CustomerBasketDTO basket)
         {
             if (!Guid.TryParse(basket.Id, out _))
@@ -57,9 +90,27 @@ namespace E_StoreX.API.Controllers.Public
         /// <summary>
         /// Deletes a customer basket by ID.
         /// </summary>
-        /// <param name="id">The customer ID.</param>
-        /// <returns>Status of the deletion.</returns>
+        /// <param name="id">
+        /// The customer basket ID (must be a valid GUID).
+        /// </param>
+        /// <returns>
+        /// Returns a success or error response depending on the outcome.
+        /// </returns>
+        /// <response code="200">
+        /// OK – Basket successfully deleted.  
+        /// Returns <see cref="ApiResponse"/> with a success message.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – The basket ID format is invalid.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – No basket exists with the given ID or it has already been deleted.
+        /// </response>
+
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteBasket(string id)
         {
             if (!Guid.TryParse(id, out _))
@@ -68,15 +119,32 @@ namespace E_StoreX.API.Controllers.Public
             var result = await _basketService.DeleteBasketAsync(id);
             return result
                 ? Ok(ApiResponseFactory.Success("Item Deleted"))
-                : BadRequest(ApiResponseFactory.NotFound("Basket not found or already deleted"));
+                : NotFound(ApiResponseFactory.NotFound("Basket not found or already deleted"));
         }
         /// <summary>
         /// Merges the guest basket (created before login) with the authenticated user's basket.
         /// </summary>
-        /// <param name="guestId">The basket ID generated for the guest session before login.</param>
-        /// <returns>The merged customer basket associated with the logged-in user.</returns>
+        /// <param name="guestId">
+        /// The basket ID generated for the guest session before login (must be a valid GUID).
+        /// </param>
+        /// <returns>
+        /// A merged basket if the operation succeeds.
+        /// </returns>
+        /// <response code="200">
+        /// OK – Returns the merged <see cref="CustomerBasketDTO"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – The guest basket ID format is invalid.
+        /// </response>
+        /// <response code="401">
+        /// Unauthorized – The user is not logged in.
+        /// </response>
+
         [Authorize]
         [HttpPost("merge")]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> MergeBasket(string guestId)
         {
             if (!Guid.TryParse(guestId, out _))

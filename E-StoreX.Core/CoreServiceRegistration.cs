@@ -1,28 +1,30 @@
 ﻿using EStoreX.Core.Domain.Options;
+using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Account;
+using EStoreX.Core.ServiceContracts.Basket;
+using EStoreX.Core.ServiceContracts.Categories;
+using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Core.ServiceContracts.Favourites;
+using EStoreX.Core.ServiceContracts.Orders;
+using EStoreX.Core.ServiceContracts.Products;
+using EStoreX.Core.ServiceContracts.Ratings;
+using EStoreX.Core.Services.Account;
+using EStoreX.Core.Services.Basket;
+using EStoreX.Core.Services.Categories;
+using EStoreX.Core.Services.Common;
+using EStoreX.Core.Services.Favourites;
+using EStoreX.Core.Services.Orders;
+using EStoreX.Core.Services.Products;
+using EStoreX.Core.Services.Ratings;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using EStoreX.Core.ServiceContracts.Account;
-using EStoreX.Core.ServiceContracts.Basket;
-using EStoreX.Core.ServiceContracts.Categories;
-using EStoreX.Core.ServiceContracts.Common;
-using EStoreX.Core.ServiceContracts.Orders;
-using EStoreX.Core.ServiceContracts.Products;
-using EStoreX.Core.Services.Account;
-using EStoreX.Core.Services.Basket;
-using EStoreX.Core.Services.Categories;
-using EStoreX.Core.Services.Common;
-using EStoreX.Core.Services.Orders;
-using EStoreX.Core.Services.Products;
 using System.Security.Claims;
 using System.Text;
-using EStoreX.Core.ServiceContracts.Favourites;
-using EStoreX.Core.Services.Favourites;
-using EStoreX.Core.Services.Ratings;
-using EStoreX.Core.ServiceContracts.Ratings;
+using System.Text.Json;
 
 namespace EStoreX.Core
 {
@@ -79,6 +81,17 @@ namespace EStoreX.Core
                     ValidAudiences = configuration.GetSection("Jwt:Audiences").Get<List<string>>(),
                     RoleClaimType = ClaimTypes.Role,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"]))
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = context =>
+                    {
+                        context.HandleResponse(); 
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = "application/json";
+                        var result = JsonSerializer.Serialize(ApiResponseFactory.Unauthorized("You are not authorized."));
+                        return context.Response.WriteAsync(result);
+                    }
                 };
             }).AddGoogle(options =>
             {

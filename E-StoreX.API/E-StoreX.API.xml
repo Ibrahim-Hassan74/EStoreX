@@ -316,8 +316,20 @@
             An object containing user registration details like username, email, and password.
             </param>
             <returns>
-            Returns <c>200 OK</c> if registration is successful, or <c>400/409</c> with details if it fails.
+            Returns a response depending on the outcome of the registration process.
             </returns>
+            <response code="200">Registration succeeded. The user account has been created successfully.</response>
+            <response code="400">
+            Registration failed due to invalid input.
+            For example:
+            - Missing required fields (username, email, or password)
+            - Password does not meet security requirements
+            - Email format is invalid
+            </response>
+            <response code="409">
+            Registration failed because the email or username is already in use.
+            The system does not allow duplicate accounts with the same email.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.PostLogin(EStoreX.Core.DTO.Account.Requests.LoginDTO)">
             <summary>
@@ -327,8 +339,36 @@
             The user's login credentials (email and password).
             </param>
             <returns>
-            Returns a JWT token with <c>200 OK</c> on success or <c>401/404</c> with error details if authentication fails.
+            Returns a response based on the login outcome.
             </returns>
+            <response code="200">
+            Login succeeded. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiSuccessResponse"/> with a JWT token and refresh token.
+            </response>
+            <response code="400">
+            Bad Request – Input invalid. Examples include:
+            - loginDTO is null
+            - Email or password missing
+            - Invalid input format
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with details.
+            </response>
+            <response code="401">
+            Unauthorized – Invalid credentials. 
+            The email/password combination does not match any user account.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="403">
+            Forbidden – User's email is not confirmed yet. 
+            The system requires email verification before login.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="404">
+            Not Found – User does not exist with the provided email.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="423">
+            Locked – Account temporarily locked due to multiple failed login attempts.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> explaining the lockout period.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.ConfirmEmail(EStoreX.Core.DTO.Account.Requests.ConfirmEmailDTO)">
             <summary>
@@ -338,9 +378,22 @@
             Contains the user ID, email confirmation token, and an optional redirect URL.
             </param>
             <returns>
-            Returns <c>200 OK</c> if the email confirmation is successful, or 
-            <c>400/404</c> if the token is invalid or user is not found.
+            Returns a response based on the confirmation outcome.
             </returns>
+            <response code="200">
+            Email confirmed successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/> with success message.
+            </response>
+            <response code="400">
+            Bad Request – Invalid confirmation data. Examples include:
+            - dto is null
+            - UserId or Token is missing
+            - Token format invalid
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with details.
+            </response>
+            <response code="404">
+            Not Found – User with the provided ID does not exist.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.ForgotPassword(EStoreX.Core.DTO.Account.Requests.ForgotPasswordDTO)">
             <summary>
@@ -350,8 +403,21 @@
             Contains the email address of the user who requested a password reset.
             </param>
             <returns>
-            Returns <c>200 OK</c> if the reset link was sent successfully, or <c>400/429</c> with error details.
+            Returns a response based on the outcome of the request.
             </returns>
+            <response code="200">
+            Password reset link sent successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/> with success message.
+            </response>
+            <response code="400">
+            Bad Request – Invalid input. Examples include:
+            - dto is null
+            - Email is missing or malformed
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with details.
+            </response>
+            <response code="429">
+            Too Many Requests – User has requested password reset too frequently.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> indicating rate limiting.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.VerifyResetPassword(EStoreX.Core.DTO.Account.Requests.VerifyResetPasswordDTO)">
             <summary>
@@ -361,77 +427,148 @@
             Contains the User ID and reset token to validate.
             </param>
             <returns>
-            Returns <c>200 OK</c> if the token is valid or <c>400/404</c> if invalid/expired.
+            Returns a response indicating whether the token is valid or not.
             </returns>
+            <response code="200">
+            Token is valid. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/> confirming token validity.
+            </response>
+            <response code="400">
+            Bad Request – Invalid input. Examples include:
+            - dto is null
+            - UserId or Token is missing
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with error details.
+            </response>
+            <response code="404">
+            Not Found – Token is invalid, expired, or user does not exist.
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> indicating the problem.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.ResetPassword(EStoreX.Core.DTO.Account.Requests.ResetPasswordDTO)">
             <summary>
             Resets the user's password using a valid token.
             </summary>
-            <param name="dto">Contains user ID, token, and new password details.</param>
-            <returns>Returns a success or failure response based on token validity and password rules.</returns>
+            <param name="dto">
+            Contains user ID, reset token, and new password details.
+            </param>
+            <returns>
+            Returns a response indicating whether the password was successfully reset.
+            </returns>
+            <response code="200">
+            Password reset succeeded. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/> confirming the update.
+            </response>
+            <response code="400">
+            Bad Request – Input is invalid or password rules are not met. Examples include:
+            - dto is null
+            - UserId, Token, or NewPassword missing
+            - Password does not meet complexity requirements
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> with detailed error messages.
+            </response>
+            <response code="404">
+            Not Found – User not found or token invalid/expired. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.RefreshToken(EStoreX.Core.DTO.Account.Responses.TokenModel)">
             <summary>
             Generates a new access token (and refresh token) using a valid refresh token.
             </summary>
-            <param name="model">The current (expired) access token and refresh token.</param>
-            <returns>Returns a new JWT token pair on success or an error response on failure.</returns>
+            <param name="model">
+            Contains the expired access token and its corresponding refresh token.
+            </param>
+            <returns>
+            Returns a response indicating whether the token refresh succeeded.
+            </returns>
+            <response code="200">
+            Token refreshed successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiSuccessResponse"/> containing the new JWT and refresh token.
+            </response>
+            <response code="400">
+            Bad Request – Input is invalid, missing, or the refresh token is expired/does not match the user. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="404">
+            Not Found – User associated with the token does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.UpdateAddress(EStoreX.Core.DTO.Orders.Requests.ShippingAddressDTO)">
             <summary>
-            Updates the authenticated user's address.
+            Updates the authenticated user's shipping address.
             </summary>
             <param name="addressDTO">
-            The new <see cref="T:EStoreX.Core.DTO.Orders.Requests.ShippingAddressDTO"/> object containing the updated address details.
+            The <see cref="T:EStoreX.Core.DTO.Orders.Requests.ShippingAddressDTO"/> containing the new address information.
             </param>
             <returns>
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with a success message if the update succeeds,
-            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if it fails.
+            Returns a response indicating whether the address update was successful.
             </returns>
-            <remarks>
-            The method retrieves the user's email from the JWT claims and uses it to update the address.
-            The user must be authenticated for this operation.
-            </remarks>
+            <response code="200">
+            Address updated successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="400">
+            Bad Request – Input is null, invalid, or address update failed. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – The user is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.GetAddress">
             <summary>
             Retrieves the shipping address of the currently authenticated user.
             </summary>
             <remarks>
-            Requires the user to be authenticated. The user's email is extracted from the JWT claims,
+            Requires the user to be authenticated. The user's email is extracted from the JWT claims
             and used to fetch the associated shipping address from the authentication service.
             </remarks>
             <returns>
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the shipping address on success (HTTP 200),
-            or <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> with an error message if the address could not be retrieved (HTTP 400).
+            Returns the shipping address if found, or an error response if retrieval fails.
             </returns>
+            <response code="200">
+            Shipping address retrieved successfully. Returns <see cref="T:EStoreX.Core.DTO.Orders.Requests.ShippingAddressDTO"/>.
+            </response>
+            <response code="400">
+            Bad Request – User email is missing in claims or address could not be retrieved. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/> or <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – User is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.PostLogout">
             <summary>
-            Logs out the currently authenticated user by clearing their refresh token 
-            and signing them out.
+            Logs out the currently authenticated user by clearing their refresh token and signing them out.
             </summary>
-            <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the logout response status and message.
-            </returns>
             <remarks>
-            Requires the user to be authenticated.
+            Requires the user to be authenticated. The user's email is extracted from the JWT claims
+            to identify the account to log out. Refresh tokens are cleared and the user is signed out.
             </remarks>
+            <returns>
+            Returns a success message if logout succeeds, or an unauthorized response if the user is not authenticated.
+            </returns>
+            <response code="200">
+            Logout successful. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – The user is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.GetCurrentUser">
             <summary>
             Retrieves information about the currently authenticated user.
             </summary>
             <remarks>
-            This endpoint reads the user ID from the authentication token claims
-            and returns the corresponding user details.
+            Requires the user to be authenticated. The endpoint reads the user ID from the JWT claims
+            and fetches the corresponding user details from the authentication service.
             </remarks>
             <returns>
-            200 OK with <see cref="T:EStoreX.Core.DTO.Account.Responses.ApplicationUserResponse"/> if the user exists;
-            400 Bad Request if no user ID is found in claims;
-            404 Not Found if the user does not exist.
+            Returns detailed information about the authenticated user.
             </returns>
+            <response code="200">
+            User found and returned successfully. Returns <see cref="T:EStoreX.Core.DTO.Account.Responses.ApplicationUserResponse"/>.
+            </response>
+            <response code="400">
+            Bad Request – No user ID found in claims. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="404">
+            Not Found – User does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – The user is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.UpdateUserProfile(EStoreX.Core.DTO.Account.Requests.UpdateUserDTO)">
             <summary>
@@ -443,10 +580,23 @@
             including current password and new password if the password is being changed.
             </param>
             <returns>
-            Returns an <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the result of the update operation.
-            On success, returns <see cref="!:ApiResponse"/> with status code 200.
-            On failure, returns <see cref="!:ApiErrorResponse"/> with appropriate error details.
+            Returns detailed result of the update operation.
             </returns>
+            <response code="200">
+            Profile updated successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="400">
+            Bad Request – Invalid update data, e.g., null DTO or invalid fields. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – User is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="403">
+            Forbidden – User ID in token does not match the DTO's user ID. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="404">
+            Not Found – User does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLogin(System.String)">
             <summary>
@@ -456,12 +606,18 @@
             The external authentication provider to use (e.g., "Google", "GitHub").
             </param>
             <returns>
-            A challenge result that redirects the user to the external provider's login page.
+            Returns a challenge result that redirects the user to the external provider's login page.
             </returns>
             <remarks>
-            This method configures the external authentication properties, sets the redirect URL 
+            Configures the external authentication properties, sets the redirect URL 
             to handle the provider's callback, and prompts the user to select an account.
             </remarks>
+            <response code="302">
+            Redirect/Challenge to external provider's login page.
+            </response>
+            <response code="400">
+            Bad Request – The 'provider' query parameter is missing or invalid. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLoginCallback(System.String)">
             <summary>
@@ -471,13 +627,26 @@
             Optional error message returned by the external provider during the authentication process.
             </param>
             <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the authentication response, 
-            including status code and any relevant data or error messages.
+            Returns the authentication response including status code and relevant data or error messages.
             </returns>
             <remarks>
-            This method calls <see cref="!:_authService.ExternalLoginCallbackAsync"/> to process the 
-            external login result and return the final authentication response.
+            Processes the external login result by calling <see cref="!:_authService.ExternalLoginCallbackAsync"/>.
             </remarks>
+            <response code="200">
+            Login successful. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiSuccessResponse"/> with user info and JWT tokens.
+            </response>
+            <response code="400">
+            Bad Request – Remote error returned by the external provider, or missing required external login info.
+            </response>
+            <response code="401">
+            Unauthorized – User is not authenticated or external login could not be linked.
+            </response>
+            <response code="409">
+            Conflict – The email from the external provider is already registered with an existing account.
+            </response>
+            <response code="500">
+            Internal Server Error – Failed to create user account or link external login due to server error.
+            </response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.BasketsController">
             <summary>
@@ -494,29 +663,43 @@
             <summary>
             Retrieves a customer basket by ID.
             </summary>
-            <param name="id">The customer ID.</param>
-            <returns>The customer basket.</returns>
+            <param name="id">The customer ID (must be a valid GUID).</param>
+            <returns>
+            Returns <c>200 OK</c> with <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/> if the basket is found;  
+            <c>400 Bad Request</c> if the ID format is invalid or input is null;  
+            <c>404 Not Found</c> if no basket exists for the given ID.
+            </returns>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.DTO.Basket.CustomerBasketDTO)">
             <summary>
             Adds or updates a customer basket.
             </summary>
             <param name="basket">The basket to add or update.</param>
-            <returns>The updated basket.</returns>
+            <returns>
+            Returns <c>200 OK</c> with <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/> if the basket is successfully updated or created;  
+            <c>400 Bad Request</c> if the ID format is invalid or there are no valid items to update the basket.
+            </returns>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.BasketsController.DeleteBasket(System.String)">
             <summary>
             Deletes a customer basket by ID.
             </summary>
             <param name="id">The customer ID.</param>
-            <returns>Status of the deletion.</returns>
+            <returns>
+            Returns <c>200 OK</c> if the basket is successfully deleted;  
+            <c>400 Bad Request</c> if the ID format is invalid or the basket is not found.
+            </returns>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.BasketsController.MergeBasket(System.String)">
             <summary>
             Merges the guest basket (created before login) with the authenticated user's basket.
             </summary>
             <param name="guestId">The basket ID generated for the guest session before login.</param>
-            <returns>The merged customer basket associated with the logged-in user.</returns>
+            <returns>
+            Returns <c>200 OK</c> with the merged basket if successful;
+            <c>400 Bad Request</c> if the guest ID format is invalid;
+            <c>401 Unauthorized</c> if the user is not logged in.
+            </returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.BrandsController">
             <summary>
@@ -593,10 +776,14 @@
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.GetCategoryById(System.Guid)">
             <summary>
-            Retrieve category with specific Id 
+            Retrieves a category by its unique ID.
             </summary>
-            <param name="Id">Category Id</param>
-            <returns>Category with Id or BadRequest</returns>
+            <param name="Id">The ID of the category to retrieve.</param>
+            <returns>
+            <c>200 OK</c> with the category details if found;
+            <c>400 Bad Request</c> if the ID is invalid or the category does not exist;
+            <c>500 Internal Server Error</c> if an unexpected error occurs.
+            </returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.CustomControllerBase">
             <summary>
@@ -631,8 +818,10 @@
             </summary>
             <param name="productId">The unique identifier of the product to add.</param>
             <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the operation result.
-            Returns <c>401 Unauthorized</c> if the user is not authenticated.
+            <c>200 OK</c> if the product was successfully added to favourites;
+            <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
+            <c>409 Conflict</c> if the product is already in the user's favourites;
+            <c>500 Internal Server Error</c> for unexpected server errors.
             </returns>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.RemoveFromFavourite(System.Guid)">
@@ -641,8 +830,10 @@
             </summary>
             <param name="productId">The unique identifier of the product to remove.</param>
             <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the operation result.
-            Returns <c>401 Unauthorized</c> if the user is not authenticated.
+            <c>200 OK</c> if the product was successfully removed from favourites;
+            <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
+            <c>404 Not Found</c> if the product is not in the user's favourites;
+            <c>500 Internal Server Error</c> for unexpected server errors.
             </returns>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.GetUserFavourites">
@@ -650,8 +841,9 @@
             Retrieves all products in the authenticated user's favourites list.
             </summary>
             <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the list of favourites.
-            Returns <c>401 Unauthorized</c> if the user is not authenticated.
+            <c>200 OK</c> with the list of favourites if the user is authenticated;
+            <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
+            <c>500 Internal Server Error</c> for unexpected server errors.
             </returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.FrontendProxyController">

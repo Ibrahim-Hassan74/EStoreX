@@ -44,16 +44,18 @@ namespace E_StoreX.API.Controllers.Public
         /// <param name="basketId">The ID of the customer's basket. Cannot be null or empty.</param>
         /// <param name="deliveryMethodId">The ID of the selected delivery method.</param>
         /// <returns>
-        /// Returns the updated <see cref="CustomerBasket"/> including the client secret for Stripe payment.
-        /// Returns <c>BadRequest</c> if basketId is invalid.
-        /// Returns <c>NotFound</c> if the basket does not exist.
-        /// Returns <c>Ok</c> with the updated basket if successful.
+        /// Returns the updated <see cref="PaymentIntentDTO"/> containing the PaymentIntentId and ClientSecret.
         /// </returns>
-        /// <remarks>
-        /// This endpoint is called by the frontend before initiating payment through Stripe.
-        /// </remarks>
+        /// <response code="200">Successfully created or updated the payment intent.</response>
+        /// <response code="400">Invalid basketId or delivery method ID.</response>
+        /// <response code="404">Basket not found.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpPost]
         [Authorize]
+        [ProducesResponseType(typeof(PaymentIntentDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<PaymentIntentDTO>> CreateOrUpdatePaymentIntent(string basketId, Guid deliveryMethodId)
         {
             if (string.IsNullOrEmpty(basketId))
@@ -82,8 +84,8 @@ namespace E_StoreX.API.Controllers.Public
         /// </summary>
         /// <remarks>
         /// This endpoint is called by Stripe to notify about payment intent status changes such as success or failure.
-        /// It processes the webhook payload, validates the Stripe signature, and updates the related order in the system.
-        /// 
+        /// It validates the Stripe signature and updates the related order accordingly.
+        ///
         /// Expected events:
         /// <list type="bullet">
         ///   <item>
@@ -97,10 +99,14 @@ namespace E_StoreX.API.Controllers.Public
         /// </list>
         /// </remarks>
         /// <returns>
-        /// Returns <see cref="OkResult"/> (200) if the webhook is processed successfully.
-        /// Returns <see cref="BadRequestResult"/> (400) if there's an error validating or processing the event.
+        /// <see cref="OkResult"/> if the webhook is processed successfully.
+        /// <see cref="BadRequestResult"/> if validation fails.
         /// </returns>
+        /// <response code="200">Webhook processed successfully.</response>
+        /// <response code="400">Invalid Stripe signature or processing error.</response>
         [HttpPost("webhook")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateStatusWithStripe()
 
         {
