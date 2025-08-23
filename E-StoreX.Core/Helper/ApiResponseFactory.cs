@@ -32,208 +32,102 @@ namespace EStoreX.Core.Helper
             return new ApiResponseWithData<T>(message, data);
         }
         /// <summary>
-        /// Creates a 400 Bad Request error response.
-        /// </summary>ئ
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 400.</returns>
-        public static ApiErrorResponse BadRequest(string message = "Bad Request", List<string>? errors = null)
+        /// Creates a response with the specified status code and optional errors.
+        /// </summary>
+        /// <param name="statusCode">HTTP status code.</param>
+        /// <param name="message">The message to return.</param>
+        /// <param name="errors">Optional list of detailed errors.</param>
+        /// <returns>An <see cref="ApiResponse"/> or <see cref="ApiErrorResponse"/>.</returns>
+        private static ApiResponse Create(int statusCode, string message, List<string>? errors = null)
         {
-            return new ApiErrorResponse
+            if (errors is not null)
+                return new ApiErrorResponse
+                {
+                    StatusCode = statusCode,
+                    Message = message,
+                    Errors = errors,
+                    Success = false
+                };
+
+            return new ApiResponse
             {
-                StatusCode = 400,
+                StatusCode = statusCode,
                 Message = message,
-                Errors = errors ?? new List<string>(),
                 Success = false
             };
         }
 
         /// <summary>
-        /// Creates a 401 Unauthorized error response.
+        /// Creates a 400 Bad Request response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 401.</returns>
-        public static ApiErrorResponse Unauthorized(string message = "Unauthorized", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 401,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse BadRequest(string message = "Bad Request", List<string>? errors = null)
+            => Create(400, message, errors);
 
         /// <summary>
-        /// Creates a 403 Forbidden error response.
+        /// Creates a 401 Unauthorized response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 403.</returns>
-        public static ApiErrorResponse Forbidden(string message = "Forbidden", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 403,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse Unauthorized(string message = "Unauthorized", List<string>? errors = null)
+            => Create(401, message, errors);
 
         /// <summary>
-        /// Creates a 404 Not Found error response.
+        /// Creates a 403 Forbidden response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 404.</returns>
-        public static ApiErrorResponse NotFound(string message = "Not Found", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 404,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse Forbidden(string message = "Forbidden", List<string>? errors = null)
+            => Create(403, message, errors);
 
         /// <summary>
-        /// Creates a 409 Conflict error response.
+        /// Creates a 404 Not Found response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 409.</returns>
-        public static ApiErrorResponse Conflict(string message = "Conflict", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 409,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse NotFound(string message = "Not Found", List<string>? errors = null)
+            => Create(404, message, errors);
 
         /// <summary>
-        /// Creates a 410 Gone error response.
+        /// Creates a 409 Conflict response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 410.</returns>
-        public static ApiErrorResponse Gone(string message = "Gone", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 410,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse Conflict(string message = "Conflict", List<string>? errors = null)
+            => Create(409, message, errors);
 
         /// <summary>
-        /// Creates a 415 Unsupported Media Type error response.
+        /// Creates a 410 Gone response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 415.</returns>
-        public static ApiErrorResponse UnsupportedMediaType(string message = "Unsupported Media Type", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 415,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse Gone(string message = "Gone", List<string>? errors = null)
+            => Create(410, message, errors);
 
         /// <summary>
-        /// Creates a 429 Too Many Requests error response.
+        /// Creates a 415 Unsupported Media Type response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 429.</returns>
-        public static ApiErrorResponse TooManyRequests(string message = "Too Many Requests", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 429,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse UnsupportedMediaType(string message = "Unsupported Media Type", List<string>? errors = null)
+            => Create(415, message, errors);
+
+        /// <summary>
+        /// Creates a 429 Too Many Requests response.
+        /// </summary>
+        public static ApiResponse TooManyRequests(string message = "Too Many Requests", List<string>? errors = null)
+            => Create(429, message, errors);
 
         /// <summary>
         /// Creates a 500 Internal Server Error response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 500.</returns>
-        public static ApiErrorResponse InternalServerError(string message = "Internal Server Error", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 500,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse InternalServerError(string message = "Internal Server Error", List<string>? errors = null)
+            => Create(500, message, errors);
 
         /// <summary>
-        /// Creates a 503 Service Unavailable error response.
+        /// Creates a 503 Service Unavailable response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 503.</returns>
-        public static ApiErrorResponse ServiceUnavailable(string message = "Service Unavailable", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 503,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse ServiceUnavailable(string message = "Service Unavailable", List<string>? errors = null)
+            => Create(503, message, errors);
 
         /// <summary>
-        /// Creates a 501 Not Implemented error response.
+        /// Creates a 501 Not Implemented response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 501.</returns>
-        public static ApiErrorResponse NotImplemented(string message = "Not Implemented", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 501,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse NotImplemented(string message = "Not Implemented", List<string>? errors = null)
+            => Create(501, message, errors);
 
         /// <summary>
-        /// Creates a 408 Request Timeout error response.
+        /// Creates a 408 Request Timeout response.
         /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <param name="errors">Optional detailed error list.</param>
-        /// <returns>An <see cref="ApiErrorResponse"/> with status 408.</returns>
-        public static ApiErrorResponse RequestTimeout(string message = "Request Timeout", List<string>? errors = null)
-        {
-            return new ApiErrorResponse
-            {
-                StatusCode = 408,
-                Message = message,
-                Errors = errors ?? new List<string>(),
-                Success = false
-            };
-        }
+        public static ApiResponse RequestTimeout(string message = "Request Timeout", List<string>? errors = null)
+            => Create(408, message, errors);
     }
 
 }

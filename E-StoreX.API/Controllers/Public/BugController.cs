@@ -14,7 +14,7 @@ namespace E_StoreX.API.Controllers.Public
         /// </summary>
         /// <returns>A 500 status code with a message indicating an internal server error.</returns>
         [HttpGet("error")]
-        public ActionResult<ApiErrorResponse> GetError()
+        public ActionResult<ApiResponse> GetError()
         {
             return ApiResponseFactory.InternalServerError("Internal Server Error");
         }
@@ -24,7 +24,7 @@ namespace E_StoreX.API.Controllers.Public
         /// </summary>
         /// <returns>A 404 status code with a message indicating the resource was not found.</returns>
         [HttpGet("not-found")]
-        public ActionResult<ApiErrorResponse> GetNotFound()
+        public ActionResult<ApiResponse> GetNotFound()
         {
             return ApiResponseFactory.BadRequest("Resource not found");
         }
@@ -33,7 +33,7 @@ namespace E_StoreX.API.Controllers.Public
         ///  </summary>
         ///  <returns>A 400 status code with a message indicating the resource was bad-request</returns>
         [HttpGet("bad-request/{Id:guid}")]
-        public ActionResult<ApiErrorResponse> GetBadRequest(Guid Id)
+        public ActionResult<ApiResponse> GetBadRequest(Guid Id)
         {
             return ApiResponseFactory.BadRequest($"Bad Request for Id: {Id}");
         }
@@ -42,7 +42,7 @@ namespace E_StoreX.API.Controllers.Public
         ///  </summary>
         ///  <returns>A 400 status code with a message indicating the resource was bad-request</returns>
         [HttpGet("bad-request")]
-        public ActionResult<ApiErrorResponse> GetBadRequest()
+        public ActionResult<ApiResponse> GetBadRequest()
         {
             return ApiResponseFactory.BadRequest();
         }
