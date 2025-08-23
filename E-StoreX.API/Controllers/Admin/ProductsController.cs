@@ -3,69 +3,101 @@ using EStoreX.Core.DTO.Products.Requests;
 using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.ServiceContracts.Products;
 using Asp.Versioning;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Helper;
 
 namespace E_StoreX.API.Controllers.Admin
 {
     /// <summary>
-    /// products controller for admin operations in the E-StoreX application.
+    /// Provides administrative operations for managing products in the E-StoreX application.
     /// </summary>
-    /// <remarks>This controller inherits from <see cref="AdminControllerBase"/> and is intended for use in
-    /// administrative scenarios where order-related operations are required. It serves as a base for implementing
-    /// actions related to order management.</remarks>
+    /// <remarks>
+    /// This controller is intended for admin scenarios only and includes endpoints 
+    /// for creating, updating, and deleting products.
+    /// </remarks>
     [ApiVersion(2.0)]
     public class ProductsController : AdminControllerBase
     {
         private readonly IProductsService _productsService;
         /// <summary>
-        /// Constructor for ProductsController.
+        /// Initializes a new instance of the <see cref="ProductsController"/> class.
         /// </summary>
-        /// <param name="productsService"></param>
+        /// <param name="productsService">Service for handling product operations.</param>
         public ProductsController(IProductsService productsService)
         {
             _productsService = productsService;
         }
         /// <summary>
-        /// Create new product in database
+        /// Creates a new product in the database.
         /// </summary>
-        /// <param name="productRequest"></param>
-        /// <returns></returns>
+        /// <param name="productRequest">The product details to be created.</param>
+        /// <returns>
+        /// Returns <see cref="OkObjectResult"/> with the created <see cref="ProductResponse"/>.  
+        /// </returns>
+        /// <response code="200">Product created successfully.</response>
+        /// <response code="400">Invalid product data supplied.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(ProductResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ProductResponse>> CreateProduct(ProductAddRequest productRequest)
         {
             var createdProduct = await _productsService.CreateProductAsync(productRequest);
             return Ok(createdProduct);
         }
         /// <summary>
-        /// Updates an existing product in the database.
+        /// Updates an existing product.
         /// </summary>
-        /// <param name="id"></param>
-        /// <param name="productUpdateRequest"></param>
-        /// <returns></returns>
+        /// <param name="id">The ID of the product to update.</param>
+        /// <param name="productUpdateRequest">The updated product details.</param>
+        /// <returns>
+        /// Returns <see cref="OkObjectResult"/> with the updated <see cref="ProductResponse"/>.  
+        /// Returns <see cref="BadRequestObjectResult"/> if the IDs do not match.
+        /// </returns>
+        /// <response code="200">Product updated successfully.</response>
+        /// <response code="400">Product ID mismatch or invalid data supplied.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(ProductResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ProductResponse>> UpdateProduct([FromRoute] Guid id, [FromForm] ProductUpdateRequest productUpdateRequest)
         {
-            if (id != productUpdateRequest.Id) return BadRequest("Id must be equals");
+            if (id != productUpdateRequest.Id) return BadRequest(ApiResponseFactory.BadRequest("Id must be equals"));
 
             var updatedProduct = await _productsService.UpdateProductAsync(productUpdateRequest);
             return Ok(updatedProduct);
         }
         /// <summary>
-        /// delete product from database
+        /// Deletes a product from the database.
         /// </summary>
-        /// <param name="id">product Id</param>
-        /// <returns>ok / NotFound</returns>
+        /// <param name="id">The unique identifier of the product to delete.</param>
+        /// <returns>
+        /// Returns <see cref="OkResult"/> if the product was deleted.  
+        /// Returns <see cref="NotFoundResult"/> if no product was found with the given ID.  
+        /// Returns <see cref="BadRequestResult"/> if the ID is invalid.
+        /// </returns>
+        /// <response code="200">Product deleted successfully.</response>
+        /// <response code="400">Invalid product ID supplied.</response>
+        /// <response code="404">Product not found.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteProduct(Guid id)
         {
             if (id == Guid.Empty)
-                return BadRequest("Invalid Product ID");
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Product ID"));
 
             var res = await _productsService.DeleteProductAsync(id);
 
             if (!res)
-                return NotFound("Can't find any product with this ID");
+                return NotFound(ApiResponseFactory.NotFound("Can't find any product with this ID"));
 
-            return Ok("Deleted Successfully");
+            return Ok(ApiResponseFactory.Success("Deleted Successfully"));
         }
     }
 }

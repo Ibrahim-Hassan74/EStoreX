@@ -1,4 +1,6 @@
 ﻿using Asp.Versioning;
+using Domain.Entities.Product;
+using EStoreX.Core.DTO.Common;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Products;
 using Microsoft.AspNetCore.Mvc;
@@ -29,7 +31,11 @@ namespace E_StoreX.API.Controllers.Admin
         /// <returns>The created brand.</returns>
         /// <response code="200">Brand created successfully.</response>
         /// <response code="400">Brand name is empty or invalid.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpPost]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Brand), StatusCodes.Status200OK)]
         public async Task<IActionResult> Create([FromBody] string name)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -48,7 +54,12 @@ namespace E_StoreX.API.Controllers.Admin
         /// <response code="200">Brand updated successfully.</response>
         /// <response code="400">New name is empty or invalid.</response>
         /// <response code="404">Brand not found.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpPut("{id:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(Brand), StatusCodes.Status200OK)]
         public async Task<IActionResult> Update(Guid id, [FromBody] string newName)
         {
             if (string.IsNullOrWhiteSpace(newName))
@@ -68,7 +79,11 @@ namespace E_StoreX.API.Controllers.Admin
         /// <param name="id">The ID of the brand to delete.</param>
         /// <response code="204">Brand deleted successfully.</response>
         /// <response code="404">Brand not found.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var deleted = await _brandService.DeleteBrandAsync(id);

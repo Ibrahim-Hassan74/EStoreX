@@ -7,6 +7,7 @@ using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.ServiceContracts.Account;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.Services.Account
 {
@@ -14,16 +15,19 @@ namespace EStoreX.Core.Services.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
 
         public UserManagementService(
             UserManager<ApplicationUser> userManager,
             RoleManager<ApplicationRole> roleManager,
-            IMapper mapper)
+            IMapper mapper,
+            IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _mapper = mapper;
+            _httpContextAccessor = httpContextAccessor;
         }
         /// <inheritdoc/>
         public async Task<ApiResponse> AddAdminAsync(CreateAdminDTO dto)
@@ -89,16 +93,33 @@ namespace EStoreX.Core.Services.Account
         {
             var user = await _userManager.FindByIdAsync(userId);
             if (user == null)
-                return  ApiResponseFactory.Failure("User not found.", 404, "User not found.");
+                return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+            var currentRoles = await _userManager.GetRolesAsync(currentUser!);
+
+            var targetRoles = await _userManager.GetRolesAsync(user);
+
+            if (currentRoles.Contains("Admin"))
+            {
+                if (targetRoles.Contains("Admin") || targetRoles.Contains("SuperAdmin"))
+                    return ApiResponseFactory.Failure("Admins cannot activate Admins or SuperAdmins.", 403);
+            }
+
+            if (currentRoles.Contains("SuperAdmin"))
+            {
+                if (targetRoles.Contains("SuperAdmin"))
+                    return ApiResponseFactory.Failure("SuperAdmins cannot activate other SuperAdmins.", 403);
+            }
 
             user.LockoutEnd = null;
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded
                 ? ApiResponseFactory.Success("User activated successfully.")
-                : ApiResponseFactory.Failure("Failed to activate user.",400, result.Errors.Select(error => error.Description).ToArray());
+                : ApiResponseFactory.Failure("Failed to activate user.", 400, result.Errors.Select(error => error.Description).ToArray());
         }
+
 
         /// <inheritdoc/>
         public async Task<ApiResponse> DeactivateUserAsync(string userId)
@@ -107,14 +128,32 @@ namespace EStoreX.Core.Services.Account
             if (user == null)
                 return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+            var currentRoles = await _userManager.GetRolesAsync(currentUser!);
+
+            // Get target user roles
+            var targetRoles = await _userManager.GetRolesAsync(user);
+
+            if (currentRoles.Contains("Admin"))
+            {
+                if (targetRoles.Contains("Admin") || targetRoles.Contains("SuperAdmin"))
+                    return ApiResponseFactory.Failure("Admins cannot deactivate Admins or SuperAdmins.", 403);
+            }
+
+            if (currentRoles.Contains("SuperAdmin"))
+            {
+                if (targetRoles.Contains("SuperAdmin"))
+                    return ApiResponseFactory.Failure("SuperAdmins cannot deactivate other SuperAdmins.", 403);
+            }
 
             user.LockoutEnd = DateTimeOffset.MaxValue;
             var result = await _userManager.UpdateAsync(user);
 
             return result.Succeeded
                 ? ApiResponseFactory.Success("User deactivated successfully.")
-                : ApiResponseFactory.Failure("Failed to deactivate user.",400, result.Errors.Select(error => error.Description).ToArray());
+                : ApiResponseFactory.Failure("Failed to deactivate user.", 400, result.Errors.Select(error => error.Description).ToArray());
         }
+
 
         /// <inheritdoc/>
         public async Task<ApiResponse> DeleteUserAsync(string targetUserId, string currentUserId)
@@ -161,12 +200,29 @@ namespace EStoreX.Core.Services.Account
             if (user == null)
                 return ApiResponseFactory.Failure("User not found.", 404, "User not found.");
 
+            var currentUser = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+            var currentRoles = await _userManager.GetRolesAsync(currentUser!);
+
+            var targetRoles = await _userManager.GetRolesAsync(user);
+
+            if (currentRoles.Contains("Admin"))
+            {
+                return ApiResponseFactory.Failure("Admins cannot delete Admins or SuperAdmins.", 403);
+            }
+
+            if (currentRoles.Contains("SuperAdmin"))
+            {
+                if (targetRoles.Contains("SuperAdmin"))
+                    return ApiResponseFactory.Failure("SuperAdmins cannot delete other SuperAdmins.", 403);
+            }
+
             var result = await _userManager.DeleteAsync(user);
 
             return result.Succeeded
                 ? ApiResponseFactory.Success("Admin deleted successfully.")
                 : ApiResponseFactory.Failure("Failed to delete admin.", 400, result.Errors.Select(e => e.Description).ToArray());
         }
+
 
         /// <inheritdoc/>
         public async Task<List<ApplicationUserResponse>> GetAllUsersAsync()

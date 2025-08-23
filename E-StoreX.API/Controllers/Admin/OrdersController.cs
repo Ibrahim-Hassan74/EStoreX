@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Orders.Responses;
 using EStoreX.Core.ServiceContracts.Orders;
-using Asp.Versioning;
+using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -25,8 +27,17 @@ namespace E_StoreX.API.Controllers.Admin
         /// <summary>
         /// Retrieves all orders from the system.
         /// </summary>
-        /// <returns>All orders</returns>
+        /// <returns>
+        /// Returns <see cref="IEnumerable{OrderResponse}"/> containing all orders if found.  
+        /// Returns <see cref="UnauthorizedResult"/> if the user is not authenticated.  
+        /// Returns <see cref="NotFoundResult"/> if no orders exist.  
+        /// Returns <see cref="StatusCodeResult"/> 500 if an unexpected error occurs.
+        /// </returns>
+        /// <response code="200">Orders retrieved successfully.</response>
+        /// <response code="401">User is not authenticated.</response>
         [HttpGet]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(IEnumerable<OrderResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetOrders()
         {
             var orders = await _orderService.GetAllOrders();

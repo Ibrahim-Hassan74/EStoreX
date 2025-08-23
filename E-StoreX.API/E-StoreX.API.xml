@@ -663,43 +663,80 @@
             <summary>
             Retrieves a customer basket by ID.
             </summary>
-            <param name="id">The customer ID (must be a valid GUID).</param>
+            <param name="id">
+            The customer ID (must be a valid GUID).
+            </param>
             <returns>
-            Returns <c>200 OK</c> with <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/> if the basket is found;  
-            <c>400 Bad Request</c> if the ID format is invalid or input is null;  
-            <c>404 Not Found</c> if no basket exists for the given ID.
+            Returns the basket data or an error response depending on the outcome.
             </returns>
+            <response code="200">
+            Basket found. Returns <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/> containing the basket details.
+            </response>
+            <response code="400">
+            Bad Request – The provided ID is null or not a valid GUID format.
+            </response>
+            <response code="404">
+            Not Found – No basket exists for the given ID.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.DTO.Basket.CustomerBasketDTO)">
             <summary>
             Adds or updates a customer basket.
             </summary>
-            <param name="basket">The basket to add or update.</param>
+            <param name="basket">
+            The basket to add or update, represented as a <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/>.
+            </param>
             <returns>
-            Returns <c>200 OK</c> with <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/> if the basket is successfully updated or created;  
-            <c>400 Bad Request</c> if the ID format is invalid or there are no valid items to update the basket.
+            Returns the updated or newly created basket, or an error response depending on the outcome.
             </returns>
+            <response code="200">
+            OK – Basket successfully created or updated.  
+            Returns <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/> containing the basket details.
+            </response>
+            <response code="400">
+            Bad Request – The basket ID format is invalid, or there are no valid items to update.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.BasketsController.DeleteBasket(System.String)">
             <summary>
             Deletes a customer basket by ID.
             </summary>
-            <param name="id">The customer ID.</param>
+            <param name="id">
+            The customer basket ID (must be a valid GUID).
+            </param>
             <returns>
-            Returns <c>200 OK</c> if the basket is successfully deleted;  
-            <c>400 Bad Request</c> if the ID format is invalid or the basket is not found.
+            Returns a success or error response depending on the outcome.
             </returns>
+            <response code="200">
+            OK – Basket successfully deleted.  
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/> with a success message.
+            </response>
+            <response code="400">
+            Bad Request – The basket ID format is invalid.
+            </response>
+            <response code="404">
+            Not Found – No basket exists with the given ID or it has already been deleted.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.BasketsController.MergeBasket(System.String)">
             <summary>
             Merges the guest basket (created before login) with the authenticated user's basket.
             </summary>
-            <param name="guestId">The basket ID generated for the guest session before login.</param>
+            <param name="guestId">
+            The basket ID generated for the guest session before login (must be a valid GUID).
+            </param>
             <returns>
-            Returns <c>200 OK</c> with the merged basket if successful;
-            <c>400 Bad Request</c> if the guest ID format is invalid;
-            <c>401 Unauthorized</c> if the user is not logged in.
+            A merged basket if the operation succeeds.
             </returns>
+            <response code="200">
+            OK – Returns the merged <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/>.
+            </response>
+            <response code="400">
+            Bad Request – The guest basket ID format is invalid.
+            </response>
+            <response code="401">
+            Unauthorized – The user is not logged in.
+            </response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.BrandsController">
             <summary>
@@ -772,18 +809,22 @@
             <summary>
             Retrieves all categories from the database.
             </summary>
-            <returns>return </returns>
+            <returns>
+            A list of <see cref="T:EStoreX.Core.DTO.Categories.Responses.CategoryResponse"/> objects representing all categories.
+            </returns>
+            <response code="200">
+            OK – Returns the list of categories.
+            </response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.GetCategoryById(System.Guid)">
             <summary>
             Retrieves a category by its unique ID.
             </summary>
-            <param name="Id">The ID of the category to retrieve.</param>
-            <returns>
-            <c>200 OK</c> with the category details if found;
-            <c>400 Bad Request</c> if the ID is invalid or the category does not exist;
-            <c>500 Internal Server Error</c> if an unexpected error occurs.
-            </returns>
+            <param name="Id">The unique identifier (GUID) of the category to retrieve.</param>
+            <response code="200">Successfully retrieved the category.</response>
+            <response code="400">Invalid category ID format.</response>
+            <response code="404">Category not found.</response>
+            <response code="500">Unexpected error occurred.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.CustomControllerBase">
             <summary>
@@ -823,6 +864,9 @@
             <c>409 Conflict</c> if the product is already in the user's favourites;
             <c>500 Internal Server Error</c> for unexpected server errors.
             </returns>
+            <response code="200">Product successfully added to favourites.</response>
+            <response code="401">User is not authenticated or has an invalid identifier.</response>
+            <response code="409">The product is already in the user's favourites.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.RemoveFromFavourite(System.Guid)">
             <summary>
@@ -835,6 +879,9 @@
             <c>404 Not Found</c> if the product is not in the user's favourites;
             <c>500 Internal Server Error</c> for unexpected server errors.
             </returns>
+            <response code="200">Product successfully removed from favourites.</response>
+            <response code="401">User is not authenticated or has an invalid identifier.</response>
+            <response code="404">The product was not found in the user's favourites.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.FavouritesController.GetUserFavourites">
             <summary>
@@ -845,6 +892,8 @@
             <c>401 Unauthorized</c> if the user is not authenticated or the user ID is invalid;
             <c>500 Internal Server Error</c> for unexpected server errors.
             </returns>
+            <response code="200">Successfully retrieved the list of favourite products.</response>
+            <response code="401">User is not authenticated or has an invalid identifier.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.FrontendProxyController">
             <summary>
@@ -921,30 +970,44 @@
             </summary>
             <param name="order">The order data to be created.</param>
             <returns>
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the created order details if successful;
-            otherwise, returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> if the user email is not found.
+            <c>200 OK</c> with the created order details if successful;
+            <c>400 Bad Request</c> if the user email is not found in the JWT token;
+            <c>500 Internal Server Error</c> for unexpected errors.
             </returns>
             <response code="200">Returns the newly created order.</response>
             <response code="400">If the user email is not present in the JWT token.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.OrdersController.GetOrders">
             <summary>
             Retrieves all orders associated with the currently authenticated user.
             </summary>
-            <returns>A list of <see cref="!:OrderResponse"/> objects representing the user's orders.</returns>
+            <returns>A list of <see cref="T:EStoreX.Core.DTO.Orders.Responses.OrderResponse"/> objects representing the user's orders.</returns>
+            <response code="200">Returns the list of user's orders.</response>
+            <response code="400">If the user email is missing or invalid in the token.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.OrdersController.GetOrdersById(System.Guid)">
             <summary>
             Retrieves a specific order by its ID for the currently authenticated user.
             </summary>
-            <param name="Id">The unique identifier of the order.</param>
-            <returns>An <see cref="!:OrderResponse"/> object representing the order, or NotFound if not found.</returns>
+            <param name="id">The unique identifier of the order.</param>
+            <returns>
+            Returns <see cref="T:EStoreX.Core.DTO.Orders.Responses.OrderResponse"/> if the order exists and belongs to the user; 
+            otherwise, returns <c>null</c>.
+            </returns>
+            <response code="200">Returns the requested order (can be null if not found).</response>
+            <response code="400">If the user email is missing in the JWT token.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.OrdersController.GetDeliveryMethods">
             <summary>
             Retrieves all available delivery methods.
             </summary>
-            <returns>A list of <see cref="!:DeliveryMethodResponse"/> objects representing delivery options.</returns>
+            <returns>
+            A list of <see cref="T:EStoreX.Core.DTO.Orders.Responses.DeliveryMethodResponse"/> objects representing delivery options.
+            </returns>
+            <response code="200">Successfully retrieved the delivery methods.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.PaymentsController">
             <summary>
@@ -972,63 +1035,76 @@
             <param name="basketId">The ID of the customer's basket. Cannot be null or empty.</param>
             <param name="deliveryMethodId">The ID of the selected delivery method.</param>
             <returns>
-            Returns the updated <see cref="T:Domain.Entities.Baskets.CustomerBasket"/> including the client secret for Stripe payment.
-            Returns <c>BadRequest</c> if basketId is invalid.
-            Returns <c>NotFound</c> if the basket does not exist.
-            Returns <c>Ok</c> with the updated basket if successful.
+            Returns the updated <see cref="T:EStoreX.Core.DTO.Common.PaymentIntentDTO"/> containing the PaymentIntentId and ClientSecret.
             </returns>
-            <remarks>
-            This endpoint is called by the frontend before initiating payment through Stripe.
-            </remarks>
+            <response code="200">Successfully created or updated the payment intent.</response>
+            <response code="400">Invalid basketId or delivery method ID.</response>
+            <response code="404">Basket not found.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.PaymentsController.UpdateStatusWithStripe">
-            <summary>
-            Handles incoming Stripe webhook events to update the order status based on the payment result.
-            </summary>
-            <remarks>
-            This endpoint is called by Stripe to notify about payment intent status changes such as success or failure.
-            It processes the webhook payload, validates the Stripe signature, and updates the related order in the system.
+             <summary>
+             Handles incoming Stripe webhook events to update the order status based on the payment result.
+             </summary>
+             <remarks>
+             This endpoint is called by Stripe to notify about payment intent status changes such as success or failure.
+             It validates the Stripe signature and updates the related order accordingly.
             
-            Expected events:
-            <list type="bullet">
-              <item>
-                <term>payment_intent.succeeded</term>
-                <description>Updates the order status to PaymentReceived.</description>
-              </item>
-              <item>
-                <term>payment_intent.payment_failed</term>
-                <description>Updates the order status to PaymentFailed.</description>
-              </item>
-            </list>
-            </remarks>
-            <returns>
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> (200) if the webhook is processed successfully.
-            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> (400) if there's an error validating or processing the event.
-            </returns>
+             Expected events:
+             <list type="bullet">
+               <item>
+                 <term>payment_intent.succeeded</term>
+                 <description>Updates the order status to PaymentReceived.</description>
+               </item>
+               <item>
+                 <term>payment_intent.payment_failed</term>
+                 <description>Updates the order status to PaymentFailed.</description>
+               </item>
+             </list>
+             </remarks>
+             <returns>
+             <see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> if the webhook is processed successfully.
+             <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if validation fails.
+             </returns>
+             <response code="200">Webhook processed successfully.</response>
+             <response code="400">Invalid Stripe signature or processing error.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.ProductsController">
             <summary>
-            Controller for managing products in the E-StoreX application.
+            Handles product-related operations such as retrieving all products or fetching product details by ID.
             </summary>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.ProductsController.#ctor(EStoreX.Core.ServiceContracts.Products.IProductsService)">
             <summary>
-            Constructor for ProductsController.
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.ProductsController"/> class.
             </summary>
-            <param name="productsService"></param>
+            <param name="productsService">Service for managing product operations.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.ProductsController.GetAllProducts(EStoreX.Core.DTO.Products.Responses.ProductQueryDTO)">
             <summary>
-            Retrieves all products from the database.
+            Retrieves all products with optional filtering and pagination.
             </summary>
-            <returns>products</returns>
+            <param name="query">Query parameters for filtering, searching, and pagination.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with a paginated list of <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponse"/> objects if products exist.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> (204) if no products match the query.
+            </returns>
+            <response code="200">Successfully retrieved the list of products.</response>
+            <response code="204">No products found for the given query.</response>
+            <response code="500">Unexpected error occurred.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.ProductsController.GetProductById(System.Guid)">
             <summary>
-            Retrieves a product by its ID.
+            Retrieves a product by its unique identifier.
             </summary>
-            <param name="Id">Product Id</param>
-            <returns>Product or NotFound</returns>
+            <param name="Id">The unique identifier of the product.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponse"/> if found.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundObjectResult"/> if the product does not exist.
+            </returns>
+            <response code="200">Successfully retrieved the product.</response>
+            <response code="404">Product not found or invalid ID.</response>
+            <response code="500">Unexpected error occurred.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.RatingsController">
             <summary>
@@ -1048,6 +1124,8 @@
             </summary>
             <param name="request">The rating details including score, comment, and product ID.</param>
             <returns>The created rating as a <see cref="T:EStoreX.Core.DTO.Ratings.Response.RatingResponse"/>.</returns>
+            <response code="200">Successfully added the rating.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.RatingsController.UpdateRating(System.Guid,EStoreX.Core.DTO.Ratings.Requests.RatingUpdateRequest)">
             <summary>
@@ -1056,6 +1134,9 @@
             <param name="id">The ID of the rating to update.</param>
             <param name="request">The updated rating details.</param>
             <returns>The updated rating as a <see cref="T:EStoreX.Core.DTO.Ratings.Response.RatingResponse"/> or 404 if not found.</returns>
+            <response code="200">Successfully updated the rating.</response>
+            <response code="404">Rating not found or not owned by user.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.RatingsController.DeleteRating(System.Guid)">
             <summary>
@@ -1063,6 +1144,9 @@
             </summary>
             <param name="id">The ID of the rating to delete.</param>
             <returns>No content if successful, otherwise 404 if not found.</returns>
+            <response code="204">Rating successfully deleted.</response>
+            <response code="404">Rating not found or not owned by user.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.RatingsController.GetRatingsForProduct(System.Guid)">
             <summary>
@@ -1070,6 +1154,7 @@
             </summary>
             <param name="productId">The ID of the product.</param>
             <returns>A list of ratings as <see cref="T:EStoreX.Core.DTO.Ratings.Response.RatingResponse"/>.</returns>
+            <response code="200">Successfully retrieved product ratings.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.RatingsController.GetProductRatingSummary(System.Guid)">
             <summary>
@@ -1078,6 +1163,7 @@
             </summary>
             <param name="productId">The ID of the product.</param>
             <returns>A <see cref="T:EStoreX.Core.DTO.Ratings.Response.ProductRatingResponse"/> containing rating summary.</returns>
+            <response code="200">Successfully retrieved product rating summary.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.RatingsController.GetMyRatingForProduct(System.Guid)">
             <summary>
@@ -1088,6 +1174,9 @@
             An <see cref="T:Microsoft.AspNetCore.Mvc.ActionResult`1"/> containing the user's rating,
             or a 404 Not Found response if the user hasn't rated the product yet.
             </returns>
+            <response code="200">Successfully retrieved the user's rating.</response>
+            <response code="404">No rating found for this product by the user.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="T:E_StoreX.API.Middleware.ApiKeyMiddleware">
             <summary>

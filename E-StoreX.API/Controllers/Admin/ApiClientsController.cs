@@ -34,9 +34,16 @@ namespace E_StoreX.API.Controllers.Admin
         /// <summary>
         /// Registers a new API client and returns its API key.
         /// </summary>
-        /// <param name="request">Client name info.</param>
-        /// <returns>Client name and API key.</returns>
+        /// <param name="request">The request object containing client registration details.</param>
+        /// <returns>
+        /// Returns <see cref="RegisterApiClientResponse"/> if the client was created successfully.  
+        /// Returns <see cref="BadRequestResult"/> if the request is invalid.  
+        /// </returns>
+        /// <response code="200">Client registered successfully.</response>
+        /// <response code="400">Invalid client data provided.</response>
         [HttpPost("register")]
+        [ProducesResponseType(typeof(RegisterApiClientResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<RegisterApiClientResponse>> RegisterClient([FromBody] RegisterApiClientRequest request)
         {
             if (string.IsNullOrWhiteSpace(request.ClientName))
@@ -57,10 +64,14 @@ namespace E_StoreX.API.Controllers.Admin
         /// </summary>
         /// <param name="apiKey">The API key used to identify the client.</param>
         /// <returns>
-        /// 200 OK: Returns the client details if the API key is valid.  
-        /// 404 Not Found: If no client is associated with the provided API key.  
+        /// Returns <see cref="ApiClient"/> if the API key is valid.  
+        /// Returns <see cref="NotFoundResult"/> if no client exists for the given key.  
         /// </returns>
+        /// <response code="200">Client found successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpGet("client/{apiKey}")]
+        [ProducesResponseType(typeof(ApiClient), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetClientByKey(string apiKey)
         {
             var res = await _clientService.GetByApiKeyAsync(apiKey);
@@ -69,8 +80,10 @@ namespace E_StoreX.API.Controllers.Admin
         /// <summary>
         /// Retrieves all registered API clients.
         /// </summary>
-        /// <returns>A list of <see cref="ApiClient"/> entities.</returns>
+        /// <returns>Returns a list of <see cref="ApiClient"/> entities.</returns>
+        /// <response code="200">Clients retrieved successfully.</response>
         [HttpGet("all")]
+        [ProducesResponseType(typeof(IEnumerable<ApiClient>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAllClients()
         {
             var res = await _clientService.GetClientsAsync();
@@ -81,8 +94,15 @@ namespace E_StoreX.API.Controllers.Admin
         /// Activates an API client by its unique identifier.
         /// </summary>
         /// <param name="clientId">The unique identifier of the API client to activate.</param>
-        /// <returns>200 OK if activated successfully; 404 if the client is not found.</returns>
+        /// <returns>
+        /// Returns success message if activation succeeded.  
+        /// Returns <see cref="NotFoundResult"/> if client is not found.  
+        /// </returns>
+        /// <response code="200">Client activated successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpPut("activate/{clientId}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> ActiveClient(Guid clientId)
         {
             var result = await _clientService.ActiveClientAsync(clientId);
@@ -94,8 +114,12 @@ namespace E_StoreX.API.Controllers.Admin
         /// Deactivates an API client by its unique identifier.
         /// </summary>
         /// <param name="clientId">The unique identifier of the API client to deactivate.</param>
-        /// <returns>200 OK if deactivated successfully; 404 if the client is not found.</returns>
+        /// <returns>Returns success message if deactivation succeeded; otherwise 404.</returns>
+        /// <response code="200">Client deactivated successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpPut("deactivate/{clientId}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> DeActivateClient(Guid clientId)
         {
             var result = await _clientService.DeActivateClientAsync(clientId);
@@ -107,8 +131,12 @@ namespace E_StoreX.API.Controllers.Admin
         /// Retrieves a specific API client by its unique identifier.
         /// </summary>
         /// <param name="clientId">The unique identifier of the API client.</param>
-        /// <returns>200 OK with the <see cref="ApiClient"/> data if found; 404 if not found.</returns>
+        /// <returns>Returns <see cref="ApiClient"/> if found; otherwise 404.</returns>
+        /// <response code="200">Client retrieved successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpGet("{clientId}")]
+        [ProducesResponseType(typeof(ApiClient), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetClient(Guid clientId)
         {
             var client = await _clientService.GetClientAsync(clientId);
@@ -119,12 +147,12 @@ namespace E_StoreX.API.Controllers.Admin
         /// Removes an API client by its unique identifier.
         /// </summary>
         /// <param name="clientId">The unique identifier of the client to remove.</param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> indicating the outcome of the operation.  
-        /// Returns <c>200 OK</c> if the client was removed successfully,  
-        /// or <c>404 Not Found</c> if the client does not exist.
-        /// </returns>
+        /// <returns>Returns success message if removal succeeded; otherwise 404.</returns>
+        /// <response code="200">Client removed successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpDelete("{clientId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveClient(Guid clientId)
         {
             var result = await _clientService.RemoveClientAsync(clientId);
@@ -136,12 +164,12 @@ namespace E_StoreX.API.Controllers.Admin
         /// </summary>
         /// <param name="clientId">The unique identifier of the client.</param>
         /// <param name="request">The updated client data.</param>
-        /// <returns>
-        /// An <see cref="IActionResult"/> indicating the outcome of the update operation.  
-        /// Returns <c>200 OK</c> if updated successfully,  
-        /// or <c>404 Not Found</c> if the client does not exist.
-        /// </returns>
+        /// <returns>Returns success message if update succeeded; otherwise 404.</returns>
+        /// <response code="200">Client updated successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpPut("{clientId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateClient(Guid clientId, [FromBody] UpdateClientRequest request)
         {
             var result = await _clientService.UpdateClientAsync(clientId, request);
@@ -156,8 +184,12 @@ namespace E_StoreX.API.Controllers.Admin
         /// Rotates the API key of a specific client.
         /// </summary>
         /// <param name="clientId">The ID of the client.</param>
-        /// <returns>Newly generated API key.</returns>
+        /// <returns>Returns success message with new API key if rotation succeeded; otherwise 404.</returns>
+        /// <response code="200">API key rotated successfully.</response>
+        /// <response code="404">Client not found.</response>
         [HttpPost("{clientId}/rotate-api-key")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RotateApiKey(Guid clientId)
         {
             var client = await _clientService.RotateApiKeyAsync(clientId);

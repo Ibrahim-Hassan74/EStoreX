@@ -1,9 +1,12 @@
-﻿using EStoreX.Core.DTO.Account.Requests;
+﻿using Asp.Versioning;
+using EStoreX.Core.DTO.Account.Requests;
+using EStoreX.Core.DTO.Account.Responses;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Enums;
+using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Account;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using EStoreX.Core.ServiceContracts.Account;
-using EStoreX.Core.Enums;
-using Asp.Versioning;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -24,48 +27,81 @@ namespace E_StoreX.API.Controllers.Admin
             _userManagementService = userManagementService;
         }
         /// <summary>
-        /// Get all users (Admin or SuperAdmin).
+        /// Retrieves all users (Admin or SuperAdmin only).
         /// </summary>
+        /// <returns>A list of all users.</returns>
+        /// <response code="200">Returns the list of users.</response>
+        /// <response code="401">If the user is not authenticated.</response>
         [HttpGet]
+        [ProducesResponseType(typeof(IEnumerable<ApplicationUserResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAllUsers()
         {
             var users = await _userManagementService.GetAllUsersAsync();
             return Ok(users);
         }
         /// <summary>
-        /// Get a user by id (Admin or SuperAdmin).
+        /// Retrieves a user by their ID (Admin or SuperAdmin only).
         /// </summary>
+        /// <param name="id">The ID of the user.</param>
+        /// <returns>User details if found.</returns>
+        /// <response code="200">Returns the user details.</response>
+        /// <response code="404">If the user with the given ID was not found.</response>
         [HttpGet("{id}")]
+        [ProducesResponseType(typeof(ApplicationUserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserById(string id)
         {
             var user = await _userManagementService.GetUserByIdAsync(id);
-            if (user == null) return NotFound();
+            if (user == null) return NotFound(ApiResponseFactory.NotFound());
             return Ok(user);
         }
         /// <summary>
-        /// Create an Admin (SuperAdmin only).
+        /// Creates a new Admin (SuperAdmin only).
         /// </summary>
+        /// <param name="dto">Admin creation request details.</param>
+        /// <returns>Result of the creation operation.</returns>
+        /// <response code="201">Admin created successfully.</response>
+        /// <response code="400">If the request is invalid or creation failed.</response>
         [HttpPost("add-admin")]
         [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddAdmin([FromBody] CreateAdminDTO dto)
         {
             var result = await _userManagementService.AddAdminAsync(dto);
             return StatusCode(result.StatusCode, result);
         }
         /// <summary>
-        /// Delete an admin permanently (SuperAdmin only).
+        /// Permanently deletes an admin (SuperAdmin only).
         /// </summary>
+        /// <param name="id">The ID of the admin to delete.</param>
+        /// <returns>Result of the deletion operation.</returns>
+        /// <response code="200">Admin deleted successfully.</response>
+        /// <response code="404">If the admin was not found.</response>
         [HttpDelete("admin/{id}")]
         [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteAdmin(string id)
         {
             var result = await _userManagementService.DeleteAdminAsync(id);
             return StatusCode(result.StatusCode, result);
         }
         /// <summary>
-        /// Delete a user (rules depend on roles: SuperAdmin/Admin).
+        /// Deletes a user (rules depend on roles: SuperAdmin/Admin).
         /// </summary>
+        /// <param name="id">The ID of the user to delete.</param>
+        /// <returns>Result of the deletion operation.</returns>
+        /// <response code="200">User deleted successfully.</response>
+        /// <response code="400">If deletion is not allowed or invalid.</response>
+        /// <response code="401">If the current user is not authenticated.</response>
+        /// <response code="404">If the user was not found.</response>
         [HttpDelete("{id}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(string id)
         {
             var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
@@ -77,28 +113,48 @@ namespace E_StoreX.API.Controllers.Admin
         }
 
         /// <summary>
-        /// Deactivate a user (Admin or SuperAdmin).
+        /// Deactivates a user (Admin or SuperAdmin).
         /// </summary>
+        /// <param name="id">The ID of the user to deactivate.</param>
+        /// <returns>Result of the deactivation operation.</returns>
+        /// <response code="200">User deactivated successfully.</response>
+        /// <response code="404">If the user was not found.</response>
         [HttpPost("{id}/deactivate")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeactivateUser(string id)
         {
             var result = await _userManagementService.DeactivateUserAsync(id);
             return StatusCode(result.StatusCode, result);
         }
         /// <summary>
-        /// Activate a user (Admin or SuperAdmin).
+        /// Activates a user (Admin or SuperAdmin).
         /// </summary>
+        /// <param name="id">The ID of the user to activate.</param>
+        /// <returns>Result of the activation operation.</returns>
+        /// <response code="200">User activated successfully.</response>
+        /// <response code="404">If the user was not found.</response>
         [HttpPost("{id}/activate")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ActivateUser(string id)
         {
             var result = await _userManagementService.ActivateUserAsync(id);
             return StatusCode(result.StatusCode, result);
         }
         /// <summary>
-        /// Assign a specified role to a user. Accessible only by Super Admin.
+        /// Assigns a role to a user (SuperAdmin only).
         /// </summary>
+        /// <param name="dto">Role assignment details.</param>
+        /// <returns>Result of the assignment operation.</returns>
+        /// <response code="200">Role assigned successfully.</response>
+        /// <response code="400">If assignment failed.</response>
+        /// <response code="404">If the user was not found.</response>
         [HttpPost("assign-role")]
         [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> AssignRole([FromBody] UpdateUserRoleDTO dto)
         {
             var result = await _userManagementService.AssignRoleToUserAsync(dto);
@@ -106,10 +162,18 @@ namespace E_StoreX.API.Controllers.Admin
         }
 
         /// <summary>
-        /// Remove a specified role from a user. Accessible only by Super Admin.
+        /// Removes a role from a user (SuperAdmin only).
         /// </summary>
+        /// <param name="dto">Role removal details.</param>
+        /// <returns>Result of the removal operation.</returns>
+        /// <response code="200">Role removed successfully.</response>
+        /// <response code="400">If removal failed.</response>
+        /// <response code="404">If the user was not found.</response>
         [HttpPost("remove-role")]
         [Authorize(Roles = $"{nameof(UserTypeOptions.SuperAdmin)}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> RemoveRole([FromBody] UpdateUserRoleDTO dto)
         {
             var result = await _userManagementService.RemoveRoleFromUserAsync(dto);
