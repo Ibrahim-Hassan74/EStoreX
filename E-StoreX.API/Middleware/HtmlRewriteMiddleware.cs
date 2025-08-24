@@ -27,24 +27,16 @@ namespace E_StoreX.API.Middleware
         public async Task InvokeAsync(HttpContext context)
         {
             var path = context.Request.Path.Value?.ToLower();
-
-            if (path == "/reset-password")
+            context.Request.Path = path switch
             {
-                context.Request.Path = "/reset-password.html";
-            }
-            else if (path == "/password-reset-success")
-            {
-                context.Request.Path = "/password-reset-success.html";
-            }
-            else if (path == "/password-reset-failed")
-            {
-                context.Request.Path = "/password-reset-failed.html";
-            }
-            else if (path == "/invalid-reset-link")
-            {
-                context.Request.Path = "/invalid-reset-link.html";
-            }
-
+                "/reset-password" => "/reset-password.html",
+                "/password-reset-success" => "/password-reset-success.html",
+                "/password-reset-failed" => "/password-reset-failed.html",
+                "/invalid-reset-link" => "/invalid-reset-link.html",
+                "/email-confirmed" => "/email-confirmed.html",
+                "/email-confirm-failed" => "/email-confirm-failed.html",
+                _ => context.Request.Path 
+            };
             await _next(context);
         }
     }

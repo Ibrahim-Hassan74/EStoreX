@@ -17,9 +17,12 @@ namespace E_StoreX.API.Middleware
         {
             "/reset-password", "/password-reset-success", "/password-reset-failed",
             "/invalid-reset-link", "/index",
+            "/email-confirm-failed",
+            "/email-confirmed",
             //"/api/account/external-login",
             "/api/v1/account/external-login-callback",
-            "/api/v1/account/confirm-email",
+            //"/api/v1/account/confirm-email",
+
             "/signin-google"
         };
         private readonly List<string> allowedStaticExtensions = new List<string>
@@ -49,7 +52,7 @@ namespace E_StoreX.API.Middleware
             if (allowedStaticPaths.Any(p => path.StartsWith(p)) ||
                 allowedStaticExtensions.Any(ext => path.EndsWith(ext)) ||
                 context.Request.Method == HttpMethods.Options ||
-                context.Request.Path.StartsWithSegments("/api/v2/frontend/reset") ||
+                context.Request.Path.StartsWithSegments("/api/v2/frontend") ||
                 context.Request.Path.StartsWithSegments("/favicon.ico") ||
                 path.Contains("webhook"))
             {

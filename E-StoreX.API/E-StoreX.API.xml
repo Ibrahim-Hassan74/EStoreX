@@ -30,8 +30,13 @@
             <summary>
             Registers a new API client and returns its API key.
             </summary>
-            <param name="request">Client name info.</param>
-            <returns>Client name and API key.</returns>
+            <param name="request">The request object containing client registration details.</param>
+            <returns>
+            Returns <see cref="T:EStoreX.Core.DTO.Account.Responses.RegisterApiClientResponse"/> if the client was created successfully.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the request is invalid.  
+            </returns>
+            <response code="200">Client registered successfully.</response>
+            <response code="400">Invalid client data provided.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.GetClientByKey(System.String)">
             <summary>
@@ -39,47 +44,57 @@
             </summary>
             <param name="apiKey">The API key used to identify the client.</param>
             <returns>
-            200 OK: Returns the client details if the API key is valid.  
-            404 Not Found: If no client is associated with the provided API key.  
+            Returns <see cref="T:Domain.Entities.Common.ApiClient"/> if the API key is valid.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if no client exists for the given key.  
             </returns>
+            <response code="200">Client found successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.GetAllClients">
             <summary>
             Retrieves all registered API clients.
             </summary>
-            <returns>A list of <see cref="T:Domain.Entities.Common.ApiClient"/> entities.</returns>
+            <returns>Returns a list of <see cref="T:Domain.Entities.Common.ApiClient"/> entities.</returns>
+            <response code="200">Clients retrieved successfully.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.ActiveClient(System.Guid)">
             <summary>
             Activates an API client by its unique identifier.
             </summary>
             <param name="clientId">The unique identifier of the API client to activate.</param>
-            <returns>200 OK if activated successfully; 404 if the client is not found.</returns>
+            <returns>
+            Returns success message if activation succeeded.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if client is not found.  
+            </returns>
+            <response code="200">Client activated successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.DeActivateClient(System.Guid)">
             <summary>
             Deactivates an API client by its unique identifier.
             </summary>
             <param name="clientId">The unique identifier of the API client to deactivate.</param>
-            <returns>200 OK if deactivated successfully; 404 if the client is not found.</returns>
+            <returns>Returns success message if deactivation succeeded; otherwise 404.</returns>
+            <response code="200">Client deactivated successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.GetClient(System.Guid)">
             <summary>
             Retrieves a specific API client by its unique identifier.
             </summary>
             <param name="clientId">The unique identifier of the API client.</param>
-            <returns>200 OK with the <see cref="T:Domain.Entities.Common.ApiClient"/> data if found; 404 if not found.</returns>
+            <returns>Returns <see cref="T:Domain.Entities.Common.ApiClient"/> if found; otherwise 404.</returns>
+            <response code="200">Client retrieved successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RemoveClient(System.Guid)">
             <summary>
             Removes an API client by its unique identifier.
             </summary>
             <param name="clientId">The unique identifier of the client to remove.</param>
-            <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> indicating the outcome of the operation.  
-            Returns <c>200 OK</c> if the client was removed successfully,  
-            or <c>404 Not Found</c> if the client does not exist.
-            </returns>
+            <returns>Returns success message if removal succeeded; otherwise 404.</returns>
+            <response code="200">Client removed successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.UpdateClient(System.Guid,EStoreX.Core.DTO.Common.UpdateClientRequest)">
             <summary>
@@ -87,18 +102,18 @@
             </summary>
             <param name="clientId">The unique identifier of the client.</param>
             <param name="request">The updated client data.</param>
-            <returns>
-            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> indicating the outcome of the update operation.  
-            Returns <c>200 OK</c> if updated successfully,  
-            or <c>404 Not Found</c> if the client does not exist.
-            </returns>
+            <returns>Returns success message if update succeeded; otherwise 404.</returns>
+            <response code="200">Client updated successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RotateApiKey(System.Guid)">
             <summary>
             Rotates the API key of a specific client.
             </summary>
             <param name="clientId">The ID of the client.</param>
-            <returns>Newly generated API key.</returns>
+            <returns>Returns success message with new API key if rotation succeeded; otherwise 404.</returns>
+            <response code="200">API key rotated successfully.</response>
+            <response code="404">Client not found.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.BrandsController">
             <summary>
@@ -119,6 +134,7 @@
             <returns>The created brand.</returns>
             <response code="200">Brand created successfully.</response>
             <response code="400">Brand name is empty or invalid.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Update(System.Guid,System.String)">
             <summary>
@@ -130,6 +146,7 @@
             <response code="200">Brand updated successfully.</response>
             <response code="400">New name is empty or invalid.</response>
             <response code="404">Brand not found.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Delete(System.Guid)">
             <summary>
@@ -138,42 +155,64 @@
             <param name="id">The ID of the brand to delete.</param>
             <response code="204">Brand deleted successfully.</response>
             <response code="404">Brand not found.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.CategoriesController">
             <summary>
             Controller for managing product categories in the E-StoreX application.
             </summary>
-            <remarks>This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended for use in
-            administrative scenarios where order-related operations are required. It serves as a base for implementing
-            actions related to order management.</remarks>
+            <remarks>
+            This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended 
+            for use in administrative scenarios where category-related operations are required.
+            </remarks>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.Categories.ICategoriesService)">
             <summary>
             Constructor for CategoriesController.
             </summary>
-            <param name="categoriesService"></param>
+            <param name="categoriesService">Service to manage categories.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.CreateCategory(EStoreX.Core.DTO.Categories.Requests.CategoryRequest)">
             <summary>
             Creates a new category in the database.
             </summary>
-            <param name="categoryDTO">categoryDTO object</param>
-            <returns>Category created</returns>
+            <param name="categoryDTO">The request object containing category details.</param>
+            <returns>
+            Returns <see cref="T:EStoreX.Core.DTO.Categories.Responses.CategoryResponse"/> if the category was created successfully.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the request is invalid.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.StatusCodeResult"/> 500 if an unexpected error occurs.
+            </returns>
+            <response code="200">Category created successfully.</response>
+            <response code="400">Invalid category data supplied.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.UpdateCategory(System.Guid,EStoreX.Core.DTO.Categories.Requests.UpdateCategoryDTO)">
             <summary>
             Updates an existing category in the database.
             </summary>
-            <param name="Id">category Id</param>
-            <param name="categoryDTO">the new value for category object</param>
-            <returns></returns>
+            <param name="Id">The unique identifier of the category to update.</param>
+            <param name="categoryDTO">The updated category details.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> if the update was successful.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the ID does not match the request body.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if no category is found with the given ID.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.StatusCodeResult"/> 500 if an unexpected error occurs.
+            </returns>
+            <response code="204">Category updated successfully.</response>
+            <response code="400">Invalid request or ID mismatch.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.DeleteCategory(System.Guid)">
             <summary>
             Deletes a category with the specified Id from the database.
             </summary>
-            <param name="Id">Category Id</param>
-            <returns></returns>
+            <param name="Id">The unique identifier of the category to delete.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> if the category was deleted successfully.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if deletion fails or the ID is invalid.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if no category exists with the given ID.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.StatusCodeResult"/> 500 if an unexpected error occurs.
+            </returns>
+            <response code="204">Category deleted successfully.</response>
+            <response code="400">Invalid category ID or failed to delete.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.OrdersController">
             <summary>
@@ -193,43 +232,70 @@
             <summary>
             Retrieves all orders from the system.
             </summary>
-            <returns>All orders</returns>
+            <returns>
+            Returns <see cref="T:System.Collections.Generic.IEnumerable`1"/> containing all orders if found.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.UnauthorizedResult"/> if the user is not authenticated.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if no orders exist.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.StatusCodeResult"/> 500 if an unexpected error occurs.
+            </returns>
+            <response code="200">Orders retrieved successfully.</response>
+            <response code="401">User is not authenticated.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.ProductsController">
             <summary>
-            products controller for admin operations in the E-StoreX application.
+            Provides administrative operations for managing products in the E-StoreX application.
             </summary>
-            <remarks>This controller inherits from <see cref="T:E_StoreX.API.Controllers.Admin.AdminControllerBase"/> and is intended for use in
-            administrative scenarios where order-related operations are required. It serves as a base for implementing
-            actions related to order management.</remarks>
+            <remarks>
+            This controller is intended for admin scenarios only and includes endpoints 
+            for creating, updating, and deleting products.
+            </remarks>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.Products.IProductsService)">
             <summary>
-            Constructor for ProductsController.
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.ProductsController"/> class.
             </summary>
-            <param name="productsService"></param>
+            <param name="productsService">Service for handling product operations.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.CreateProduct(EStoreX.Core.DTO.Products.Requests.ProductAddRequest)">
             <summary>
-            Create new product in database
+            Creates a new product in the database.
             </summary>
-            <param name="productRequest"></param>
-            <returns></returns>
+            <param name="productRequest">The product details to be created.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the created <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponse"/>.  
+            </returns>
+            <response code="200">Product created successfully.</response>
+            <response code="400">Invalid product data supplied.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.UpdateProduct(System.Guid,EStoreX.Core.DTO.Products.Requests.ProductUpdateRequest)">
             <summary>
-            Updates an existing product in the database.
+            Updates an existing product.
             </summary>
-            <param name="id"></param>
-            <param name="productUpdateRequest"></param>
-            <returns></returns>
+            <param name="id">The ID of the product to update.</param>
+            <param name="productUpdateRequest">The updated product details.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the updated <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponse"/>.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestObjectResult"/> if the IDs do not match.
+            </returns>
+            <response code="200">Product updated successfully.</response>
+            <response code="400">Product ID mismatch or invalid data supplied.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.DeleteProduct(System.Guid)">
             <summary>
-            delete product from database
+            Deletes a product from the database.
             </summary>
-            <param name="id">product Id</param>
-            <returns>ok / NotFound</returns>
+            <param name="id">The unique identifier of the product to delete.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkResult"/> if the product was deleted.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundResult"/> if no product was found with the given ID.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the ID is invalid.
+            </returns>
+            <response code="200">Product deleted successfully.</response>
+            <response code="400">Invalid product ID supplied.</response>
+            <response code="404">Product not found.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.UserManagementController">
             <summary>
@@ -244,48 +310,87 @@
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.GetAllUsers">
             <summary>
-            Get all users (Admin or SuperAdmin).
+            Retrieves all users (Admin or SuperAdmin only).
             </summary>
+            <returns>A list of all users.</returns>
+            <response code="200">Returns the list of users.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.GetUserById(System.String)">
             <summary>
-            Get a user by id (Admin or SuperAdmin).
+            Retrieves a user by their ID (Admin or SuperAdmin only).
             </summary>
+            <param name="id">The ID of the user.</param>
+            <returns>User details if found.</returns>
+            <response code="200">Returns the user details.</response>
+            <response code="404">If the user with the given ID was not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AddAdmin(EStoreX.Core.DTO.Account.Requests.CreateAdminDTO)">
             <summary>
-            Create an Admin (SuperAdmin only).
+            Creates a new Admin (SuperAdmin only).
             </summary>
+            <param name="dto">Admin creation request details.</param>
+            <returns>Result of the creation operation.</returns>
+            <response code="201">Admin created successfully.</response>
+            <response code="400">If the request is invalid or creation failed.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.DeleteAdmin(System.String)">
             <summary>
-            Delete an admin permanently (SuperAdmin only).
+            Permanently deletes an admin (SuperAdmin only).
             </summary>
+            <param name="id">The ID of the admin to delete.</param>
+            <returns>Result of the deletion operation.</returns>
+            <response code="200">Admin deleted successfully.</response>
+            <response code="404">If the admin was not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.DeleteUser(System.String)">
             <summary>
-            Delete a user (rules depend on roles: SuperAdmin/Admin).
+            Deletes a user (rules depend on roles: SuperAdmin/Admin).
             </summary>
+            <param name="id">The ID of the user to delete.</param>
+            <returns>Result of the deletion operation.</returns>
+            <response code="200">User deleted successfully.</response>
+            <response code="400">If deletion is not allowed or invalid.</response>
+            <response code="401">If the current user is not authenticated.</response>
+            <response code="404">If the user was not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.DeactivateUser(System.String)">
             <summary>
-            Deactivate a user (Admin or SuperAdmin).
+            Deactivates a user (Admin or SuperAdmin).
             </summary>
+            <param name="id">The ID of the user to deactivate.</param>
+            <returns>Result of the deactivation operation.</returns>
+            <response code="200">User deactivated successfully.</response>
+            <response code="404">If the user was not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.ActivateUser(System.String)">
             <summary>
-            Activate a user (Admin or SuperAdmin).
+            Activates a user (Admin or SuperAdmin).
             </summary>
+            <param name="id">The ID of the user to activate.</param>
+            <returns>Result of the activation operation.</returns>
+            <response code="200">User activated successfully.</response>
+            <response code="404">If the user was not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.AssignRole(EStoreX.Core.DTO.Account.Requests.UpdateUserRoleDTO)">
             <summary>
-            Assign a specified role to a user. Accessible only by Super Admin.
+            Assigns a role to a user (SuperAdmin only).
             </summary>
+            <param name="dto">Role assignment details.</param>
+            <returns>Result of the assignment operation.</returns>
+            <response code="200">Role assigned successfully.</response>
+            <response code="400">If assignment failed.</response>
+            <response code="404">If the user was not found.</response>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.RemoveRole(EStoreX.Core.DTO.Account.Requests.UpdateUserRoleDTO)">
             <summary>
-            Remove a specified role from a user. Accessible only by Super Admin.
+            Removes a role from a user (SuperAdmin only).
             </summary>
+            <param name="dto">Role removal details.</param>
+            <returns>Result of the removal operation.</returns>
+            <response code="200">Role removed successfully.</response>
+            <response code="400">If removal failed.</response>
+            <response code="404">If the user was not found.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.AccountController">
             <summary>
@@ -950,6 +1055,25 @@
             <remarks>
             This endpoint constructs the backend verification URL using the current request scheme and host, 
             appends the API key in the headers, and relays the GET request with query parameters.
+            </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.FrontendProxyController.ConfirmEmail(EStoreX.Core.DTO.Account.Requests.ConfirmEmailDTO)">
+            <summary>
+            Acts as a proxy endpoint that forwards an email confirmation request 
+            from the frontend to the backend API.
+            </summary>
+            <param name="request">
+            A <see cref="T:EStoreX.Core.DTO.Account.Requests.ConfirmEmailDTO"/> that contains the user's ID and confirmation token.
+            </param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing the backend response:
+            - 200 OK: if the confirmation succeeded,
+            - 400 Bad Request: if the token is invalid or expired,
+            - 500 Internal Server Error: if the HTTP context is unavailable or another error occurs.
+            </returns>
+            <remarks>
+            This method builds the backend confirmation URL using the current request scheme and host, 
+            attaches query parameters (userId + token), and sends a GET request with the API key header.
             </remarks>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.OrdersController">

@@ -12,7 +12,7 @@ namespace E_StoreX.API.Controllers.Public
     /// such as the need to hide the API key.
     /// </remarks>
     [ApiController]
-    [Route("api/v{version:apiVersion}/frontend/reset")]
+    [Route("api/v{version:apiVersion}/frontend")]
     [ApiVersion(2.0)]
     public class FrontendProxyController : ControllerBase
     {
@@ -54,7 +54,7 @@ namespace E_StoreX.API.Controllers.Public
         /// current HTTP request context, and forwards the request to the backend with the necessary headers.
         /// </remarks>
 
-        [HttpPost]
+        [HttpPost("reset")]
         public async Task<IActionResult> ResetPasswordProxy([FromBody] ResetPasswordDTO request)
         {
             var apiKey = _configuration["ApiSettings:XApiKey"];
@@ -100,7 +100,7 @@ namespace E_StoreX.API.Controllers.Public
         /// This endpoint constructs the backend verification URL using the current request scheme and host, 
         /// appends the API key in the headers, and relays the GET request with query parameters.
         /// </remarks>
-        [HttpGet("verify")]
+        [HttpGet("reset/verify")]
         public async Task<IActionResult> VerifyResetPassword([FromQuery] VerifyResetPasswordDTO request)
         {
             var apiKey = _configuration["ApiSettings:XApiKey"];
@@ -126,5 +126,55 @@ namespace E_StoreX.API.Controllers.Public
                 return StatusCode((int)response.StatusCode, content);
             }
         }
+        /// <summary>
+        /// Acts as a proxy endpoint that forwards an email confirmation request 
+        /// from the frontend to the backend API.
+        /// </summary>
+        /// <param name="request">
+        /// A <see cref="ConfirmEmailDTO"/> that contains the user's ID and confirmation token.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing the backend response:
+        /// - 200 OK: if the confirmation succeeded,
+        /// - 400 Bad Request: if the token is invalid or expired,
+        /// - 500 Internal Server Error: if the HTTP context is unavailable or another error occurs.
+        /// </returns>
+        /// <remarks>
+        /// This method builds the backend confirmation URL using the current request scheme and host, 
+        /// attaches query parameters (userId + token), and sends a GET request with the API key header.
+        /// </remarks>
+        [HttpGet("confirm-email")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailDTO request)
+        {
+            var apiKey = _configuration["ApiSettings:XApiKey"];
+            var apiPath = _configuration["ApiSettings:BackendConfirmEmailUrl"];
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Unable to determine host information.");
+
+            var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host.Value}";
+            var fullBaseUrl = $"{baseUrl}/{apiPath}".TrimEnd('/');
+
+            var urlWithParams = $"{fullBaseUrl}?userId={Uri.EscapeDataString(request.UserId)}&token={Uri.EscapeDataString(request.Token)}";
+
+            using (var client = _httpClientFactory.CreateClient())
+            {
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, urlWithParams);
+                httpRequest.Headers.Add("X-API-KEY", apiKey);
+
+                var response = await client.SendAsync(httpRequest);
+                if (response.IsSuccessStatusCode)
+                {
+                    if (!string.IsNullOrWhiteSpace(request.RedirectTo))
+                        return Redirect(request.RedirectTo);
+
+                    return Redirect("/email-confirmed");
+                }
+
+                return Redirect("/email-confirm-failed");
+            }
+        }
+
     }
 }

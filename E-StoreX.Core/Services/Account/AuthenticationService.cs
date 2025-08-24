@@ -501,16 +501,9 @@ namespace EStoreX.Core.Services.Account
             var scheme = request?.Scheme ?? "https";
             var host = request?.Host.Value ?? "localhost:5000";
 
-            string redirectUrl;
-            if (IsMobileDevice(request))
-            {
-                redirectUrl = "estorex://active";
-            }
-            else
-            {
-                redirectUrl = "https://loaclhost:4200/active";
-            }
-            string confirmationLink = $"{scheme}://{host}/api/v1/account/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
+            string redirectUrl = $"{scheme}://{host}/email-confirmed";
+
+            string confirmationLink = $"{scheme}://{host}/api/v2/frontend/confirm-email?userId={user.Id}&token={Uri.EscapeDataString(token)}&redirectTo={Uri.EscapeDataString(redirectUrl)}";
 
             string html = EmailTemplateService.GetConfirmationEmailTemplate(confirmationLink);
 
