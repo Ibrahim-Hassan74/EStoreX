@@ -34,6 +34,15 @@ namespace EStoreX.Core.Services.Products
         /// <inheritdoc/>
         public async Task<Brand> CreateBrandAsync(string name)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Brand name cannot be null or empty.", nameof(name));
+            }
+            if( await _brandRepository.GetByNameAsync(name) != null)
+            {
+                throw new InvalidOperationException($"A brand with the name '{name}' already exists.");
+            }
+
             var brand = new Brand
             {
                 Id = Guid.NewGuid(),
@@ -49,6 +58,17 @@ namespace EStoreX.Core.Services.Products
         /// <inheritdoc/>
         public async Task<Brand> UpdateBrandAsync(Guid brandId, string newName)
         {
+            if (string.IsNullOrWhiteSpace(newName))
+            {
+                throw new ArgumentException("New name cannot be null or empty.", nameof(newName));
+            }
+
+            var existingBrand = await _brandRepository.GetByNameAsync(newName);
+            if (existingBrand != null && existingBrand.Id != brandId)
+            {
+                throw new InvalidOperationException($"A brand with the name '{newName}' already exists.");
+            }
+
             var brand = await _brandRepository.GetByIdAsync(brandId);
             if (brand == null)
             {

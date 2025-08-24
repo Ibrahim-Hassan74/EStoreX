@@ -18,5 +18,11 @@ namespace EStoreX.Core.RepositoryContracts.Products
         /// The task result contains <c>true</c> if the brand exists; otherwise, <c>false</c>.
         /// </returns>
         Task<bool> ExistsAsync(Guid brandId);
+        /// <summary>
+        /// Gets a brand by its name.
+        /// </summary>
+        /// <param name="name">The name of the brand.</param>
+        /// <returns>The <see cref="Brand"/> if found; otherwise, null.</returns>
+        Task<Brand?> GetByNameAsync(string name);
     }
 }

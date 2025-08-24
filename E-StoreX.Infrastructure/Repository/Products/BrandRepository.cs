@@ -19,5 +19,11 @@ namespace EStoreX.Infrastructure.Repository.Products
         {
             return await _context.Brands.AnyAsync(b => b.Id == brandId);
         }
+        /// <inheritdoc/>
+        public async Task<Brand?> GetByNameAsync(string name)
+        {
+            return await _context.Brands
+                                 .FirstOrDefaultAsync(b => b.Name == name);
+        }
     }
 }
