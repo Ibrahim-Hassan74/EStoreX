@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.Helper;
@@ -61,6 +62,19 @@ namespace E_StoreX.API.Controllers.Public
                 return NotFound(ApiResponseFactory.NotFound("Category not found"));
 
             return Ok(category);
+        }
+
+        /// <summary>
+        /// Get all brands inside a category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <returns>List of brands associated with the category.</returns>
+        [HttpGet("{categoryId:guid}/brands")]
+        [ProducesResponseType(typeof(IEnumerable<Brand>), StatusCodes.Status200OK)]
+        public async Task<ActionResult<IEnumerable<Brand>>> GetBrandsByCategory(Guid categoryId)
+        {
+            var brands = await _categoriesService.GetBrandsByCategoryIdAsync(categoryId);
+            return Ok(brands);
         }
     }
 }

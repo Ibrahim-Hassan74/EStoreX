@@ -11,5 +11,7 @@ namespace Domain.Entities.Product
         public string Name { get; set; } = string.Empty;
         [JsonIgnore]
         public ICollection<Product> Products { get; set; } = new List<Product>();
+        [JsonIgnore]
+        public ICollection<CategoryBrand> CategoryBrands { get; set; } = new List<CategoryBrand>();
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
@@ -98,5 +99,46 @@ namespace E_StoreX.API.Controllers.Admin
 
             return NoContent();
         }
+
+        /// <summary>
+        /// Assign a brand to a category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <returns>NoContent if successful, BadRequest otherwise.</returns>
+        [HttpPost("{categoryId:guid}/brands/{brandId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> AssignBrandToCategory(Guid categoryId, Guid brandId)
+        {
+            var result = await _categoriesService.AssignBrandToCategoryAsync(
+                new CategoryBrand { CategoryId = categoryId, BrandId = brandId });
+
+            if (!result)
+                return BadRequest(ApiResponseFactory.BadRequest("Failed to assign brand to category."));
+
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Unassign a brand from a category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <returns>NoContent if successful, BadRequest otherwise.</returns>
+        [HttpDelete("{categoryId:guid}/brands/{brandId:guid}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> UnassignBrandFromCategory(Guid categoryId, Guid brandId)
+        {
+            var result = await _categoriesService.UnassignBrandFromCategoryAsync(
+                new CategoryBrand { CategoryId = categoryId, BrandId = brandId });
+
+            if (!result)
+                return BadRequest(ApiResponseFactory.BadRequest("Failed to unassign brand from category."));
+
+            return NoContent();
+        }
+
     }
 }

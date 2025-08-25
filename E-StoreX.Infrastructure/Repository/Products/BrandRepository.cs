@@ -25,5 +25,12 @@ namespace EStoreX.Infrastructure.Repository.Products
             return await _context.Brands
                                  .FirstOrDefaultAsync(b => b.Name == name);
         }
+        public async Task<IEnumerable<Category>> GetCategoriesByBrandIdAsync(Guid brandId)
+        {
+            return await _context.CategoryBrands
+                .Where(cb => cb.BrandId == brandId)
+                .Select(cb => cb.Category)
+                .ToListAsync();
+        }
     }
 }

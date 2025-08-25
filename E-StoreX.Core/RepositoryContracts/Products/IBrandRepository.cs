@@ -24,5 +24,6 @@ namespace EStoreX.Core.RepositoryContracts.Products
         /// <param name="name">The name of the brand.</param>
         /// <returns>The <see cref="Brand"/> if found; otherwise, null.</returns>
         Task<Brand?> GetByNameAsync(string name);
+        Task<IEnumerable<Category>> GetCategoriesByBrandIdAsync(Guid brandId);
     }
 }

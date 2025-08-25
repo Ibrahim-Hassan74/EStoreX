@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Domain.Entities.Product;
 using EStoreX.Core.Domain.IdentityEntities;
+using Domain.Entities.Product;
 
 namespace EStoreX.Core.Domain.Entities.Favourites
 {

@@ -13,5 +13,7 @@ namespace Domain.Entities.Product
         public string? Description { get; set; }
         [JsonIgnore]
         public ICollection<Product> Products { get; set; } = new HashSet<Product>();
+        [JsonIgnore]
+        public ICollection<CategoryBrand> CategoryBrands { get; set; } = new List<CategoryBrand>();
     }
 }

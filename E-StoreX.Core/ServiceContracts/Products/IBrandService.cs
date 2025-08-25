@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Product;
+using EStoreX.Core.DTO.Categories.Responses;
 
 namespace EStoreX.Core.ServiceContracts.Products
 {
@@ -66,6 +67,6 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// otherwise, returns <c>null</c>.
         /// </returns>
         Task<Brand?> GetBrandByNameAsync(string name);
-
+        Task<IEnumerable<CategoryResponse>> GetCategoriesByBrandIdAsync(Guid brandId);
     }
 }

@@ -1,4 +1,5 @@
-﻿using EStoreX.Core.DTO.Categories.Requests;
+﻿using Domain.Entities.Product;
+using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.DTO.Categories.Responses;
 
 namespace EStoreX.Core.ServiceContracts.Categories
@@ -36,6 +37,8 @@ namespace EStoreX.Core.ServiceContracts.Categories
         /// <param name="id">Category ID</param>
         /// <returns>true if success delete or false if not exist</returns>
         Task<bool> DeleteCategoryAsync(Guid id);
-
+        Task<IEnumerable<Brand>> GetBrandsByCategoryIdAsync(Guid categoryId);
+        Task<bool> AssignBrandToCategoryAsync(CategoryBrand cb);
+        Task<bool> UnassignBrandFromCategoryAsync(CategoryBrand cb);
     }
 }

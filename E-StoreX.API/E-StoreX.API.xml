@@ -214,6 +214,22 @@
             <response code="204">Category deleted successfully.</response>
             <response code="400">Invalid category ID or failed to delete.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.AssignBrandToCategory(System.Guid,System.Guid)">
+            <summary>
+            Assign a brand to a category.
+            </summary>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <param name="brandId">The unique identifier of the brand.</param>
+            <returns>NoContent if successful, BadRequest otherwise.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.UnassignBrandFromCategory(System.Guid,System.Guid)">
+            <summary>
+            Unassign a brand from a category.
+            </summary>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <param name="brandId">The unique identifier of the brand.</param>
+            <returns>NoContent if successful, BadRequest otherwise.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.DeliveryMethodController">
             <summary>
             DeliveryMethodController handles admin operations related to delivery methods.
@@ -923,6 +939,13 @@
             <response code="200">Brand found and returned successfully.</response>
             <response code="404">Brand with the specified name was not found.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BrandsController.GetCategoriesByBrand(System.Guid)">
+            <summary>
+            Get all categories that a brand belongs to.
+            </summary>
+            <param name="brandId">The unique identifier of the brand.</param>
+            <returns>List of categories associated with the brand.</returns>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.BugController">
             <summary>
             Controller for handling bug-related operations.
@@ -983,6 +1006,13 @@
             <response code="400">Invalid category ID format.</response>
             <response code="404">Category not found.</response>
             <response code="500">Unexpected error occurred.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.GetBrandsByCategory(System.Guid)">
+            <summary>
+            Get all brands inside a category.
+            </summary>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <returns>List of brands associated with the category.</returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.CustomControllerBase">
             <summary>

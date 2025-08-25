@@ -86,5 +86,20 @@ namespace EStoreX.Core.Services.Categories
 
             return _mapper.Map<CategoryResponse>(category);
         }
+        public async Task<IEnumerable<Brand>> GetBrandsByCategoryIdAsync(Guid categoryId)
+        {
+            var brands = await _categoryRepository.GetBrandsByCategoryIdAsync(categoryId);
+            return brands;
+        }
+
+        public async Task<bool> AssignBrandToCategoryAsync(CategoryBrand cb)
+        {
+            return await _categoryRepository.AssignBrandAsync(cb);
+        }
+
+        public async Task<bool> UnassignBrandFromCategoryAsync(CategoryBrand cb)
+        {
+            return await _categoryRepository.UnassignBrandAsync(cb);
+        }
     }
 }

@@ -1,21 +1,22 @@
-﻿using Domain.Entities.Product;
+﻿using AutoMapper;
+using Domain.Entities.Product;
+using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.ServiceContracts.Products;
+using EStoreX.Core.Services.Common;
 
 namespace EStoreX.Core.Services.Products
 {
     /// <summary>
     /// Service implementation for managing <see cref="Brand"/> entities.
     /// </summary>
-    public class BrandService : IBrandService
+    public class BrandService : BaseService, IBrandService
     {
         private readonly IBrandRepository _brandRepository;
-        private readonly IUnitOfWork _unitOfWork;
 
-        public BrandService(IUnitOfWork unitOfWork)
+        public BrandService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
         {
-            _unitOfWork = unitOfWork;
             _brandRepository = _unitOfWork.BrandRepository;
         }
 
@@ -99,6 +100,12 @@ namespace EStoreX.Core.Services.Products
         public async Task<Brand?> GetBrandByNameAsync(string name)
         {
             return await _brandRepository.GetByNameAsync(name);
+        }
+
+        public async Task<IEnumerable<CategoryResponse>> GetCategoriesByBrandIdAsync(Guid brandId)
+        {
+            var categories = await _brandRepository.GetCategoriesByBrandIdAsync(brandId);
+            return _mapper.Map<IEnumerable<CategoryResponse>>(categories);
         }
     }
 }

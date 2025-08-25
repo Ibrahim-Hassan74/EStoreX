@@ -32,5 +32,6 @@ namespace EStoreX.Infrastructure.Data
         public virtual DbSet<Favourite> Favourites { get; set; }
         public virtual DbSet<Rating> Ratings { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
-    }
+        public virtual DbSet<CategoryBrand> CategoryBrands { get; set; }
+        }
 }
