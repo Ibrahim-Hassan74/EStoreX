@@ -63,6 +63,8 @@ namespace EStoreX.Core
 
             services.AddScoped<IBrandService, BrandService>();
 
+            services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
+
             // JWT
             services.AddAuthentication(options =>
             {

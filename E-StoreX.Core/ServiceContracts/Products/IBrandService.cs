@@ -57,5 +57,15 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// The task result contains <c>true</c> if the brand was deleted; otherwise, <c>false</c>.
         /// </returns>
         Task<bool> DeleteBrandAsync(Guid brandId);
+        /// <summary>
+        /// Retrieves a brand entity from the database by its name.
+        /// </summary>
+        /// <param name="name">The exact name of the brand to search for.</param>
+        /// <returns>
+        /// Returns the <see cref="Brand"/> entity if found;  
+        /// otherwise, returns <c>null</c>.
+        /// </returns>
+        Task<Brand?> GetBrandByNameAsync(string name);
+
     }
 }

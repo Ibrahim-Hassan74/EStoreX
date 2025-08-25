@@ -20,6 +20,7 @@ namespace EStoreX.Core.RepositoryContracts.Common
         IFavouriteRepository FavouriteRepository { get; }
         IRatingRepository RatingRepository { get; }
         IBrandRepository BrandRepository { get; }
+        IDeliveryMethodRepository deliveryMethodRepository { get; }
         Task<int> CompleteAsync();
     }
 }

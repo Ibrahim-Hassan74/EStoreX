@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.Repository.Common;
 
-namespace EStoreX.Core.Repository.Orders
+namespace EStoreX.Infrastructure.Repository.Orders
 {
     /// <summary>
     /// Provides implementation for order data access using Entity Framework Core.

@@ -38,7 +38,7 @@ namespace EStoreX.Core.Services.Products
             {
                 throw new ArgumentException("Brand name cannot be null or empty.", nameof(name));
             }
-            if( await _brandRepository.GetByNameAsync(name) != null)
+            if (await _brandRepository.GetByNameAsync(name) != null)
             {
                 throw new InvalidOperationException($"A brand with the name '{name}' already exists.");
             }
@@ -93,6 +93,12 @@ namespace EStoreX.Core.Services.Products
             await _unitOfWork.CompleteAsync();
 
             return true;
+        }
+
+        /// <inheritdoc/>
+        public async Task<Brand?> GetBrandByNameAsync(string name)
+        {
+            return await _brandRepository.GetByNameAsync(name);
         }
     }
 }

@@ -14,6 +14,8 @@ namespace EStoreX.Core.Mapping
 
             CreateMap<DeliveryMethod, DeliveryMethodResponse>();
 
+            CreateMap<DeliveryMethodRequest, DeliveryMethod>();
+
             CreateMap<OrderItem, OrderItemResponse>();
 
             CreateMap<Order, OrderResponse>()

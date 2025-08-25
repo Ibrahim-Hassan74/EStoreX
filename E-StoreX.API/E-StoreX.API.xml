@@ -214,6 +214,47 @@
             <response code="204">Category deleted successfully.</response>
             <response code="400">Invalid category ID or failed to delete.</response>
         </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.DeliveryMethodController">
+            <summary>
+            DeliveryMethodController handles admin operations related to delivery methods.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.#ctor(EStoreX.Core.ServiceContracts.Orders.IDeliveryMethodService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.DeliveryMethodController"/> class.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.Create(EStoreX.Core.DTO.Orders.Requests.DeliveryMethodRequest)">
+            <summary>
+            Creates a new delivery method.
+            </summary>
+            <param name="request">The delivery method details.</param>
+            <returns>The created delivery method.</returns>
+            <response code="201">Delivery method created successfully.</response>
+            <response code="400">Invalid request data.</response>
+            <response code="401">Unauthorized user.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.Update(System.Guid,EStoreX.Core.DTO.Orders.Requests.DeliveryMethodRequest)">
+            <summary>
+            Updates an existing delivery method.
+            </summary>
+            <param name="id">The unique identifier of the delivery method to update.</param>
+            <param name="request">The updated delivery method details.</param>
+            <returns>The updated delivery method.</returns>
+            <response code="200">Delivery method updated successfully.</response>
+            <response code="404">Delivery method not found.</response>
+            <response code="401">Unauthorized user.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.Delete(System.Guid)">
+            <summary>
+            Deletes a delivery method by its unique identifier.
+            </summary>
+            <param name="id">The unique identifier of the delivery method to delete.</param>
+            <returns>No content if deletion succeeded.</returns>
+            <response code="204">Delivery method deleted successfully.</response>
+            <response code="404">Delivery method not found.</response>
+            <response code="401">Unauthorized user.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.OrdersController">
             <summary>
             Provides functionality for managing and processing orders within the administrative context.
@@ -870,6 +911,18 @@
             <response code="200">Brand found and returned successfully.</response>
             <response code="404">Brand not found.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BrandsController.GetBrandByName(System.String)">
+            <summary>
+            Retrieves a brand by its name.
+            </summary>
+            <param name="name">The exact name of the brand to search for.</param>
+            <returns>
+            Returns <see cref="T:Domain.Entities.Product.Brand"/> with HTTP 200 OK if the brand is found.  
+            Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/> with HTTP 404 Not Found if the brand does not exist.
+            </returns>
+            <response code="200">Brand found and returned successfully.</response>
+            <response code="404">Brand with the specified name was not found.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.BugController">
             <summary>
             Controller for handling bug-related operations.
@@ -940,6 +993,47 @@
             <summary>
             Constructor for CustomControllerBase, initializing the unit of work.
             </summary>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Public.DeliveryMethodController">
+            <summary>
+            DeliveryMethodController handles operations related to delivery methods.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DeliveryMethodController.#ctor(EStoreX.Core.ServiceContracts.Orders.IDeliveryMethodService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.DeliveryMethodController"/> class.
+            </summary>
+            <param name="deliveryMethod">object of <see cref="T:EStoreX.Core.ServiceContracts.Orders.IDeliveryMethodService"/></param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DeliveryMethodController.GetDeliveryMethods">
+            <summary>
+            Retrieves all available delivery methods.
+            </summary>
+            <returns>
+            A list of <see cref="T:EStoreX.Core.DTO.Orders.Responses.DeliveryMethodResponse"/> objects representing delivery options.
+            </returns>
+            <response code="200">Successfully retrieved the delivery methods.</response>
+            <response code="401">Unauthorized user.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DeliveryMethodController.GetById(System.Guid)">
+            <summary>
+            Retrieves a delivery method by its unique identifier.
+            </summary>
+            <param name="id">The unique identifier of the delivery method.</param>
+            <returns>The delivery method with the specified ID.</returns>
+            <response code="200">Returns the delivery method.</response>
+            <response code="404">Delivery method not found.</response>
+            <response code="401">Unauthorized user.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DeliveryMethodController.GetByName(System.String)">
+            <summary>
+            Gets a delivery method by its name.
+            </summary>
+            <param name="name">The exact name of the delivery method to search for.</param>
+            <returns>The delivery method with the specified Name</returns>
+            <response code="200">Returns the delivery method.</response>
+            <response code="404">Delivery method not found.</response>
+            <response code="401">Unauthorized user.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.ErrorController">
             <summary>

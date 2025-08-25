@@ -55,5 +55,27 @@ namespace E_StoreX.API.Controllers.Public
 
             return Ok(brand);
         }
+
+        /// <summary>
+        /// Retrieves a brand by its name.
+        /// </summary>
+        /// <param name="name">The exact name of the brand to search for.</param>
+        /// <returns>
+        /// Returns <see cref="Brand"/> with HTTP 200 OK if the brand is found.  
+        /// Returns <see cref="ApiResponse"/> with HTTP 404 Not Found if the brand does not exist.
+        /// </returns>
+        /// <response code="200">Brand found and returned successfully.</response>
+        /// <response code="404">Brand with the specified name was not found.</response>
+        [HttpGet("by-name/{name}")]
+        [ProducesResponseType(typeof(Brand), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetBrandByName(string name)
+        {
+            var brand = await _brandService.GetBrandByNameAsync(name);
+            if (brand == null)
+                return NotFound(ApiResponseFactory.NotFound($"Brand Not found: {name}"));
+            return Ok(brand);
+        }
+
     }
 }

@@ -12,13 +12,13 @@ using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.Repository.Categories;
 using EStoreX.Core.Repository.Products;
 using EStoreX.Core.Repository.Basket;
-using EStoreX.Core.Repository.Orders;
 using EStoreX.Core.Repository.Account;
 using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.Repository.Favourites;
 using EStoreX.Core.RepositoryContracts.Ratings;
 using EStoreX.Infrastructure.Repository.Ratings;
 using EStoreX.Infrastructure.Repository.Products;
+using EStoreX.Infrastructure.Repository.Orders;
 
 namespace EStoreX.Core.Repository.Common
 {
@@ -46,6 +46,8 @@ namespace EStoreX.Core.Repository.Common
 
         public IBrandRepository BrandRepository { get; }
 
+        public IDeliveryMethodRepository deliveryMethodRepository {  get; }
+
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
             _context = context;
@@ -62,6 +64,7 @@ namespace EStoreX.Core.Repository.Common
             FavouriteRepository = new FavouriteRepository(_context);
             RatingRepository = new RatingRepository(_context);
             BrandRepository = new BrandRepository(_context);
+            deliveryMethodRepository = new DeliveryMethodRepository(_context);
         }
         public async Task<int> CompleteAsync()
         {
