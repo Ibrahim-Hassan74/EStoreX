@@ -27,7 +27,7 @@ namespace E_StoreX.API.Middleware
         };
         private readonly List<string> allowedStaticExtensions = new List<string>
         {
-            ".html", ".js", ".css", ".png", ".jpg", ".jpeg", ".svg"
+            ".html", ".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".webp"
         };
 
         /// <summary>

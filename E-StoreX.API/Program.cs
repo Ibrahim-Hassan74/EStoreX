@@ -13,10 +13,10 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using System.Diagnostics;
 using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 var configPath = Path.Combine(builder.Environment.ContentRootPath, "Configurations");
 builder.Configuration
@@ -57,8 +57,8 @@ builder.Services.AddRateLimiter(options =>
             partitionKey: ip,
             factory: _ => new FixedWindowRateLimiterOptions
             {
-                PermitLimit = 30,
-                Window = TimeSpan.FromSeconds(10),
+                PermitLimit = 40,
+                Window = TimeSpan.FromSeconds(1),
                 AutoReplenishment = true,
                 QueueLimit = 0
             });
