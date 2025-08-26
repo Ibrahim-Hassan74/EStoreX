@@ -29,6 +29,11 @@ namespace EStoreX.Core.Services.Products
         /// <inheritdoc/>
         public async Task<Brand?> GetBrandByIdAsync(Guid brandId)
         {
+            if(brandId == Guid.Empty)
+            {
+                throw new ArgumentException("Brand ID cannot be empty.", nameof(brandId));
+            }
+
             return await _brandRepository.GetByIdAsync(brandId);
         }
 
