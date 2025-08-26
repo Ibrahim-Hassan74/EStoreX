@@ -14,6 +14,11 @@ namespace EStoreX.Infrastructure.Data.Configuration
             builder.Property(x => x.Status)
                 .HasConversion(x => x.ToString(), x => (Status)Enum.Parse(typeof(Status), x));
             builder.Property(x => x.SubTotal).HasColumnType("decimal(18,2)");
+
+            builder.HasOne(o => o.Buyer)
+                 .WithMany()
+                 .HasForeignKey(o => o.BuyerEmail)
+                 .HasPrincipalKey(u => u.Email);
         }
     }
 }

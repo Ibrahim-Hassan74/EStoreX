@@ -12,12 +12,15 @@ namespace EStoreX.Infrastructure.Data
 {
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options): base(options)
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<ApplicationUser>()
+                .HasAlternateKey(u => u.Email);
+
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
@@ -33,5 +36,5 @@ namespace EStoreX.Infrastructure.Data
         public virtual DbSet<Rating> Ratings { get; set; }
         public virtual DbSet<Brand> Brands { get; set; }
         public virtual DbSet<CategoryBrand> CategoryBrands { get; set; }
-        }
+    }
 }

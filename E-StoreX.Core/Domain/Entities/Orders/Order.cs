@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.Enums;
 
 namespace EStoreX.Core.Domain.Entities.Orders
@@ -23,6 +24,7 @@ namespace EStoreX.Core.Domain.Entities.Orders
         public DateTime OrderDate { get; set; } = DateTime.Now;
         public string PaymentIntentId { get; set; }
         public Status Status { get; set; } = Status.Pending;
+        public ApplicationUser Buyer { get; set; }
         public decimal GetTotal()
         {
             return SubTotal + (DeliveryMethod?.Price ?? 0);
