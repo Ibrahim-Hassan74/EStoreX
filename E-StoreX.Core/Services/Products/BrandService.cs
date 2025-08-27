@@ -91,6 +91,9 @@ namespace EStoreX.Core.Services.Products
         /// <inheritdoc/>
         public async Task<bool> DeleteBrandAsync(Guid brandId)
         {
+            if(brandId == Guid.Empty)
+                throw new ArgumentException("Brand ID cannot be empty.", nameof(brandId));
+
             var brand = await _brandRepository.GetByIdAsync(brandId);
             if (brand == null)
                 return false;
