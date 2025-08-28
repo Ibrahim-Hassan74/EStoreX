@@ -159,5 +159,82 @@ namespace E_StoreX.API.Controllers.Public
             return Ok(mergedBasket);
         }
 
+        /// <summary>
+        /// Decreases the quantity of a specific item in the customer's basket by 1.  
+        /// If the quantity reaches zero, the item will be removed from the basket.
+        /// </summary>
+        /// <param name="basketId">
+        /// The unique identifier of the basket (must be a valid GUID).
+        /// </param>
+        /// <param name="productId">
+        /// The unique identifier of the product to decrease the quantity for.
+        /// </param>
+        /// <returns>
+        /// The updated basket if the operation succeeds.
+        /// </returns>
+        /// <response code="200">
+        /// OK – Returns the updated <see cref="CustomerBasketDTO"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – The basket ID format is invalid.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – The basket or item does not exist.
+        /// </response>
+        [HttpPut("{basketId}/items/{productId}/decrease")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        public async Task<IActionResult> DecreaseItemQuantity(string basketId, Guid productId)
+        {
+            if (!Guid.TryParse(basketId, out _))
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Basket Id format"));
+
+            var updatedBasket = await _basketService.DecreaseItemQuantityAsync(basketId, productId);
+            if (updatedBasket == null)
+                return NotFound(ApiResponseFactory.NotFound("Basket or item not found"));
+
+            return Ok(updatedBasket);
+        }
+
+        /// <summary>
+        /// Removes a specific item from the customer's basket.
+        /// </summary>
+        /// <param name="basketId">
+        /// The unique identifier of the basket (must be a valid GUID).
+        /// </param>
+        /// <param name="productId">
+        /// The unique identifier of the product to remove.
+        /// </param>
+        /// <returns>
+        /// The updated basket if the operation succeeds.
+        /// </returns>
+        /// <response code="200">
+        /// OK – Returns the updated <see cref="CustomerBasketDTO"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – The basket ID format is invalid.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – The basket or item does not exist.
+        /// </response>
+        [HttpDelete("{basketId}/items/{productId}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        public async Task<IActionResult> RemoveItemFromBasket(string basketId, Guid productId)
+        {
+            if (!Guid.TryParse(basketId, out _))
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Basket Id format"));
+
+            var updatedBasket = await _basketService.RemoveItemAsync(basketId, productId);
+            if (updatedBasket == null)
+                return NotFound(ApiResponseFactory.NotFound("Basket or item not found"));
+
+            return Ok(updatedBasket);
+        }
+
+
+
     }
 }

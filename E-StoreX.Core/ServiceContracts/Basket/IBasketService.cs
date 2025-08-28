@@ -35,6 +35,37 @@ namespace EStoreX.Core.ServiceContracts.Basket
         /// <param name="userId">The authenticated user's ID.</param>
         /// <returns>The merged customer basket associated with the user, or null if merge fails.</returns>
         Task<CustomerBasketDTO?> MergeBasketsAsync(string guestId, string userId);
+        /// <summary>
+        /// Removes a specific item from the customer's basket.
+        /// </summary>
+        /// <param name="basketId">
+        /// The unique identifier of the basket (must be a valid GUID).
+        /// </param>
+        /// <param name="productId">
+        /// The unique identifier of the product to remove.
+        /// </param>
+        /// <returns>
+        /// A <see cref="CustomerBasketDTO"/> representing the updated basket,  
+        /// or <c>null</c> if the basket or item does not exist.
+        /// </returns>
+        Task<CustomerBasketDTO?> RemoveItemAsync(string basketId, Guid productId);
+
+        /// <summary>
+        /// Decreases the quantity of a specific item in the customer's basket by 1.  
+        /// If the quantity reaches zero, the item will be removed from the basket.
+        /// </summary>
+        /// <param name="basketId">
+        /// The unique identifier of the basket (must be a valid GUID).
+        /// </param>
+        /// <param name="productId">
+        /// The unique identifier of the product to decrease the quantity for.
+        /// </param>
+        /// <returns>
+        /// A <see cref="CustomerBasketDTO"/> representing the updated basket,  
+        /// or <c>null</c> if the basket or item does not exist.
+        /// </returns>
+        Task<CustomerBasketDTO?> DecreaseItemQuantityAsync(string basketId, Guid productId);
+
 
     }
 }

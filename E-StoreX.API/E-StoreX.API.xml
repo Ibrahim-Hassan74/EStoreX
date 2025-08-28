@@ -900,6 +900,53 @@
             Unauthorized – The user is not logged in.
             </response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.DecreaseItemQuantity(System.String,System.Guid)">
+            <summary>
+            Decreases the quantity of a specific item in the customer's basket by 1.  
+            If the quantity reaches zero, the item will be removed from the basket.
+            </summary>
+            <param name="basketId">
+            The unique identifier of the basket (must be a valid GUID).
+            </param>
+            <param name="productId">
+            The unique identifier of the product to decrease the quantity for.
+            </param>
+            <returns>
+            The updated basket if the operation succeeds.
+            </returns>
+            <response code="200">
+            OK – Returns the updated <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/>.
+            </response>
+            <response code="400">
+            Bad Request – The basket ID format is invalid.
+            </response>
+            <response code="404">
+            Not Found – The basket or item does not exist.
+            </response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.RemoveItemFromBasket(System.String,System.Guid)">
+            <summary>
+            Removes a specific item from the customer's basket.
+            </summary>
+            <param name="basketId">
+            The unique identifier of the basket (must be a valid GUID).
+            </param>
+            <param name="productId">
+            The unique identifier of the product to remove.
+            </param>
+            <returns>
+            The updated basket if the operation succeeds.
+            </returns>
+            <response code="200">
+            OK – Returns the updated <see cref="T:EStoreX.Core.DTO.Basket.CustomerBasketDTO"/>.
+            </response>
+            <response code="400">
+            Bad Request – The basket ID format is invalid.
+            </response>
+            <response code="404">
+            Not Found – The basket or item does not exist.
+            </response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.BrandsController">
             <summary>
             Public controller for retrieving brand information in API version 1.0.

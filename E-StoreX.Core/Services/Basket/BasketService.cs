@@ -33,6 +33,8 @@ namespace EStoreX.Core.Services.Basket
             {
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
                 if (product is null) continue;
+                if(product.QuantityAvailable < item.Qunatity) continue;
+                if(item.Qunatity <= 0) continue;
 
                 basketItems.Add(new BasketItem()
                 {
@@ -157,5 +159,39 @@ namespace EStoreX.Core.Services.Basket
             return _mapper.Map<CustomerBasketDTO>(basket);
         }
 
+        /// <inheritdoc/>
+        public async Task<CustomerBasketDTO?> DecreaseItemQuantityAsync(string basketId, Guid productId)
+        {
+            var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);
+            if (basket == null) return null;
+
+            var item = basket.BasketItems.FirstOrDefault(x => x.Id == productId);
+            if (item == null) return null;
+
+            item.Qunatity--;
+
+            if (item.Qunatity <= 0)
+            {
+                basket.BasketItems.Remove(item);
+            }
+
+            var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            return _mapper.Map<CustomerBasketDTO>(updatedBasket);
+        }
+
+        /// <inheritdoc/>
+        public async Task<CustomerBasketDTO?> RemoveItemAsync(string basketId, Guid productId)
+        {
+            var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);
+            if (basket == null) return null;
+
+            var item = basket.BasketItems.FirstOrDefault(x => x.Id == productId);
+            if (item == null) return null;
+
+            basket.BasketItems.Remove(item);
+
+            var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            return _mapper.Map<CustomerBasketDTO>(updatedBasket);
+        }
     }
 }
