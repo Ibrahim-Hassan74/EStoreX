@@ -1,11 +1,12 @@
 ﻿using AutoMapper;
+using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.DTO.Orders.Requests;
 using EStoreX.Core.DTO.Orders.Responses;
-using EStoreX.Core.Domain.Entities.Orders;
-using EStoreX.Core.RepositoryContracts.Orders;
-using EStoreX.Core.ServiceContracts.Orders;
-using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts.Common;
+using EStoreX.Core.RepositoryContracts.Orders;
+using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Core.ServiceContracts.Orders;
 using EStoreX.Core.Services.Common;
 
 namespace EStoreX.Core.Services.Orders
@@ -30,6 +31,8 @@ namespace EStoreX.Core.Services.Orders
             {
                 throw new ArgumentException("Buyer email cannot be null or empty", nameof(buyerEmail));
             }
+
+            ValidationHelper.ModelValidation(order);
 
             var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(order.BasketId);
             if (basket == null)
