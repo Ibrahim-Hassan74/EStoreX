@@ -180,6 +180,32 @@ namespace EStoreX.Core.Services.Basket
         }
 
         /// <inheritdoc/>
+        public async Task<CustomerBasketDTO?> IncreaseItemQuantityAsync(string basketId, Guid productId)
+        {
+            var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);
+            if (basket == null) return null;
+
+            var item = basket.BasketItems.FirstOrDefault(x => x.Id == productId);
+            if (item == null) return null;
+
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(productId);
+            if (product == null) return null;
+
+            if (item.Qunatity < product.QuantityAvailable)
+            {
+                item.Qunatity++;
+            }
+            else
+            {
+                return _mapper.Map<CustomerBasketDTO>(basket);
+            }
+
+            var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            return _mapper.Map<CustomerBasketDTO>(updatedBasket);
+        }
+
+
+        /// <inheritdoc/>
         public async Task<CustomerBasketDTO?> RemoveItemAsync(string basketId, Guid productId)
         {
             var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);

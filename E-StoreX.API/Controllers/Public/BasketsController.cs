@@ -234,6 +234,29 @@ namespace E_StoreX.API.Controllers.Public
             return Ok(updatedBasket);
         }
 
+        /// <summary>
+        /// Increases the quantity of a specific item in the customer's basket.
+        /// </summary>
+        /// <param name="basketId">The identifier of the basket.</param>
+        /// <param name="productId">The identifier of the product to increase quantity for.</param>
+        /// <response code="400">Returned if the basket id format is invalid.</response>
+        /// <response code="404">Returned if the basket or item is not found.</response>
+        /// <response code="200">Returned with the updated basket.</response>
+        [HttpPut("{basketId}/items/{productId}/increase")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        public async Task<IActionResult> IncreaseItemQuantity(string basketId, Guid productId)
+        {
+            if (!Guid.TryParse(basketId, out _))
+                return BadRequest(ApiResponseFactory.BadRequest("Invalid Basket Id format"));
+
+            var updatedBasket = await _basketService.IncreaseItemQuantityAsync(basketId, productId);
+            if (updatedBasket == null)
+                return NotFound(ApiResponseFactory.NotFound("Basket or item not found"));
+
+            return Ok(updatedBasket);
+        }
 
 
     }

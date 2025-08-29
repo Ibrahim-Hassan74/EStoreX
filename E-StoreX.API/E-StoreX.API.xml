@@ -947,6 +947,16 @@
             Not Found – The basket or item does not exist.
             </response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.IncreaseItemQuantity(System.String,System.Guid)">
+            <summary>
+            Increases the quantity of a specific item in the customer's basket.
+            </summary>
+            <param name="basketId">The identifier of the basket.</param>
+            <param name="productId">The identifier of the product to increase quantity for.</param>
+            <response code="400">Returned if the basket id format is invalid.</response>
+            <response code="404">Returned if the basket or item is not found.</response>
+            <response code="200">Returned with the updated basket.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.BrandsController">
             <summary>
             Public controller for retrieving brand information in API version 1.0.

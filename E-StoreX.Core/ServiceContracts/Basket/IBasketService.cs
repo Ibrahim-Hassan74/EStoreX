@@ -65,6 +65,16 @@ namespace EStoreX.Core.ServiceContracts.Basket
         /// or <c>null</c> if the basket or item does not exist.
         /// </returns>
         Task<CustomerBasketDTO?> DecreaseItemQuantityAsync(string basketId, Guid productId);
+        /// <summary>
+        /// Increases the quantity of a specific item in the customer's basket.
+        /// </summary>
+        /// <param name="basketId">The identifier of the basket.</param>
+        /// <param name="productId">The identifier of the product whose quantity will be increased.</param>
+        /// <returns>
+        /// A <see cref="CustomerBasketDTO"/> representing the updated basket 
+        /// if the basket and product exist; otherwise, <c>null</c>.
+        /// </returns>
+        Task<CustomerBasketDTO?> IncreaseItemQuantityAsync(string basketId, Guid productId);
 
 
     }
