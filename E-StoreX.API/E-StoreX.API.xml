@@ -841,7 +841,7 @@
             Not Found – No basket exists for the given ID.
             </response>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.DTO.Basket.CustomerBasketDTO)">
+        <member name="M:E_StoreX.API.Controllers.Public.BasketsController.AddOrUpdateBasket(EStoreX.Core.DTO.Basket.BasketAddRequest)">
             <summary>
             Adds or updates a customer basket.
             </summary>

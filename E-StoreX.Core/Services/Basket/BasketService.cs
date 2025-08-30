@@ -25,74 +25,17 @@ namespace EStoreX.Core.Services.Basket
         }
 
         /// <inheritdoc/>
-        public async Task<CustomerBasketDTO?> UpdateBasketAsync(CustomerBasketDTO basket)
-        {
-            var basketItems = new List<BasketItem>();
-
-            foreach (var item in basket.BasketItems)
-            {
-                var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
-                if (product is null) continue;
-                if(product.QuantityAvailable < item.Qunatity) continue;
-                if(item.Qunatity <= 0) continue;
-
-                basketItems.Add(new BasketItem()
-                {
-                    Id = item.Id,
-                    Name = product.Name,
-                    Price = product.NewPrice,
-                    Description = product.Description,
-                    Qunatity = item.Qunatity,
-                    Category = item.Category,
-                    Image = item.Image,
-                });
-            }
-
-            if (basketItems.Count == 0)
-            {
-                return null;
-            }
-
-            var existingBasket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basket.Id);
-
-            if (existingBasket != null)
-            {
-                foreach (var newItem in basketItems)
-                {
-                    var existingItem = existingBasket.BasketItems.FirstOrDefault(x => x.Id == newItem.Id);
-                    if (existingItem != null)
-                    {
-                        existingItem.Qunatity += newItem.Qunatity;
-                        existingItem.Price = newItem.Price; 
-                    }
-                    else
-                    {
-                        existingBasket.BasketItems.Add(newItem);
-                    }
-                }
-
-                var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(existingBasket);
-                return _mapper.Map<CustomerBasketDTO>(updatedBasket);
-            }
-            else
-            {
-                var newBasket = new CustomerBasket(basket.Id)
-                {
-                    BasketItems = basketItems,
-                };
-
-                var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
-                return _mapper.Map<CustomerBasketDTO>(basketResponse);
-            }
-        }
-
-        //public async Task<CustomerBasketDTO?> UpdateBasketAsync(CustomerBasketDTO basket)
+        //public async Task<CustomerBasketDTO?> AddItemToBasketAsync(CustomerBasketDTO basket)
         //{
         //    var basketItems = new List<BasketItem>();
+
         //    foreach (var item in basket.BasketItems)
         //    {
         //        var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
         //        if (product is null) continue;
+        //        if(product.QuantityAvailable < item.Qunatity) continue;
+        //        if(item.Qunatity <= 0) continue;
+
         //        basketItems.Add(new BasketItem()
         //        {
         //            Id = item.Id,
@@ -104,17 +47,45 @@ namespace EStoreX.Core.Services.Basket
         //            Image = item.Image,
         //        });
         //    }
+
         //    if (basketItems.Count == 0)
         //    {
         //        return null;
         //    }
-        //    var newBasket = new CustomerBasket(basket.Id)
+
+        //    var existingBasket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basket.Id);
+
+        //    if (existingBasket != null)
         //    {
-        //        BasketItems = basketItems,
-        //    };
-        //    var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
-        //    return _mapper.Map<CustomerBasketDTO>(basketResponse);
+        //        foreach (var newItem in basketItems)
+        //        {
+        //            var existingItem = existingBasket.BasketItems.FirstOrDefault(x => x.Id == newItem.Id);
+        //            if (existingItem != null)
+        //            {
+        //                existingItem.Qunatity += newItem.Qunatity;
+        //                existingItem.Price = newItem.Price; 
+        //            }
+        //            else
+        //            {
+        //                existingBasket.BasketItems.Add(newItem);
+        //            }
+        //        }
+
+        //        var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(existingBasket);
+        //        return _mapper.Map<CustomerBasketDTO>(updatedBasket);
+        //    }
+        //    else
+        //    {
+        //        var newBasket = new CustomerBasket(basket.Id)
+        //        {
+        //            BasketItems = basketItems,
+        //        };
+
+        //        var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
+        //        return _mapper.Map<CustomerBasketDTO>(basketResponse);
+        //    }
         //}
+
 
         /// <inheritdoc/>
         public async Task<bool> DeleteBasketAsync(string id)
@@ -219,5 +190,53 @@ namespace EStoreX.Core.Services.Basket
             var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
             return _mapper.Map<CustomerBasketDTO>(updatedBasket);
         }
+        /// <inheritdoc/>
+        public async Task<CustomerBasketDTO?> AddItemToBasketAsync(BasketAddRequest request)
+        {
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(request.BasketItem.Id);
+            if (product is null || product.QuantityAvailable < request.BasketItem.Qunatity || request.BasketItem.Qunatity <= 0)
+                return null;
+
+            var newItem = new BasketItem
+            {
+                Id = request.BasketItem.Id,
+                Name = product.Name,
+                Price = product.NewPrice,
+                Description = product.Description,
+                Qunatity = request.BasketItem.Qunatity,
+                Category = request.BasketItem.Category,
+                Image = request.BasketItem.Image,
+            };
+
+            var existingBasket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(request.BasketId);
+
+            if (existingBasket != null)
+            {
+                var existingItem = existingBasket.BasketItems.FirstOrDefault(x => x.Id == newItem.Id);
+                if (existingItem != null)
+                {
+                    existingItem.Qunatity += newItem.Qunatity;
+                    existingItem.Price = newItem.Price;
+                }
+                else
+                {
+                    existingBasket.BasketItems.Add(newItem);
+                }
+
+                var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(existingBasket);
+                return _mapper.Map<CustomerBasketDTO>(updatedBasket);
+            }
+            else
+            {
+                var newBasket = new CustomerBasket(request.BasketId)
+                {
+                    BasketItems = new List<BasketItem> { newItem }
+                };
+
+                var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
+                return _mapper.Map<CustomerBasketDTO>(basketResponse);
+            }
+        }
+
     }
 }

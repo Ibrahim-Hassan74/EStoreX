@@ -79,20 +79,17 @@ namespace E_StoreX.ServiceTests
         public async Task UpdateBasketAsync_ShouldReturnNull_WhenAllItemsInvalid()
         {
             // Arrange
-            var basketDto = new CustomerBasketDTO
+            var basketDto = new BasketAddRequest
             {
-                Id = "basket-1",
-                BasketItems = new List<BasketItem>
-                {
-                    new BasketItem { Id = Guid.NewGuid(), Qunatity = -1 }
-                }
+                BasketId = "basket-1",
+                BasketItem = new BasketItem { Id = Guid.NewGuid(), Qunatity = -1 }
             };
 
             _unitOfWorkMock.Setup(u => u.ProductRepository.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Product?)null);
 
             // Act
-            var result = await _basketService.UpdateBasketAsync(basketDto);
+            var result = await _basketService.AddItemToBasketAsync(basketDto);
 
             // Assert
             result.Should().BeNull();
@@ -108,13 +105,10 @@ namespace E_StoreX.ServiceTests
             var productId = Guid.NewGuid();
             var product = new Product { Id = productId, Name = "Laptop", QuantityAvailable = 10, NewPrice = 1000 };
 
-            var basketDto = new CustomerBasketDTO
+            var basketDto = new BasketAddRequest
             {
-                Id = "basket-1",
-                BasketItems = new List<BasketItem>
-                {
-                    new BasketItem { Id = productId, Qunatity = 2, Category = "Electronics", Image = "img.png" }
-                }
+                BasketId = "basket-1",
+                BasketItem = new BasketItem { Id = productId, Qunatity = 2, Category = "Electronics", Image = "img.png" }
             };
 
             var existingBasket = new CustomerBasket("basket-1")
@@ -139,7 +133,7 @@ namespace E_StoreX.ServiceTests
                 .Returns(expectedDto);
 
             // Act
-            var result = await _basketService.UpdateBasketAsync(basketDto);
+            var result = await _basketService.AddItemToBasketAsync(basketDto);
 
             // Assert
             result.Should().BeEquivalentTo(expectedDto);
@@ -158,13 +152,10 @@ namespace E_StoreX.ServiceTests
             var productId = Guid.NewGuid();
             var product = new Product { Id = productId, Name = "Phone", QuantityAvailable = 5, NewPrice = 500 };
 
-            var basketDto = new CustomerBasketDTO
+            var basketDto = new BasketAddRequest
             {
-                Id = "basket-2",
-                BasketItems = new List<BasketItem>
-                {
-                    new BasketItem { Id = productId, Qunatity = 1, Category = "Mobiles", Image = "img.png" }
-                }
+                BasketId = "basket-2",
+                BasketItem = new BasketItem { Id = productId, Qunatity = 1, Category = "Mobiles", Image = "img.png" }
             };
 
             _unitOfWorkMock.Setup(u => u.ProductRepository.GetByIdAsync(productId))
@@ -181,7 +172,7 @@ namespace E_StoreX.ServiceTests
                 .Returns(expectedDto);
 
             // Act
-            var result = await _basketService.UpdateBasketAsync(basketDto);
+            var result = await _basketService.AddItemToBasketAsync(basketDto);
 
             // Assert
             result.Should().BeEquivalentTo(expectedDto);
@@ -196,13 +187,12 @@ namespace E_StoreX.ServiceTests
         {
             // Arrange
             var productId = Guid.NewGuid();
-            var basketDto = new CustomerBasketDTO
+            var basketDto = new BasketAddRequest
             {
-                Id = "basket1",
-                BasketItems = new List<BasketItem>
-                {
+                BasketId = "basket1",
+                BasketItem =
                     new BasketItem { Id = productId, Qunatity = 2 }
-                }
+
             };
 
             var product = new Product { Id = productId, Name = "Test", NewPrice = 50, QuantityAvailable = 10, Description = "desc" };
@@ -215,10 +205,16 @@ namespace E_StoreX.ServiceTests
             _unitOfWorkMock.Setup(u => u.CustomerBasketRepository.UpdateBasketAsync(It.IsAny<CustomerBasket>()))
                 .ReturnsAsync(existingBasket);
             _mapperMock.Setup(m => m.Map<CustomerBasketDTO>(It.IsAny<CustomerBasket>()))
-                .Returns(basketDto);
+                .Returns(new CustomerBasketDTO(basketDto.BasketId)
+                {
+                    BasketItems = new List<BasketItem>
+                    {
+                        basketDto.BasketItem
+                    }
+                });
 
             // Act
-            var result = await _basketService.UpdateBasketAsync(basketDto);
+            var result = await _basketService.AddItemToBasketAsync(basketDto);
 
             // Assert
             result.Should().NotBeNull();
@@ -231,13 +227,12 @@ namespace E_StoreX.ServiceTests
         {
             // Arrange
             var productId = Guid.NewGuid();
-            var basketDto = new CustomerBasketDTO
+            var basketDto = new BasketAddRequest
             {
-                Id = "basket1",
-                BasketItems = new List<BasketItem>
-                {
+                BasketId = "basket1",
+                BasketItem =
                     new BasketItem { Id = productId, Qunatity = 3 }
-                }
+
             };
 
             var product = new Product { Id = productId, Name = "Test", NewPrice = 100, QuantityAvailable = 10, Description = "desc" };
@@ -263,7 +258,7 @@ namespace E_StoreX.ServiceTests
                 });
 
             // Act
-            var result = await _basketService.UpdateBasketAsync(basketDto);
+            var result = await _basketService.AddItemToBasketAsync(basketDto);
 
             // Assert
             result.Should().NotBeNull();

@@ -15,4 +15,9 @@ namespace EStoreX.Core.DTO.Basket
             Id = id;
         }
     }
+    public class BasketAddRequest
+    {
+        public BasketItem BasketItem { get; set; }
+        public string BasketId { get; set; } = string.Empty;
+    }
 }

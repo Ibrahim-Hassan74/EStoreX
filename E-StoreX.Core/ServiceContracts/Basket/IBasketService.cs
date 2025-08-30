@@ -19,7 +19,7 @@ namespace EStoreX.Core.ServiceContracts.Basket
         /// </summary>
         /// <param name="basket">Basket to update or create.</param>
         /// <returns>The updated customer basket.</returns>
-        Task<CustomerBasketDTO?> UpdateBasketAsync(CustomerBasketDTO basket);
+        Task<CustomerBasketDTO?> AddItemToBasketAsync(BasketAddRequest basket);
 
         /// <summary>
         /// Deletes the basket of a specific customer by ID.

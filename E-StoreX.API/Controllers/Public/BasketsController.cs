@@ -76,12 +76,12 @@ namespace E_StoreX.API.Controllers.Public
         [HttpPost]
         [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddOrUpdateBasket([FromBody] CustomerBasketDTO basket)
+        public async Task<IActionResult> AddOrUpdateBasket([FromBody] BasketAddRequest basket)
         {
-            if (!Guid.TryParse(basket.Id, out _))
+            if (!Guid.TryParse(basket.BasketId, out _))
                 return BadRequest(ApiResponseFactory.BadRequest("Invalid Id format"));
 
-            var updatedBasket = await _basketService.UpdateBasketAsync(basket);
+            var updatedBasket = await _basketService.AddItemToBasketAsync(basket);
             if (updatedBasket == null)
                 return BadRequest(ApiResponseFactory.BadRequest("No valid items to update the basket"));
             return Ok(updatedBasket);
