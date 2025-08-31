@@ -22,6 +22,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Stripe;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
@@ -48,6 +49,8 @@ namespace EStoreX.Core
             services.AddTransient<IJwtService, JwtService>();
 
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+            services.AddScoped<PaymentIntentService>();
 
             services.AddScoped<IPaymentService, PaymentService>();
 

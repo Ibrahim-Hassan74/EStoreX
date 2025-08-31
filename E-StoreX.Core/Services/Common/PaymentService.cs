@@ -13,11 +13,13 @@ namespace EStoreX.Core.Services.Common
         private readonly IUnitOfWork _unitOfWork;
         //private readonly IConfiguration _configuration;
         private readonly StripeSettings _stripeSettings;
-        public PaymentService(IUnitOfWork unitOfWork, IOptions<StripeSettings> options)
+        private readonly PaymentIntentService _paymentIntentService;
+        public PaymentService(IUnitOfWork unitOfWork, IOptions<StripeSettings> options, PaymentIntentService paymentIntentService)
         {
             _unitOfWork = unitOfWork;
             //_configuration = configuration;
             _stripeSettings = options.Value;
+            _paymentIntentService = paymentIntentService;
         }
         /// <inheritdoc/>
         public async Task<CustomerBasket> CreateOrUpdatePaymentIntentAsync(string basketId, Guid? deliveryMethodId)
@@ -45,7 +47,7 @@ namespace EStoreX.Core.Services.Common
                 item.Price = product.NewPrice;
             }
 
-            PaymentIntentService service = new PaymentIntentService();
+            //PaymentIntentService service = new PaymentIntentService();
             PaymentIntent _intent;
             if (string.IsNullOrEmpty(basket.PaymentIntentId))
             {
@@ -55,7 +57,7 @@ namespace EStoreX.Core.Services.Common
                     Currency = "USD",
                     PaymentMethodTypes = new List<string> { "card" },
                 };
-                _intent = await service.CreateAsync(options);
+                _intent = await _paymentIntentService.CreateAsync(options);
                 basket.PaymentIntentId = _intent.Id;
                 basket.ClientSecret = _intent.ClientSecret;
             }
@@ -65,7 +67,7 @@ namespace EStoreX.Core.Services.Common
                 {
                     Amount = (long)(basket.BasketItems.Sum(x => x.Qunatity * x.Price * 100) + shippingPrice * 100),
                 };
-                _intent = await service.UpdateAsync(basket.PaymentIntentId, options);
+                _intent = await _paymentIntentService.UpdateAsync(basket.PaymentIntentId, options);
             }
             await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
             return basket;
