@@ -47,7 +47,7 @@ namespace EStoreX.Core.Services.Account
         {
             if (registerDTO == null)
                 return ApiResponseFactory.Failure("Invalid registration data.", 400, "Registration data cannot be null.");
-
+            ValidationHelper.ModelValidation(registerDTO);
 
             if (await _userManager.FindByEmailAsync(registerDTO.Email) is not null)
                 return ApiResponseFactory.Failure("Email is already registered.", 409, "This email is already in use.");
@@ -79,6 +79,8 @@ namespace EStoreX.Core.Services.Account
         {
             if (loginDTO == null)
                 return ApiResponseFactory.Failure("Invalid login data.", 400, "Login data cannot be null.");
+
+            ValidationHelper.ModelValidation(loginDTO);
 
             var user = await _userManager.FindByEmailAsync(loginDTO.Email);
             if (user == null)
@@ -116,6 +118,7 @@ namespace EStoreX.Core.Services.Account
         /// <inheritdoc/>
         public async Task<ApiResponse> ConfirmEmailAsync(ConfirmEmailDTO dto)
         {
+            ValidationHelper.ModelValidation(dto);
             var user = await _userManager.FindByIdAsync(dto.UserId);
             if (user == null)
                 return ApiResponseFactory.Failure("User not found.", 404, "User with the provided ID does not exist.");
@@ -141,6 +144,7 @@ namespace EStoreX.Core.Services.Account
         /// <inheritdoc/>
         public async Task<ApiResponse> ForgotPasswordAsync(ForgotPasswordDTO dto)
         {
+            ValidationHelper.ModelValidation(dto);
             var user = await _userManager.FindByEmailAsync(dto.Email);
 
             if (user == null)
@@ -193,7 +197,11 @@ namespace EStoreX.Core.Services.Account
 
             //string resetLink = $"{dynamicLinkPrefix}/?link={Uri.EscapeDataString(fullLink)}&apn=com.yourapp.package&ibi=com.yourapp.ios";
 
-            string resetLink = $"{request.Scheme}://{request.Host}/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+            //string resetLink = $"{request.Scheme}://{request.Host}/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
+            string scheme = string.IsNullOrEmpty(request.Scheme) ? "https" : request.Scheme;
+            string host = request.Host.HasValue ? request.Host.Value : "localhost";
+
+            string resetLink = $"{scheme}://{host}/reset-password?userId={Uri.EscapeDataString(user.Id.ToString())}&token={encodedToken}";
 
 
             string html = EmailTemplateService.GetPasswordResetEmailTemplate(resetLink);
@@ -470,8 +478,6 @@ namespace EStoreX.Core.Services.Account
 
             return await CreateSuccessLoginResponseAsync(user, false);
         }
-
-
 
         private bool IsMobileDevice(HttpRequest? request)
         {
