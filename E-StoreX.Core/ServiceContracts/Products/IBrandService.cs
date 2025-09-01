@@ -67,6 +67,14 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// otherwise, returns <c>null</c>.
         /// </returns>
         Task<Brand?> GetBrandByNameAsync(string name);
+        /// <summary>
+        /// Retrieves all categories associated with a specific brand.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.  
+        /// The task result contains a collection of <see cref="CategoryResponse"/> objects linked to the brand.
+        /// </returns>
         Task<IEnumerable<CategoryResponse>> GetCategoriesByBrandIdAsync(Guid brandId);
     }
 }

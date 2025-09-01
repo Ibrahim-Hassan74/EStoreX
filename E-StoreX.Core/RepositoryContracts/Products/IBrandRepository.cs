@@ -24,6 +24,13 @@ namespace EStoreX.Core.RepositoryContracts.Products
         /// <param name="name">The name of the brand.</param>
         /// <returns>The <see cref="Brand"/> if found; otherwise, null.</returns>
         Task<Brand?> GetByNameAsync(string name);
+        /// <summary>
+        /// Retrieves all <see cref="Category"/> entities associated with the specified brand.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <returns>
+        /// A collection of <see cref="Category"/> objects linked to the given brand.
+        /// </returns>
         Task<IEnumerable<Category>> GetCategoriesByBrandIdAsync(Guid brandId);
     }
 }

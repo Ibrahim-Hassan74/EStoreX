@@ -1124,8 +1124,20 @@
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.ErrorController">
             <summary>
-            
+            Controller responsible for handling error responses.  
+            Provides a unified endpoint for returning standardized error messages 
+            based on HTTP status codes.
             </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.ErrorController.Error(System.Int32)">
+            <summary>
+            Returns an error response with the specified HTTP status code.
+            </summary>
+            <param name="statusCode">The HTTP status code to include in the response.</param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.ObjectResult"/> containing a <see cref="T:E_StoreX.API.Helper.ResponseAPI"/> 
+            with details about the error.
+            </returns>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.FavouritesController">
             <summary>
