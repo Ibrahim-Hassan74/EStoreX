@@ -407,6 +407,33 @@
             <response code="400">Unsupported export type requested.</response>
             <response code="401">If the user is not authenticated.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.GetSalesReport(System.DateTime,System.DateTime)">
+            <summary>
+            Retrieves a sales report for a given date range.  
+            This allows administrators to analyze revenue, order volume, and top-selling products.
+            </summary>
+            <param name="startDate">The start date of the reporting period.</param>
+            <param name="endDate">The end date of the reporting period.</param>
+            <returns>
+            Returns <see cref="T:EStoreX.Core.DTO.Orders.Responses.SalesReportResponse"/> containing sales statistics for the period.  
+            Returns 404 if no orders were found in the specified range.
+            </returns>
+            <response code="200">Sales report retrieved successfully.</response>
+            <response code="400">Invalid date range provided (e.g., start date after end date).</response>
+            <response code="404">No orders found for the specified date range.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.ExportSalesReport(System.DateTime,System.DateTime,EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports the sales report for a given date range in the specified file format.
+            </summary>
+            <param name="startDate">The start date of the reporting period.</param>
+            <param name="endDate">The end date of the reporting period.</param>
+            <param name="type">The export file format (CSV, Excel, PDF).</param>
+            <returns>A downloadable file containing the sales report.</returns>
+            <response code="200">Sales report exported successfully.</response>
+            <response code="400">Invalid date range or unsupported export type.</response>
+            <response code="404">No sales data available for the specified period.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.ProductsController">
             <summary>
             Provides administrative operations for managing products in the E-StoreX application.
@@ -484,6 +511,33 @@
             <response code="200">Products exported successfully in the requested format.</response>
             <response code="400">Unsupported export type requested.</response>
             <response code="401">If the user is not authenticated.</response>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.RatingsController">
+            <summary>
+            API controller for managing ratings in the admin area.  
+            Provides endpoints for administrators to review, moderate, and delete ratings.  
+            This controller is available starting from API version 2.0.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.RatingsController.#ctor(EStoreX.Core.ServiceContracts.Ratings.IRatingService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.RatingsController"/> class.
+            </summary>
+            <param name="ratingService">
+            The rating service that provides operations for managing ratings.
+            </param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.RatingsController.DeleteRatingAsAdmin(System.Guid)">
+            <summary>
+            Deletes a rating.  
+            Admins can delete any rating, while normal users can only delete their own.
+            </summary>
+            <param name="id">The ID of the rating to delete.</param>
+            <returns>No content if successful, otherwise 404 if not found.</returns>
+            <response code="204">Rating successfully deleted.</response>
+            <response code="404">Rating not found.</response>
+            <response code="401">If the user is not authenticated.</response>
+            <response code="403">If the user does not have permission to delete this rating.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.UserManagementController">
             <summary>

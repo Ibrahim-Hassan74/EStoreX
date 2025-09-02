@@ -85,5 +85,68 @@ namespace E_StoreX.API.Controllers.Admin
                 _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
             };
         }
+        /// <summary>
+        /// Retrieves a sales report for a given date range.  
+        /// This allows administrators to analyze revenue, order volume, and top-selling products.
+        /// </summary>
+        /// <param name="startDate">The start date of the reporting period.</param>
+        /// <param name="endDate">The end date of the reporting period.</param>
+        /// <returns>
+        /// Returns <see cref="SalesReportResponse"/> containing sales statistics for the period.  
+        /// Returns 404 if no orders were found in the specified range.
+        /// </returns>
+        /// <response code="200">Sales report retrieved successfully.</response>
+        /// <response code="400">Invalid date range provided (e.g., start date after end date).</response>
+        /// <response code="404">No orders found for the specified date range.</response>
+        [HttpGet("report")]
+        [ProducesResponseType(typeof(SalesReportResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetSalesReport([FromQuery] DateTime startDate, [FromQuery] DateTime endDate)
+        {
+            if (startDate > endDate)
+                return BadRequest(ApiResponseFactory.BadRequest("Start date cannot be after end date."));
+
+            var report = await _orderService.GetSalesReportAsync(startDate, endDate);
+
+            if (report == null || report.TotalOrders == 0)
+                return NotFound(ApiResponseFactory.NotFound("No sales data available for this period."));
+
+            return Ok(report);
+        }
+        /// <summary>
+        /// Exports the sales report for a given date range in the specified file format.
+        /// </summary>
+        /// <param name="startDate">The start date of the reporting period.</param>
+        /// <param name="endDate">The end date of the reporting period.</param>
+        /// <param name="type">The export file format (CSV, Excel, PDF).</param>
+        /// <returns>A downloadable file containing the sales report.</returns>
+        /// <response code="200">Sales report exported successfully.</response>
+        /// <response code="400">Invalid date range or unsupported export type.</response>
+        /// <response code="404">No sales data available for the specified period.</response>
+        [HttpGet("report/export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ExportSalesReport([FromQuery] DateTime startDate, [FromQuery] DateTime endDate, ExportType type)
+        {
+            if (startDate > endDate)
+                return BadRequest(ApiResponseFactory.BadRequest("Start date cannot be after end date."));
+
+            var report = await _orderService.GetSalesReportAsync(startDate, endDate);
+
+            if (report == null || report.TotalOrders == 0)
+                return NotFound(ApiResponseFactory.NotFound("No sales data available for this period."));
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(new List<SalesReportResponse> { report }), "text/csv", "sales-report.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(new List<SalesReportResponse> { report }), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "sales-report.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(new List<SalesReportResponse> { report }), "application/pdf", "sales-report.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
+        }
+
+
     }
 }

@@ -23,9 +23,21 @@ namespace EStoreX.Core.Services.Common
                 var items = new List<string>();
                 foreach (var v in enumerable)
                 {
-                    items.Add(v?.ToString() ?? "");
+                    if (v == null) continue;
+
+                    var type = v.GetType();
+                    if (type.IsPrimitive || v is string || v is decimal || v is DateTime || v is Guid)
+                    {
+                        items.Add(v.ToString() ?? "");
+                    }
+                    else
+                    {
+                        var nestedProps = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
+                        var nestedValues = nestedProps.Select(np => $"{np.Name}: {np.GetValue(v) ?? ""}");
+                        items.Add(string.Join(", ", nestedValues));
+                    }
                 }
-                return string.Join(", ", items);
+                return string.Join(" | ", items);
             }
 
             return value.ToString();

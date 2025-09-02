@@ -58,5 +58,13 @@ namespace EStoreX.Infrastructure.Repository.Orders
             return await _context.Orders.Include(o => o.OrderItems)
                 .FirstOrDefaultAsync(o => o.PaymentIntentId == paymentIntentId);
         }
+        /// <inheritdoc />
+        public async Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate)
+        {
+            return await _context.Orders
+                .Include(o => o.OrderItems) 
+                .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
+                .ToListAsync();
+        }
     }
 }

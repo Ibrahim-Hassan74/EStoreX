@@ -41,5 +41,12 @@ namespace EStoreX.Core.RepositoryContracts.Orders
         /// <param name="paymentIntentId">The PaymentIntent ID associated with the order.</param>
         /// <returns>The order if found; otherwise, null.</returns>
         Task<Order?> GetOrderByPaymentIntentIdAsync(string? paymentIntentId);
+        /// <summary>
+        /// Retrieves all orders within the specified date range.
+        /// </summary>
+        /// <param name="startDate">The start date of the range (inclusive).</param>
+        /// <param name="endDate">The end date of the range (inclusive).</param>
+        /// <returns>A collection of <see cref="Order"/> entities within the range.</returns>
+        Task<IEnumerable<Order>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate);
     }
 }

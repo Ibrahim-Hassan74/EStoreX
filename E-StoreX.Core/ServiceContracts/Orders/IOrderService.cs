@@ -41,5 +41,15 @@ namespace EStoreX.Core.ServiceContracts.Orders
         /// </summary>
         /// <returns>All Orders</returns>
         Task<IEnumerable<OrderResponse>> GetAllOrders();
+        /// <summary>
+        /// Retrieves a sales report for a specific date range.
+        /// </summary>
+        /// <param name="startDate">The start date of the reporting period.</param>
+        /// <param name="endDate">The end date of the reporting period.</param>
+        /// <returns>
+        /// A <see cref="SalesReportResponse"/> object containing aggregated sales data.  
+        /// Returns null if no data is available for the given period.
+        /// </returns>
+        Task<SalesReportResponse?> GetSalesReportAsync(DateTime startDate, DateTime endDate);
     }
 }

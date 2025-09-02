@@ -124,5 +124,36 @@ namespace EStoreX.Core.Services.Orders
             }
             return _mapper.Map<IEnumerable<OrderResponse>>(orders);
         }
+        /// <inheritdoc/>
+        public async Task<SalesReportResponse?> GetSalesReportAsync(DateTime startDate, DateTime endDate)
+        {
+            var orders = await _orderRepository.GetOrdersByDateRangeAsync(startDate, endDate);
+
+            if (orders == null || !orders.Any())
+                return null;
+
+            var report = new SalesReportResponse
+            {
+                TotalRevenue = orders.Sum(o => o.GetTotal()),
+                TotalOrders = orders.Count(),
+                TotalCustomers = orders.Select(o => o.BuyerEmail).Distinct().Count(),
+                TopProducts = orders
+                    .SelectMany(o => o.OrderItems)
+                    .GroupBy(oi => new { oi.ProductItemId, oi.ProductName })
+                    .Select(g => new TopProductResponse
+                    {
+                        ProductId = g.Key.ProductItemId,
+                        ProductName = g.Key.ProductName,
+                        QuantitySold = g.Sum(x => x.Quantity),
+                        RevenueGenerated = g.Sum(x => x.Quantity * x.Price)
+                    })
+                    .OrderByDescending(tp => tp.QuantitySold)
+                    .Take(10)
+                    .ToList()
+            };
+
+            return report;
+        }
+
     }
 }
