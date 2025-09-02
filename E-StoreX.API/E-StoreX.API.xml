@@ -17,7 +17,7 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(EStoreX.Core.ServiceContracts.Account.IApiClientService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.#ctor(EStoreX.Core.ServiceContracts.Account.IApiClientService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.ApiClientsController"/> class with the specified API client
             service.
@@ -25,6 +25,7 @@
             <remarks>— This constructor is typically used by dependency injection to provide the required
             service for API client management.</remarks>
             <param name="clientService">The service used to manage API client data and operations. Cannot be <c>null</c>.</param>
+            <param name="exportService">Service to manage files.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.RegisterClient(EStoreX.Core.DTO.Account.Requests.RegisterApiClientRequest)">
             <summary>
@@ -115,16 +116,38 @@
             <response code="200">API key rotated successfully.</response>
             <response code="404">Client not found.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ApiClientsController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all clients into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">clients exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.BrandsController">
             <summary>
             Controller for managing brands (Admin only) in API version 2.0.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.#ctor(EStoreX.Core.ServiceContracts.Products.IBrandService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.#ctor(EStoreX.Core.ServiceContracts.Products.IBrandService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Initializes a new instance of <see cref="T:E_StoreX.API.Controllers.Admin.BrandsController"/>.
             </summary>
             <param name="brandService">Service to manage brand operations.</param>
+            <param name="exportService">Service to manage files.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Create(System.String)">
             <summary>
@@ -157,6 +180,27 @@
             <response code="404">Brand not found.</response>
             <response code="401">If the user is not authenticated.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.BrandsController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all brands into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">brands exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.CategoriesController">
             <summary>
             Controller for managing product categories in the E-StoreX application.
@@ -166,11 +210,12 @@
             for use in administrative scenarios where category-related operations are required.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.Categories.ICategoriesService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.#ctor(EStoreX.Core.ServiceContracts.Categories.ICategoriesService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Constructor for CategoriesController.
             </summary>
             <param name="categoriesService">Service to manage categories.</param>
+            <param name="exportService">Service to manage files.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.CreateCategory(EStoreX.Core.DTO.Categories.Requests.CategoryRequest)">
             <summary>
@@ -230,12 +275,33 @@
             <param name="brandId">The unique identifier of the brand.</param>
             <returns>NoContent if successful, BadRequest otherwise.</returns>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all categories into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">categories exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.DeliveryMethodController">
             <summary>
             DeliveryMethodController handles admin operations related to delivery methods.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.#ctor(EStoreX.Core.ServiceContracts.Orders.IDeliveryMethodService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.#ctor(EStoreX.Core.ServiceContracts.Orders.IDeliveryMethodService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.DeliveryMethodController"/> class.
             </summary>
@@ -271,6 +337,27 @@
             <response code="404">Delivery method not found.</response>
             <response code="401">Unauthorized user.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DeliveryMethodController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all deliveryMethods into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">deliveryMethods exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.OrdersController">
             <summary>
             Provides functionality for managing and processing orders within the administrative context.
@@ -279,11 +366,12 @@
             administrative scenarios where order-related operations are required. It serves as a base for implementing
             actions related to order management.</remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.#ctor(EStoreX.Core.ServiceContracts.Orders.IOrderService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.#ctor(EStoreX.Core.ServiceContracts.Orders.IOrderService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.OrdersController"/> class with the specified order service.
             </summary>
             <param name="orderService">The service used to manage order-related operations.</param>
+            <param name="exportService">Service to manage files.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.GetOrders">
             <summary>
@@ -298,6 +386,27 @@
             <response code="200">Orders retrieved successfully.</response>
             <response code="401">User is not authenticated.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.OrdersController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all orders into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">orders exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.ProductsController">
             <summary>
             Provides administrative operations for managing products in the E-StoreX application.
@@ -307,11 +416,12 @@
             for creating, updating, and deleting products.
             </remarks>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.Products.IProductsService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.#ctor(EStoreX.Core.ServiceContracts.Products.IProductsService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.ProductsController"/> class.
             </summary>
             <param name="productsService">Service for handling product operations.</param>
+            <param name="exportService">Service to manage files.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.CreateProduct(EStoreX.Core.DTO.Products.Requests.ProductAddRequest)">
             <summary>
@@ -354,16 +464,38 @@
             <response code="404">Product not found.</response>
             <response code="401">If the user is not authenticated.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.ProductsController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all products into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">Products exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.UserManagementController">
             <summary>
             user management controller for administrative operations
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.#ctor(EStoreX.Core.ServiceContracts.Account.IUserManagementService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.#ctor(EStoreX.Core.ServiceContracts.Account.IUserManagementService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             User management controller constructor
             </summary>
             <param name="userManagementService">Service responsible for management</param>
+            <param name="exportService">Service to manage files.</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.GetAllUsers">
             <summary>
@@ -448,6 +580,27 @@
             <response code="200">Role removed successfully.</response>
             <response code="400">If removal failed.</response>
             <response code="404">If the user was not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.Export(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all users into the specified file format.
+            </summary>
+            <param name="type">
+            The type of export format.  
+            Supported values are:  
+            <list type="bullet">
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+              <item><description><see cref="F:EStoreX.Core.Enums.ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+            </list>
+            </param>
+            <returns>
+            A downloadable file in the selected export format.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.BadRequestResult"/> if the format is not supported.
+            </returns>
+            <response code="200">users exported successfully in the requested format.</response>
+            <response code="400">Unsupported export type requested.</response>
+            <response code="401">If the user is not authenticated.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.AccountController">
             <summary>

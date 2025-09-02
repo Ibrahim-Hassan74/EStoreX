@@ -5,6 +5,7 @@ using EStoreX.Core.DTO.Common;
 using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
+using EStoreX.Core.ServiceContracts.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,13 +19,16 @@ namespace E_StoreX.API.Controllers.Admin
     public class UserManagementController : AdminControllerBase
     {
         private readonly IUserManagementService _userManagementService;
+        private readonly IExportService _exportService;
         /// <summary>
         /// User management controller constructor
         /// </summary>
         /// <param name="userManagementService">Service responsible for management</param>
-        public UserManagementController(IUserManagementService userManagementService)
+        /// <param name="exportService">Service to manage files.</param>
+        public UserManagementController(IUserManagementService userManagementService, IExportService exportService)
         {
             _userManagementService = userManagementService;
+            _exportService = exportService;
         }
         /// <summary>
         /// Retrieves all users (Admin or SuperAdmin only).
@@ -178,6 +182,42 @@ namespace E_StoreX.API.Controllers.Admin
         {
             var result = await _userManagementService.RemoveRoleFromUserAsync(dto);
             return StatusCode(result.StatusCode, result);
+        }
+        /// <summary>
+        /// Exports all users into the specified file format.
+        /// </summary>
+        /// <param name="type">
+        /// The type of export format.  
+        /// Supported values are:  
+        /// <list type="bullet">
+        ///   <item><description><see cref="ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+        ///   <item><description><see cref="ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+        ///   <item><description><see cref="ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// A downloadable file in the selected export format.  
+        /// Returns <see cref="BadRequestResult"/> if the format is not supported.
+        /// </returns>
+        /// <response code="200">users exported successfully in the requested format.</response>
+        /// <response code="400">Unsupported export type requested.</response>
+        /// <response code="401">If the user is not authenticated.</response>
+        [HttpGet("export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> Export(ExportType type)
+        {
+            var users = await _userManagementService.GetAllUsersAsync();
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(users), "text/csv", "users.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(users), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "users.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(users), "application/pdf", "users.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
         }
 
     }

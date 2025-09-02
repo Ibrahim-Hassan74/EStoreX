@@ -3,8 +3,10 @@ using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Categories;
+using EStoreX.Core.ServiceContracts.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Admin
@@ -21,13 +23,16 @@ namespace E_StoreX.API.Controllers.Admin
     public class CategoriesController : AdminControllerBase
     {
         private readonly ICategoriesService _categoriesService;
+        private readonly IExportService _exportService;
         /// <summary>
         /// Constructor for CategoriesController.
         /// </summary>
         /// <param name="categoriesService">Service to manage categories.</param>
-        public CategoriesController(ICategoriesService categoriesService)
+        /// <param name="exportService">Service to manage files.</param>
+        public CategoriesController(ICategoriesService categoriesService, IExportService exportService)
         {
             _categoriesService = categoriesService;
+            _exportService = exportService;
         }
         /// <summary>
         /// Creates a new category in the database.
@@ -140,5 +145,41 @@ namespace E_StoreX.API.Controllers.Admin
             return NoContent();
         }
 
+        /// <summary>
+        /// Exports all categories into the specified file format.
+        /// </summary>
+        /// <param name="type">
+        /// The type of export format.  
+        /// Supported values are:  
+        /// <list type="bullet">
+        ///   <item><description><see cref="ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+        ///   <item><description><see cref="ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+        ///   <item><description><see cref="ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// A downloadable file in the selected export format.  
+        /// Returns <see cref="BadRequestResult"/> if the format is not supported.
+        /// </returns>
+        /// <response code="200">categories exported successfully in the requested format.</response>
+        /// <response code="400">Unsupported export type requested.</response>
+        /// <response code="401">If the user is not authenticated.</response>
+        [HttpGet("export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> Export(ExportType type)
+        {
+            var categories = await _categoriesService.GetAllCategoriesAsync();
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(categories), "text/csv", "categories.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(categories), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "categories.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(categories), "application/pdf", "categories.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
+        }
     }
 }

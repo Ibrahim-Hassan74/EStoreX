@@ -67,6 +67,19 @@ namespace EStoreX.Core.ServiceContracts.Ratings
         /// or <c>null</c> if the user hasn't rated the product yet.
         /// </returns>
         Task<RatingResponse?> GetUserRatingForProductAsync(Guid productId, Guid userId);
+        /// <summary>
+        /// Deletes a rating by its unique identifier.  
+        /// Unlike the normal delete operation, this method is intended for administrators,  
+        /// allowing them to remove any rating regardless of its owner.
+        /// </summary>
+        /// <param name="id">The unique identifier of the rating to delete.</param>
+        /// <returns>
+        /// A task that represents the asynchronous operation.  
+        /// The task result contains <c>true</c> if the rating was found and successfully deleted;  
+        /// otherwise, <c>false</c>.
+        /// </returns>
+        Task<bool> DeleteRatingAsAdminAsync(Guid id);
+
 
     }
 

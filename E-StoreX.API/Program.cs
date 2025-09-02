@@ -13,6 +13,8 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
+using OfficeOpenXml;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.RateLimiting;
 
@@ -164,6 +166,7 @@ builder.Services.AddSwaggerGen(options =>
     options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "E-StoreX Web API", Version = "1.0" });
     options.SwaggerDoc("v2", new Microsoft.OpenApi.Models.OpenApiInfo() { Title = "E-StoreX Web API", Version = "2.0" });
     options.OperationFilter<AddInternalServerErrorResponseOperationFilter>();
+    options.UseInlineDefinitionsForEnums();
 });
 
 builder.Services.AddApiVersioning(options =>
@@ -188,6 +191,10 @@ builder.Services.ConfigureInfrastructure(builder.Configuration);
 builder.Services.ConfigureCore(builder.Configuration);
 
 builder.Services.AddHttpClient();
+
+var licenseConfig = builder.Configuration["EPPlus:ExcelPackage:License"];
+
+ExcelPackage.License.SetNonCommercialPersonal(licenseConfig);
 
 var app = builder.Build();
 

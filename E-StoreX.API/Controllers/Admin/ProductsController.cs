@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Asp.Versioning;
+using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Products.Requests;
 using EStoreX.Core.DTO.Products.Responses;
-using EStoreX.Core.ServiceContracts.Products;
-using Asp.Versioning;
-using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Core.ServiceContracts.Products;
+using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Admin
 {
@@ -19,13 +21,16 @@ namespace E_StoreX.API.Controllers.Admin
     public class ProductsController : AdminControllerBase
     {
         private readonly IProductsService _productsService;
+        private readonly IExportService _exportService;
         /// <summary>
         /// Initializes a new instance of the <see cref="ProductsController"/> class.
         /// </summary>
         /// <param name="productsService">Service for handling product operations.</param>
-        public ProductsController(IProductsService productsService)
+        /// <param name="exportService">Service to manage files.</param>
+        public ProductsController(IProductsService productsService, IExportService exportService)
         {
             _productsService = productsService;
+            _exportService = exportService;
         }
         /// <summary>
         /// Creates a new product in the database.
@@ -99,5 +104,42 @@ namespace E_StoreX.API.Controllers.Admin
 
             return Ok(ApiResponseFactory.Success("Deleted Successfully"));
         }
+        /// <summary>
+        /// Exports all products into the specified file format.
+        /// </summary>
+        /// <param name="type">
+        /// The type of export format.  
+        /// Supported values are:  
+        /// <list type="bullet">
+        ///   <item><description><see cref="ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+        ///   <item><description><see cref="ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+        ///   <item><description><see cref="ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// A downloadable file in the selected export format.  
+        /// Returns <see cref="BadRequestResult"/> if the format is not supported.
+        /// </returns>
+        /// <response code="200">Products exported successfully in the requested format.</response>
+        /// <response code="400">Unsupported export type requested.</response>
+        /// <response code="401">If the user is not authenticated.</response>
+        [HttpGet("export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse),StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> Export(ExportType type)
+        {
+            var products = await _productsService.GetAllProductsAsync();
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(products), "text/csv", "products.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(products), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "products.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(products), "application/pdf", "products.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
+        }
+
     }
 }

@@ -1,6 +1,9 @@
 ﻿using Asp.Versioning;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Orders.Responses;
+using EStoreX.Core.Enums;
+using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Orders;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,13 +19,16 @@ namespace E_StoreX.API.Controllers.Admin
     public class OrdersController : AdminControllerBase
     {
         private readonly IOrderService _orderService;
+        private readonly IExportService _exportService;
         /// <summary>
         /// Initializes a new instance of the <see cref="OrdersController"/> class with the specified order service.
         /// </summary>
         /// <param name="orderService">The service used to manage order-related operations.</param>
-        public OrdersController(IOrderService orderService)
+        /// <param name="exportService">Service to manage files.</param>
+        public OrdersController(IOrderService orderService, IExportService exportService)
         {
             _orderService = orderService;
+            _exportService = exportService;
         }
         /// <summary>
         /// Retrieves all orders from the system.
@@ -42,6 +48,42 @@ namespace E_StoreX.API.Controllers.Admin
         {
             var orders = await _orderService.GetAllOrders();
             return Ok(orders);
+        }
+        /// <summary>
+        /// Exports all orders into the specified file format.
+        /// </summary>
+        /// <param name="type">
+        /// The type of export format.  
+        /// Supported values are:  
+        /// <list type="bullet">
+        ///   <item><description><see cref="ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+        ///   <item><description><see cref="ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+        ///   <item><description><see cref="ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// A downloadable file in the selected export format.  
+        /// Returns <see cref="BadRequestResult"/> if the format is not supported.
+        /// </returns>
+        /// <response code="200">orders exported successfully in the requested format.</response>
+        /// <response code="400">Unsupported export type requested.</response>
+        /// <response code="401">If the user is not authenticated.</response>
+        [HttpGet("export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> Export(ExportType type)
+        {
+            var orders = await _orderService.GetAllOrders();
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(orders), "text/csv", "orders.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(orders), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "orders.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(orders), "application/pdf", "orders.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
         }
     }
 }

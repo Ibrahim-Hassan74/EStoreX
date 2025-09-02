@@ -3,9 +3,11 @@
 namespace EStoreX.Core.Enums
 {
     [JsonConverter(typeof(JsonStringEnumConverter))]
-    public enum SortOrderOptions
-    {
-        ASC,
-        DESC
+    public enum ExportType
+    { 
+        Csv, 
+        Excel,
+        Pdf 
     }
+
 }

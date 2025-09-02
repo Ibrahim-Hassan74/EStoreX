@@ -56,6 +56,8 @@ namespace EStoreX.Core
 
             services.AddScoped<IOrderService, OrderService>();
 
+            services.AddScoped<IExportService, ExportService>();
+
             services.AddScoped<IApiClientService, ApiClientService>();
 
             services.AddScoped<IUserManagementService, UserManagementService>();

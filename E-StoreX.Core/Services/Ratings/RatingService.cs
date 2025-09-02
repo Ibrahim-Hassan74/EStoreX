@@ -104,6 +104,17 @@ namespace EStoreX.Core.Services.Ratings
 
             return _mapper.Map<RatingResponse>(rating);
         }
+        /// <inheritdoc/>
+        public async Task<bool> DeleteRatingAsAdminAsync(Guid id)
+        {
+            var rating = await _ratingRepository.GetByIdAsync(id);
+            if (rating == null)
+                return false;
+
+            await _ratingRepository.DeleteAsync(id);
+            await _unitOfWork.CompleteAsync();
+            return true;
+        }
 
     }
 }

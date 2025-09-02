@@ -3,8 +3,10 @@ using Domain.Entities.Common;
 using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
 using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
+using EStoreX.Core.ServiceContracts.Common;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Admin
@@ -19,6 +21,7 @@ namespace E_StoreX.API.Controllers.Admin
     public class ApiClientsController : AdminControllerBase
     {
         private readonly IApiClientService _clientService;
+        private readonly IExportService _exportService;
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiClientsController"/> class with the specified API client
         /// service.
@@ -26,9 +29,11 @@ namespace E_StoreX.API.Controllers.Admin
         /// <remarks>— This constructor is typically used by dependency injection to provide the required
         /// service for API client management.</remarks>
         /// <param name="clientService">The service used to manage API client data and operations. Cannot be <c>null</c>.</param>
-        public ApiClientsController(IApiClientService clientService)
+        /// <param name="exportService">Service to manage files.</param>
+        public ApiClientsController(IApiClientService clientService, IExportService exportService)
         {
             _clientService = clientService;
+            _exportService = exportService;
         }
 
         /// <summary>
@@ -197,6 +202,43 @@ namespace E_StoreX.API.Controllers.Admin
                 return NotFound(ApiResponseFactory.NotFound("Client not found."));
 
             return Ok(ApiResponseFactory.Success("API Key rotated successfully.", new { client.ApiKey }));
+        }
+
+        /// <summary>
+        /// Exports all clients into the specified file format.
+        /// </summary>
+        /// <param name="type">
+        /// The type of export format.  
+        /// Supported values are:  
+        /// <list type="bullet">
+        ///   <item><description><see cref="ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+        ///   <item><description><see cref="ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+        ///   <item><description><see cref="ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// A downloadable file in the selected export format.  
+        /// Returns <see cref="BadRequestResult"/> if the format is not supported.
+        /// </returns>
+        /// <response code="200">clients exported successfully in the requested format.</response>
+        /// <response code="400">Unsupported export type requested.</response>
+        /// <response code="401">If the user is not authenticated.</response>
+        [HttpGet("export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> Export(ExportType type)
+        {
+            var clients = await _clientService.GetClientsAsync();
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(clients), "text/csv", "clients.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(clients), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "clients.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(clients), "application/pdf", "clients.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
         }
 
 

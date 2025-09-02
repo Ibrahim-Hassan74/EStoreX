@@ -1,7 +1,9 @@
 ﻿using Asp.Versioning;
 using Domain.Entities.Product;
 using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,14 +16,17 @@ namespace E_StoreX.API.Controllers.Admin
     public class BrandsController : AdminControllerBase
     {
         private readonly IBrandService _brandService;
+        private readonly IExportService _exportService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BrandsController"/>.
         /// </summary>
         /// <param name="brandService">Service to manage brand operations.</param>
-        public BrandsController(IBrandService brandService)
+        /// <param name="exportService">Service to manage files.</param>
+        public BrandsController(IBrandService brandService, IExportService exportService)
         {
             _brandService = brandService;
+            _exportService = exportService;
         }
 
         /// <summary>
@@ -91,6 +96,43 @@ namespace E_StoreX.API.Controllers.Admin
                 return NotFound(ApiResponseFactory.NotFound("Brand not found."));
 
             return NoContent();
+        }
+
+        /// <summary>
+        /// Exports all brands into the specified file format.
+        /// </summary>
+        /// <param name="type">
+        /// The type of export format.  
+        /// Supported values are:  
+        /// <list type="bullet">
+        ///   <item><description><see cref="ExportType.Csv"/> → Comma Separated Values file (.csv)</description></item>
+        ///   <item><description><see cref="ExportType.Excel"/> → Microsoft Excel file (.xlsx)</description></item>
+        ///   <item><description><see cref="ExportType.Pdf"/> → Portable Document Format file (.pdf)</description></item>
+        /// </list>
+        /// </param>
+        /// <returns>
+        /// A downloadable file in the selected export format.  
+        /// Returns <see cref="BadRequestResult"/> if the format is not supported.
+        /// </returns>
+        /// <response code="200">brands exported successfully in the requested format.</response>
+        /// <response code="400">Unsupported export type requested.</response>
+        /// <response code="401">If the user is not authenticated.</response>
+        [HttpGet("export/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+
+        public async Task<IActionResult> Export(ExportType type)
+        {
+            var brands = await _brandService.GetAllBrandsAsync();
+
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(brands), "text/csv", "brands.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(brands), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "brands.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(brands), "application/pdf", "brands.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
         }
     }
 }
