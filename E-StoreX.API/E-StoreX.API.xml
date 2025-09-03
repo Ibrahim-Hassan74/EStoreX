@@ -539,6 +539,17 @@
             <response code="401">If the user is not authenticated.</response>
             <response code="403">If the user does not have permission to delete this rating.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.RatingsController.GetAllRatingsForAdmin">
+            <summary>
+            Retrieves all ratings with detailed information for admin users.  
+            The response includes the rating ID, product details (name, brand, category),  
+            the user who wrote the comment, the comment content, and the score.
+            </summary>
+            <returns>A list of ratings with related product and user information.</returns>
+            <response code="200">Returns the list of ratings with details.</response>
+            <response code="401">If the user is not authenticated.</response>
+            <response code="403">If the user does not have permission to view ratings.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.UserManagementController">
             <summary>
             user management controller for administrative operations

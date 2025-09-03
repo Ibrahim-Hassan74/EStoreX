@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EStoreX.Core.Domain.Entities.Rating;
+using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.DTO.Ratings.Requests;
 using EStoreX.Core.DTO.Ratings.Response;
 using EStoreX.Core.RepositoryContracts.Common;
@@ -114,6 +115,19 @@ namespace EStoreX.Core.Services.Ratings
             await _ratingRepository.DeleteAsync(id);
             await _unitOfWork.CompleteAsync();
             return true;
+        }
+        /// <inheritdoc/>
+        public async Task<IEnumerable<AdminRatingResponse>> GetAllRatingsForAdminAsync()
+        {
+            var ratings = await _ratingRepository.GetAllAsync(
+                r => r.Product,
+                r => r.Product.Brand,
+                r => r.Product.Category,
+                r  => r.Product.Photos,
+                r => r.User
+            );
+
+            return _mapper.Map<IEnumerable<AdminRatingResponse>>(ratings);
         }
 
     }

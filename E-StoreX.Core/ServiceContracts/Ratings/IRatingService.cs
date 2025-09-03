@@ -79,6 +79,16 @@ namespace EStoreX.Core.ServiceContracts.Ratings
         /// otherwise, <c>false</c>.
         /// </returns>
         Task<bool> DeleteRatingAsAdminAsync(Guid id);
+        /// <summary>
+        /// Retrieves all ratings with detailed information for the admin,
+        /// including product name, brand, category, user name, comment content,
+        /// and score.
+        /// </summary>
+        /// <returns>
+        /// A collection of <see cref="AdminRatingResponse"/> objects containing
+        /// rating details and related product and user information.
+        /// </returns>
+        Task<IEnumerable<AdminRatingResponse>> GetAllRatingsForAdminAsync();
 
 
     }
