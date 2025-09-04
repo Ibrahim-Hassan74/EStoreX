@@ -89,7 +89,7 @@ namespace EStoreX.Core.Services.Account
 
             if (!user.EmailConfirmed)
             {
-                await SendEmail(user);
+                //await SendEmail(user);
                 return ApiResponseFactory.Failure("Email not confirmed.", 403, "You must confirm your email before logging in.");
             }
 
@@ -134,7 +134,12 @@ namespace EStoreX.Core.Services.Account
             if (result.Succeeded)
             {
                 user.LastEmailConfirmationToken = null;
-                await _userManager.UpdateAsync(user);
+                await _userManager.RemoveAuthenticationTokenAsync(user, "EmailConfirmation", "Token");
+                await _userManager.RemoveAuthenticationTokenAsync(user, "EmailConfirmation", "TokenTime");
+
+                var updateResult = await _userManager.UpdateAsync(user);
+                if (!updateResult.Succeeded)
+                    return ApiResponseFactory.Failure("Failed to update user after confirmation.", 500, updateResult.Errors.Select(e => e.Description).ToArray());
 
                 return ApiResponseFactory.Success("Email confirmed successfully.");
             }
@@ -534,6 +539,60 @@ namespace EStoreX.Core.Services.Account
             tokenResponse.StatusCode = 200;
             return tokenResponse;
         }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> DeleteAccountAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if(user == null)
+                return ApiResponseFactory.NotFound("User not found");
+
+            var deleted  = await _userManager.DeleteAsync(user);
+
+            if (!deleted.Succeeded)
+                return ApiResponseFactory.InternalServerError("Failed to delete account", deleted.Errors.Select(e => e.Description).ToList());
+
+            return ApiResponseFactory.Success("Account deleted successfully");
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> ResendConfirmationEmailAsync(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                return ApiResponseFactory.BadRequest("Email is required.");
+
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+                return ApiResponseFactory.NotFound("User not found.");
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
+                return ApiResponseFactory.Conflict("Account already confirmed.");
+
+            var tokenTimeStr = await _userManager.GetAuthenticationTokenAsync(user, "EmailConfirmation", "TokenTime");
+            if (!string.IsNullOrEmpty(tokenTimeStr) && DateTime.TryParse(tokenTimeStr, out var tokenTime))
+            {
+                if (DateTime.UtcNow < tokenTime.AddMinutes(5))
+                {
+                    return ApiResponseFactory.Failure(
+                        "Confirmation email already sent recently. Please wait before requesting again.",
+                        StatusCodes.Status429TooManyRequests,
+                        "TOO_MANY_REQUESTS"
+                    );
+                }
+            }
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+            await _userManager.SetAuthenticationTokenAsync(user, "EmailConfirmation", "Token", token);
+            await _userManager.SetAuthenticationTokenAsync(user, "EmailConfirmation", "TokenTime", DateTime.UtcNow.ToString("o"));
+
+            await SendEmail(user);
+
+            return ApiResponseFactory.Success("Confirmation email resent successfully.");
+        }
+
+
 
     }
 }

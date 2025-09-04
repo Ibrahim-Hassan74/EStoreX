@@ -1028,6 +1028,38 @@
             Internal Server Error – Failed to create user account or link external login due to server error.
             </response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.DeleteAccount">
+            <summary>
+            Permanently deletes the currently authenticated user's account.
+            </summary>
+            <remarks>
+            This action requires authentication. Once deleted, the account cannot be restored.
+            </remarks>
+            <response code="200">Account deleted successfully.</response>
+            <response code="404">User not found.</response>
+            <response code="500">An error occurred while deleting the account.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ResendConfirmationEmail(EStoreX.Core.DTO.Account.Requests.ResendEmailRequest)">
+            <summary>
+            Resends the account confirmation email to the specified user.
+            </summary>
+            <remarks>
+            Use this endpoint if you haven't received or have lost the original confirmation email.  
+            Provide your registered email address, and the system will send a new confirmation email 
+            to that address if the account exists and is not already confirmed.
+            </remarks>
+            <param name="request">The request containing the email address of the user.</param>
+            <returns>
+            <c>200 OK</c> if the confirmation email was resent successfully;  
+            <c>400 Bad Request</c> if the email is already confirmed or the input is invalid;  
+            <c>404 Not Found</c> if no account exists with the provided email;  
+            <c>500 Internal Server Error</c> for unexpected failures during the email sending process.
+            </returns>
+            <response code="200">Confirmation email resent successfully.</response>
+            <response code="400">The email is already confirmed or invalid request.</response>
+            <response code="404">No user found with the provided email.</response>
+            <response code="500">An unexpected error occurred while sending the confirmation email.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.BasketsController">
             <summary>
             API controller for managing customer baskets.

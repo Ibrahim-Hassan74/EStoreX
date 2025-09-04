@@ -178,6 +178,34 @@ namespace EStoreX.Core.ServiceContracts.Account
         /// </list>
         /// </remarks>
         Task<ApiResponse> ExternalLoginCallbackAsync(string remoteError = "");
+        /// <summary>
+        /// Deletes the account of the given user.
+        /// </summary>
+        /// <param name="userId">The ID of the user to delete.</param>
+        /// <returns>An ApiResponse indicating the result of the operation.</returns>
+        Task<ApiResponse> DeleteAccountAsync(string userId);
+        /// <summary>
+        /// Resends the account confirmation email to the specified user.
+        /// </summary>
+        /// <param name="email">The email of the user who requested the confirmation email.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating the outcome of the operation:
+        /// <list type="bullet">
+        ///   <item>
+        ///     <description><c>200 OK</c> - if the confirmation email was sent successfully.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description><c>404 Not Found</c> - if the user does not exist.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description><c>409 Conflict</c> - if the user account is already confirmed.</description>
+        ///   </item>
+        ///   <item>
+        ///     <description><c>500 Internal Server Error</c> - if sending the email fails unexpectedly.</description>
+        ///   </item>
+        /// </list>
+        /// </returns>
+        Task<ApiResponse> ResendConfirmationEmailAsync(string email);
 
     }
 }
