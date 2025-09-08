@@ -9,6 +9,7 @@
             Success = true;
             Message = message;
             Data = data;
+            StatusCode = 200;
         }
     }
 }

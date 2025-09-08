@@ -68,5 +68,23 @@ namespace E_StoreX.API.Controllers.Public
             var product = await _productsService.GetProductByIdAsync(Id);
             return product is not null ? Ok(product) : NotFound(ApiResponseFactory.NotFound("Not Found Product or invalid product Id"));
         }
+        /// <summary>
+        /// Retrieves all images associated with a specific product.
+        /// </summary>
+        /// <param name="productId">The unique identifier of the product.</param>
+        /// <returns>
+        /// <c>200 OK</c> with a list of product images;  
+        /// <c>404 Not Found</c> if the product does not exist or has no images.
+        /// </returns>
+        /// <response code="200">Product images retrieved successfully.</response>
+        /// <response code="404">No images found for the given product.</response>
+        [HttpGet("{productId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponseWithData<List<(string, Guid)>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetProductImages(Guid productId)
+        {
+            var response = await _productsService.GetProductImagesAsync(productId);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

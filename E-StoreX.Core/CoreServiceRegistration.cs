@@ -40,6 +40,8 @@ namespace EStoreX.Core
 
             services.AddSingleton<IImageService, ImageService>();
 
+            services.AddScoped(typeof(IEntityImageManager<>), typeof(EntityImageManager<>));
+
             services.AddScoped<IProductsService, ProductsService>();
 
             services.AddScoped<IBasketService, BasketService>();

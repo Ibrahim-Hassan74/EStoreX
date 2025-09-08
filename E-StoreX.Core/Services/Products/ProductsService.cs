@@ -1,23 +1,30 @@
 ﻿using AutoMapper;
 using Domain.Entities.Product;
+using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Products.Requests;
 using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Products;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
 using EStoreX.Core.Services.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.Services.Products
 {
     public class ProductsService : BaseService, IProductsService
     {
         private readonly IProductRepository _productRepository;
-        public ProductsService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        private readonly IEntityImageManager<Product> _imageManager;
+        private readonly IImageService _imageService;
+        public ProductsService(IUnitOfWork unitOfWork, IMapper mapper, IEntityImageManager<Product> imageManager, IImageService imageService) : base(unitOfWork, mapper)
         {
             _productRepository = unitOfWork.ProductRepository;
+            _imageManager = imageManager;
+            _imageService = imageService;
         }
-
+        /// <inheritdoc/>
         public async Task<ProductResponse> CreateProductAsync(ProductAddRequest productRequest)
         {
             if (productRequest == null)
@@ -34,6 +41,7 @@ namespace EStoreX.Core.Services.Products
             return _mapper.Map<ProductResponse>(product);
         }
 
+        /// <inheritdoc/>
         public async Task<bool> DeleteProductAsync(Guid id)
         {
             var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos);
@@ -44,6 +52,7 @@ namespace EStoreX.Core.Services.Products
             return await _productRepository.DeleteAsync(product);
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<ProductResponse>> GetAllProductsAsync()
         {
             var products = await _productRepository.GetAllAsync(x => x.Category, y => y.Photos, b => b.Brand);
@@ -51,6 +60,7 @@ namespace EStoreX.Core.Services.Products
             return productResponses;
         }
 
+        /// <inheritdoc/>
         public async Task<ProductResponse?> GetProductByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
@@ -67,6 +77,7 @@ namespace EStoreX.Core.Services.Products
             return productResponse;
         }
 
+        /// <inheritdoc/>
         public async Task<ProductResponse> UpdateProductAsync(ProductUpdateRequest productUpdateRequest)
         {
             if (productUpdateRequest == null)
@@ -96,6 +107,7 @@ namespace EStoreX.Core.Services.Products
             return _mapper.Map<ProductResponse>(findProduct);
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<ProductResponse>> GetFilteredProductsAsync(ProductQueryDTO query)
         {
             if (query == null)
@@ -107,9 +119,96 @@ namespace EStoreX.Core.Services.Products
             return _mapper.Map<IEnumerable<ProductResponse>>(products);
         }
 
+        /// <inheritdoc/>
         public async Task<int> CountProductsAsync()
         {
             return await _productRepository.CountAsync();
         }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> GetProductImagesAsync(Guid productId)
+        {
+            return await _imageManager.GetImagesAsync(
+                productId,
+                async (uow, id) => await uow.ProductRepository.GetByIdAsync(id, p => p.Photos),
+                product => product.Photos
+            );
+        }
+        /// <inheritdoc/>
+        public async Task<ApiResponse> DeleteProductImageAsync(Guid productId, Guid photoId)
+        {
+            return await _imageManager.DeleteImageAsync(
+                productId,
+                photoId,
+                async (uow, id) => await uow.ProductRepository.GetByIdAsync(id, p => p.Photos),
+                product => product.Photos
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> AddProductImagesAsync(Guid productId, List<IFormFile> files)
+        {
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(productId, p => p.Photos);
+            if (product == null)
+                return ApiResponseFactory.NotFound("Product not found.");
+
+            var folderName = product.Name.Replace(" ", "_");
+
+            return await _imageManager.AddImagesAsync(
+                productId,
+                files,
+                folderName,
+                async (uow, id) => await uow.ProductRepository.GetByIdAsync(id, p => p.Photos),
+                (entity, imagePaths) =>
+                {
+                    foreach (var path in imagePaths)
+                    {
+                        entity.Photos.Add(new Photo
+                        {
+                            ProductId = productId,
+                            ImageName = path
+                        });
+                    }
+                }
+            );
+        }
+        /// <inheritdoc/>
+        public async Task<ApiResponse> UpdateProductImagesAsync(Guid productId, List<IFormFile> files)
+        {
+            var product = await _unitOfWork.ProductRepository.GetByIdAsync(productId, p => p.Photos);
+            if (product == null)
+                return ApiResponseFactory.NotFound("Product not found.");
+
+            if (files == null || files.Count == 0)
+                return ApiResponseFactory.BadRequest("No files provided.");
+
+            foreach (var photo in product.Photos.ToList())
+            {
+                _imageService.DeleteImageAsync(photo.ImageName);
+                product.Photos.Remove(photo);
+            }
+
+            var folderName = product.Name.Replace(" ", "").ToLowerInvariant();
+
+            var formFileCollection = new FormFileCollection();
+            foreach (var file in files)
+                formFileCollection.Add(file);
+
+            var imagePaths = await _imageService.AddImageAsync(formFileCollection, $"Products/{folderName}");
+
+            foreach (var path in imagePaths)
+            {
+                product.Photos.Add(new Photo
+                {
+                    ImageName = path,
+                    ProductId = productId
+                });
+            }
+
+            await _unitOfWork.CompleteAsync();
+            return ApiResponseFactory.Success("Images updated successfully.");
+        }
+
+
     }
 }

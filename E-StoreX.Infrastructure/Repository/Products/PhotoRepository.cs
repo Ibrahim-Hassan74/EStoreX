@@ -25,7 +25,7 @@ namespace EStoreX.Core.Repository.Products
 
             var photos = imagePath.Select(path => new Photo
             {
-                ImageName = path,
+                ImageName = path.Replace(" ", ""),
                 ProductId = photosDTO.ProductId,
                 Id = Guid.NewGuid()
             }).ToList();

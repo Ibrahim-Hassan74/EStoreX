@@ -140,6 +140,76 @@ namespace E_StoreX.API.Controllers.Admin
                 _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
             };
         }
+        /// <summary>
+        /// Deletes a specific product image by its ID.
+        /// </summary>
+        /// <param name="productId">The unique identifier of the product.</param>
+        /// <param name="photoId">The unique identifier of the photo to delete.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the image was deleted successfully;  
+        /// <c>404 Not Found</c> if the product or the photo was not found;  
+        /// <c>500 Internal Server Error</c> if an unexpected error occurs.
+        /// </returns>
+        /// <response code="200">Image deleted successfully.</response>
+        /// <response code="404">Product or image not found.</response>
+        /// <response code="500">Unexpected server error.</response>
+        [HttpDelete("{productId:guid}/images/{photoId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteProductImage(Guid productId, Guid photoId)
+        {
+            var response = await _productsService.DeleteProductImageAsync(productId, photoId);
+            return StatusCode(response.StatusCode, response);
+        }
+        /// <summary>
+        /// Adds images to the specified product.
+        /// </summary>
+        /// <param name="productId">The unique identifier of the product.</param>
+        /// <param name="files">The list of image files to upload.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the images were added successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the product does not exist.
+        /// </returns>
+        /// <response code="200">Images added successfully.</response>
+        /// <response code="400">No files were provided.</response>
+        /// <response code="404">Product not found.</response>
+        [HttpPost("{productId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AddProductImages(Guid productId, [FromForm] List<IFormFile> files)
+        {
+            var response = await _productsService.AddProductImagesAsync(productId, files);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        /// <summary>
+        /// Updates all images of the specified product.
+        /// </summary>
+        /// <remarks>
+        /// This will remove all existing images of the product and replace them with the newly uploaded ones.
+        /// </remarks>
+        /// <param name="productId">The unique identifier of the product.</param>
+        /// <param name="files">The list of new image files to upload.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the images were updated successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the product does not exist.
+        /// </returns>
+        /// <response code="200">Images updated successfully.</response>
+        /// <response code="400">No files were provided.</response>
+        /// <response code="404">Product not found.</response>
+        [HttpPut("{productId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateProductImages(Guid productId, [FromForm] List<IFormFile> files)
+        {
+            var response = await _productsService.UpdateProductImagesAsync(productId, files);
+            return StatusCode(response.StatusCode, response);
+        }
 
     }
 }

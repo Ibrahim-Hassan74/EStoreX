@@ -27,7 +27,7 @@ namespace EStoreX.Core.Services.Common
             {
                 throw new ArgumentException("Source folder cannot be null or empty.", nameof(src));
             }
-            //src = src.Replace(" ", "");
+            src = src.Replace(" ", "");
             var path = Path.Combine(_webHostEnvironment.WebRootPath, "Images", src);
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -35,7 +35,6 @@ namespace EStoreX.Core.Services.Common
             {
                 if (file.Length > 0)
                 {
-                    //var cleanFileName = file.FileName.Replace(" ", "");
                     var fileName = $"{Guid.NewGuid()}_{file.FileName}";
                     var imagePath = Path.Combine(path, fileName);
                     using (var stream = new FileStream(imagePath, FileMode.Create))
@@ -56,6 +55,8 @@ namespace EStoreX.Core.Services.Common
             }
 
             var info = _fileProvider.GetFileInfo(src);
+            if (!info.Exists) info = _fileProvider.GetFileInfo(src.Replace(" ", ""));
+
             if (!info.Exists)
             {
                 throw new FileNotFoundException("The specified image does not exist.", src);

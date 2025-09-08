@@ -1673,6 +1673,66 @@
             <response code="404">Product not found or invalid ID.</response>
             <response code="500">Unexpected error occurred.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.GetProductImages(System.Guid)">
+            <summary>
+            Retrieves all images associated with a specific product.
+            </summary>
+            <param name="productId">The unique identifier of the product.</param>
+            <returns>
+            <c>200 OK</c> with a list of product images;  
+            <c>404 Not Found</c> if the product does not exist or has no images.
+            </returns>
+            <response code="200">Product images retrieved successfully.</response>
+            <response code="404">No images found for the given product.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.DeleteProductImage(System.Guid,System.Guid)">
+            <summary>
+            Deletes a specific product image by its ID.
+            </summary>
+            <param name="productId">The unique identifier of the product.</param>
+            <param name="photoId">The unique identifier of the photo to delete.</param>
+            <returns>
+            <c>200 OK</c> if the image was deleted successfully;  
+            <c>404 Not Found</c> if the product or the photo was not found;  
+            <c>500 Internal Server Error</c> if an unexpected error occurs.
+            </returns>
+            <response code="200">Image deleted successfully.</response>
+            <response code="404">Product or image not found.</response>
+            <response code="500">Unexpected server error.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.AddProductImages(System.Guid,System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Adds images to the specified product.
+            </summary>
+            <param name="productId">The unique identifier of the product.</param>
+            <param name="files">The list of image files to upload.</param>
+            <returns>
+            <c>200 OK</c> if the images were added successfully;  
+            <c>400 Bad Request</c> if no files were provided;  
+            <c>404 Not Found</c> if the product does not exist.
+            </returns>
+            <response code="200">Images added successfully.</response>
+            <response code="400">No files were provided.</response>
+            <response code="404">Product not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.ProductsController.UpdateProductImages(System.Guid,System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Updates all images of the specified product.
+            </summary>
+            <remarks>
+            This will remove all existing images of the product and replace them with the newly uploaded ones.
+            </remarks>
+            <param name="productId">The unique identifier of the product.</param>
+            <param name="files">The list of new image files to upload.</param>
+            <returns>
+            <c>200 OK</c> if the images were updated successfully;  
+            <c>400 Bad Request</c> if no files were provided;  
+            <c>404 Not Found</c> if the product does not exist.
+            </returns>
+            <response code="200">Images updated successfully.</response>
+            <response code="400">No files were provided.</response>
+            <response code="404">Product not found.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.RatingsController">
             <summary>
             Handles all operations related to product ratings,
