@@ -91,6 +91,7 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// <c>404 Not Found</c> if the product does not exist.
         /// </returns>
         Task<ApiResponse> UpdateProductImagesAsync(Guid productId, List<IFormFile> files);
+        Task<ApiResponse> GetBestSellersAsync(int count);
 
     }
 }

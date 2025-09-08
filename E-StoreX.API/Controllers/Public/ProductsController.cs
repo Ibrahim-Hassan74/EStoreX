@@ -86,5 +86,27 @@ namespace E_StoreX.API.Controllers.Public
             var response = await _productsService.GetProductImagesAsync(productId);
             return StatusCode(response.StatusCode, response);
         }
+        /// <summary>
+        /// Retrieves the top N best-selling products.
+        /// </summary>
+        /// <param name="count">The number of best-selling products to return (e.g., 5, 10, 20).</param>
+        /// <returns>
+        /// <c>200 OK</c> with the best-selling products;  
+        /// <c>400 Bad Request</c> if the count is invalid;  
+        /// <c>404 Not Found</c> if no products exist.
+        /// </returns>
+        /// <response code="200">Best sellers retrieved successfully.</response>
+        /// <response code="400">Invalid count provided.</response>
+        /// <response code="404">No products found.</response>
+        [HttpGet("best-sellers")]
+        [ProducesResponseType(typeof(ApiResponseWithData<IEnumerable<ProductResponse>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetBestSellers([FromQuery] int count = 10)
+        {
+            var response = await _productsService.GetBestSellersAsync(count);
+            return StatusCode(response.StatusCode, response);
+        }
+
     }
 }

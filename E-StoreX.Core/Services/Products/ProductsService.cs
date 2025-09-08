@@ -3,6 +3,7 @@ using Domain.Entities.Product;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Products.Requests;
 using EStoreX.Core.DTO.Products.Responses;
+using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Products;
@@ -208,7 +209,27 @@ namespace EStoreX.Core.Services.Products
             await _unitOfWork.CompleteAsync();
             return ApiResponseFactory.Success("Images updated successfully.");
         }
+        /// <inheritdoc/>
+        public async Task<ApiResponse> GetBestSellersAsync(int count)
+        {
+            if (count <= 0)
+                return ApiResponseFactory.BadRequest("Count must be greater than zero.");
+            var filter = new ProductQueryDTO
+            {
+                PageNumber = 1,
+                PageSize = count,
+                SortBy = nameof(Product.SalesCount),
+                SortOrder = SortOrderOptions.DESC
+            };
 
+            var bestSellers = await _unitOfWork.ProductRepository.GetFilteredProductsAsync(filter);
+
+            if (!bestSellers.Any())
+                return ApiResponseFactory.NotFound("No products found.");
+
+            var response = _mapper.Map<List<ProductResponse>>(bestSellers);
+            return ApiResponseFactory.Success("Best sellers retrieved successfully.", response);
+        }
 
     }
 }

@@ -5,6 +5,7 @@ using EStoreX.Core.DTO.Products.Requests;
 using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Products;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
 using EStoreX.Core.Services.Products;
 using FluentAssertions;
@@ -22,16 +23,21 @@ namespace E_StoreX.ServiceTests
         private readonly Mock<IProductRepository> _productRepositoryMock;
         private readonly IProductsService _productsService;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IEntityImageManager<Product>> _imageManagerMock;
+        private readonly Mock<IImageService> _imageServiceMock;
 
         public ProductsServiceTests()
         {
             _fixture = new Fixture();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _productRepositoryMock = new Mock<IProductRepository>();
+            _imageManagerMock = new Mock<IEntityImageManager<Product>>();
+            _imageServiceMock = new Mock<IImageService>();
             _mapperMock = new Mock<IMapper>();
             _unitOfWorkMock.Setup(u => u.ProductRepository)
                            .Returns(_productRepositoryMock.Object);
-            _productsService = new ProductsService(_unitOfWorkMock.Object, _mapperMock.Object);
+            _productsService = new ProductsService(_unitOfWorkMock.Object, _mapperMock.Object, 
+                _imageManagerMock.Object,_imageServiceMock.Object);
         }
         #region Helper Methods
         private ProductAddRequest CreateValidProductAddRequest()
