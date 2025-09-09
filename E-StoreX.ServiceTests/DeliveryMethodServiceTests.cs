@@ -21,7 +21,7 @@ namespace E_StoreX.ServiceTests
             _mapperMock = new Mock<IMapper>();
             _repositoryMock = new Mock<IDeliveryMethodRepository>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
-            _unitOfWorkMock.Setup(u => u.deliveryMethodRepository).Returns(_repositoryMock.Object);
+            _unitOfWorkMock.Setup(u => u.DeliveryMethodRepository).Returns(_repositoryMock.Object);
             _service = new DeliveryMethodService(_unitOfWorkMock.Object, _mapperMock.Object);
         }
 

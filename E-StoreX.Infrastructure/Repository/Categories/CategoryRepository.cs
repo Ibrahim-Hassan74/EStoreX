@@ -1,10 +1,10 @@
 ﻿using Domain.Entities.Product;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 using EStoreX.Core.RepositoryContracts.Categories;
 using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace EStoreX.Core.Repository.Categories
+namespace EStoreX.Infrastructure.Repository.Categories
 {
     public class CategoryRepository : GenericRepository<Category> ,ICategoryRepository
     {

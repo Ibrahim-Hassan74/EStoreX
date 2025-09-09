@@ -4,9 +4,9 @@ using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.ServiceContracts.Common;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 
-namespace EStoreX.Core.Repository.Products
+namespace EStoreX.Infrastructure.Repository.Products
 {
     /// <inheritdoc/>
     public class PhotoRepository : GenericRepository<Photo>, IPhotoRepository

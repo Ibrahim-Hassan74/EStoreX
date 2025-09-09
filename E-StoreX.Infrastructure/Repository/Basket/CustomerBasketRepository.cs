@@ -3,7 +3,7 @@ using EStoreX.Core.RepositoryContracts.Basket;
 using StackExchange.Redis;
 using System.Text.Json;
 
-namespace EStoreX.Core.Repository.Basket
+namespace EStoreX.Infrastructure.Repository.Basket
 {
     public class CustomerBasketRepository : ICustomerBasketRepository
     {

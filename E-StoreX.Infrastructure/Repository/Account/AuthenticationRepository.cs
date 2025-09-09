@@ -3,7 +3,7 @@ using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using EStoreX.Core.RepositoryContracts.Account;
 
-namespace EStoreX.Core.Repository.Account
+namespace EStoreX.Infrastructure.Repository.Account
 {
     /// <inheritdoc/>
     public class AuthenticationRepository : IAuthenticationRepository

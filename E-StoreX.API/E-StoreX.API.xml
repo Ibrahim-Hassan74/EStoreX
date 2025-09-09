@@ -358,6 +358,120 @@
             <response code="400">Unsupported export type requested.</response>
             <response code="401">If the user is not authenticated.</response>
         </member>
+        <member name="T:E_StoreX.API.Controllers.Admin.DiscountsController">
+            <summary>
+            Provides endpoints for managing discounts in the system.
+            This controller is intended for administrators only.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.#ctor(EStoreX.Core.ServiceContracts.Discount.IDiscountService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.DiscountsController"/> class.
+            </summary>
+            <param name="discountService">Service for handling discount-related operations.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Create(EStoreX.Core.DTO.Discount.Request.DiscountRequest)">
+            <summary>
+            Creates a new discount.
+            </summary>
+            <param name="request">The discount details to be created.</param>
+            <returns>Details of the created discount.</returns>
+            <response code="200">Discount created successfully.</response>
+            <response code="400">Invalid discount details were provided.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Update(System.Guid,EStoreX.Core.DTO.Discount.Request.DiscountRequest)">
+            <summary>
+            Updates an existing discount.
+            </summary>
+            <param name="id">The ID of the discount to update.</param>
+            <param name="request">The updated discount details.</param>
+            <returns>The updated discount details.</returns>
+            <response code="200">Discount updated successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Delete(System.Guid)">
+            <summary>
+            Deletes an existing discount.
+            </summary>
+            <param name="id">The ID of the discount to delete.</param>
+            <returns>Status of the delete operation.</returns>
+            <response code="200">Discount deleted successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Activate(System.Guid)">
+            <summary>
+            Activates a discount immediately.
+            </summary>
+            <param name="id">The ID of the discount to activate.</param>
+            <returns>Status of the operation.</returns>
+            <response code="200">Discount activated successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Expire(System.Guid)">
+            <summary>
+            Expires a discount immediately.
+            </summary>
+            <param name="id">The ID of the discount to expire.</param>
+            <returns>Status of the operation.</returns>
+            <response code="200">Discount expired successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.UpdateDates(System.Guid,EStoreX.Core.DTO.Discount.Request.UpdateDiscountDatesRequest)">
+            <summary>
+            Updates the start and end dates of a discount.
+            </summary>
+            <param name="id">The ID of the discount to update.</param>
+            <param name="request">The request containing the new start and end dates.</param>
+            <returns>Status of the operation.</returns>
+            <response code="200">Discount dates updated successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.GetById(System.Guid)">
+            <summary>
+            Retrieves a discount by its ID.
+            </summary>
+            <param name="id">The discount ID.</param>
+            <returns>The discount details.</returns>
+            <response code="200">Discount retrieved successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.GetByCode(System.String)">
+            <summary>
+            Retrieves a discount by its unique code.
+            </summary>
+            <param name="code">The discount code.</param>
+            <returns>The discount details.</returns>
+            <response code="200">Discount retrieved successfully.</response>
+            <response code="404">Discount not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.GetAll">
+            <summary>
+            Retrieves all discounts.
+            </summary>
+            <returns>List of all discounts.</returns>
+            <response code="200">Discounts retrieved successfully.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.GetActive">
+            <summary>
+            Retrieves all currently active discounts.
+            </summary>
+            <returns>List of active discounts.</returns>
+            <response code="200">Active discounts retrieved successfully.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.GetExpired">
+            <summary>
+            Retrieves all expired discounts.
+            </summary>
+            <returns>List of expired discounts.</returns>
+            <response code="200">Expired discounts retrieved successfully.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.GetNotStarted">
+            <summary>
+            Retrieves discounts that have not started yet.
+            </summary>
+            <returns>List of upcoming discounts.</returns>
+            <response code="200">Upcoming discounts retrieved successfully.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.OrdersController">
             <summary>
             Provides functionality for managing and processing orders within the administrative context.
@@ -1419,6 +1533,38 @@
             <response code="200">Returns the delivery method.</response>
             <response code="404">Delivery method not found.</response>
             <response code="401">Unauthorized user.</response>
+        </member>
+        <member name="T:E_StoreX.API.Controllers.Public.DiscountsController">
+            <summary>
+            Provides endpoints for clients to apply and validate discount codes.
+            </summary>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DiscountsController.#ctor(EStoreX.Core.ServiceContracts.Discount.IDiscountService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.DiscountsController"/> class.
+            </summary>
+            <param name="discountService">Service for managing discounts.</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DiscountsController.Apply(EStoreX.Core.DTO.Discount.Request.ApplyDiscountRequest)">
+            <summary>
+            Applies a discount code to a specific product.
+            </summary>
+            <param name="request">The request containing the product ID and discount code.</param>
+            <returns>
+            The result of the discount application, including the discounted price if valid.
+            </returns>
+            <response code="200">Discount applied successfully.</response>
+            <response code="400">Invalid or inactive discount code.</response>
+            <response code="404">Product not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.DiscountsController.Validate(System.String)">
+            <summary>
+            Validates a discount code to check if it is active and usable.
+            </summary>
+            <param name="code">The discount code to validate.</param>
+            <returns>Status of the discount code validation.</returns>
+            <response code="200">Discount code is valid.</response>
+            <response code="400">Discount code is invalid or inactive.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.ErrorController">
             <summary>

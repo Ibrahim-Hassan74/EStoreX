@@ -1,5 +1,5 @@
 ﻿using EStoreX.Core.Domain.Entities.Orders;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

@@ -201,7 +201,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// <response code="200">Images updated successfully.</response>
         /// <response code="400">No files were provided.</response>
         /// <response code="404">Product not found.</response>
-        [HttpPut("{productId:guid}/images")]
+        [HttpPatch("{productId:guid}/images")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]

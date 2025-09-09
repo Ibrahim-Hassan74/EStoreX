@@ -5,7 +5,7 @@ using EStoreX.Core.Enums;
 using EStoreX.Infrastructure.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.ServiceContracts.Common;
 

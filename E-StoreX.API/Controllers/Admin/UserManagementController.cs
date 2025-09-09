@@ -123,7 +123,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// <returns>Result of the deactivation operation.</returns>
         /// <response code="200">User deactivated successfully.</response>
         /// <response code="404">If the user was not found.</response>
-        [HttpPost("{id}/deactivate")]
+        [HttpPatch("{id}/deactivate")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeactivateUser(string id)
@@ -138,7 +138,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// <returns>Result of the activation operation.</returns>
         /// <response code="200">User activated successfully.</response>
         /// <response code="404">If the user was not found.</response>
-        [HttpPost("{id}/activate")]
+        [HttpPatch("{id}/activate")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ActivateUser(string id)

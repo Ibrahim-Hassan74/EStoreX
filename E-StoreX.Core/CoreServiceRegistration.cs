@@ -26,6 +26,8 @@ using Stripe;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
+using EStoreX.Core.ServiceContracts.Discount;
+using MyDiscountService = EStoreX.Core.Services.Discounts.DiscountService;
 
 namespace EStoreX.Core
 {
@@ -71,6 +73,8 @@ namespace EStoreX.Core
             services.AddScoped<IBrandService, BrandService>();
 
             services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
+
+            services.AddScoped<IDiscountService, MyDiscountService>();
 
             // JWT
             services.AddAuthentication(options =>

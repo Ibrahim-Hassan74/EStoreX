@@ -105,7 +105,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// </returns>
         /// <response code="200">Client activated successfully.</response>
         /// <response code="404">Client not found.</response>
-        [HttpPut("activate/{clientId}")]
+        [HttpPatch("activate/{clientId}")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> ActiveClient(Guid clientId)
@@ -122,7 +122,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// <returns>Returns success message if deactivation succeeded; otherwise 404.</returns>
         /// <response code="200">Client deactivated successfully.</response>
         /// <response code="404">Client not found.</response>
-        [HttpPut("deactivate/{clientId}")]
+        [HttpPatch("deactivate/{clientId}")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<ActionResult<ApiResponse>> DeActivateClient(Guid clientId)

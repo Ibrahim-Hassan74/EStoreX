@@ -4,7 +4,7 @@ using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.Domain.Entities.Favourites;
 using Microsoft.EntityFrameworkCore;
 
-namespace EStoreX.Core.Repository.Favourites
+namespace EStoreX.Infrastructure.Repository.Favourites
 {
     public class FavouriteRepository : IFavouriteRepository
     {

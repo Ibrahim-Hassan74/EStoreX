@@ -1,5 +1,5 @@
 ﻿using EStoreX.Core.Domain.Entities.Rating;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 using EStoreX.Core.RepositoryContracts.Ratings;
 using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

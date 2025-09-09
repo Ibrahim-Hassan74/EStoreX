@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using EStoreX.Core.RepositoryContracts.Common;
 using System.Linq.Expressions;
 
-namespace EStoreX.Core.Repository.Common
+namespace EStoreX.Infrastructure.Repository.Common
 {
     /// <inheritdoc/>
     public class GenericRepository<TModel> : IGenericRepository<TModel> where TModel : class

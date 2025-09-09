@@ -9,18 +9,19 @@ using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.ServiceContracts.Common;
-using EStoreX.Core.Repository.Categories;
-using EStoreX.Core.Repository.Products;
-using EStoreX.Core.Repository.Basket;
-using EStoreX.Core.Repository.Account;
 using EStoreX.Core.RepositoryContracts.Favourites;
-using EStoreX.Core.Repository.Favourites;
 using EStoreX.Core.RepositoryContracts.Ratings;
-using EStoreX.Infrastructure.Repository.Ratings;
+using EStoreX.Core.RepositoryContracts.Discounts;
+using EStoreX.Infrastructure.Repository.Categories;
 using EStoreX.Infrastructure.Repository.Products;
+using EStoreX.Infrastructure.Repository.Basket;
+using EStoreX.Infrastructure.Repository.Account;
+using EStoreX.Infrastructure.Repository.Favourites;
+using EStoreX.Infrastructure.Repository.Ratings;
 using EStoreX.Infrastructure.Repository.Orders;
+using EStoreX.Infrastructure.Repositories.Discounts;
 
-namespace EStoreX.Core.Repository.Common
+namespace EStoreX.Infrastructure.Repository.Common
 {
     public class UnitOfWork : IUnitOfWork
     {
@@ -46,7 +47,9 @@ namespace EStoreX.Core.Repository.Common
 
         public IBrandRepository BrandRepository { get; }
 
-        public IDeliveryMethodRepository deliveryMethodRepository {  get; }
+        public IDeliveryMethodRepository DeliveryMethodRepository {  get; }
+
+        public IDiscountRepository DiscountRepository { get; }
 
         public UnitOfWork(ApplicationDbContext context, IMapper mapper, IImageService imageService, IConnectionMultiplexer redis)
         {
@@ -64,7 +67,9 @@ namespace EStoreX.Core.Repository.Common
             FavouriteRepository = new FavouriteRepository(_context);
             RatingRepository = new RatingRepository(_context);
             BrandRepository = new BrandRepository(_context);
-            deliveryMethodRepository = new DeliveryMethodRepository(_context);
+            DeliveryMethodRepository = new DeliveryMethodRepository(_context);
+            DiscountRepository = new DiscountRepository(_context);
+
         }
         public async Task<int> CompleteAsync()
         {

@@ -1,10 +1,10 @@
 ﻿using Domain.Entities.Common;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 using EStoreX.Core.RepositoryContracts.Account;
 using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace EStoreX.Core.Repository.Account
+namespace EStoreX.Infrastructure.Repository.Account
 {
     /// <summary>
     /// Repository for accessing and managing API clients.

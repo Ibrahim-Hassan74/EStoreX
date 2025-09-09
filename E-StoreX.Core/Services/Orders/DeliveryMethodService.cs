@@ -15,7 +15,7 @@ namespace EStoreX.Core.Services.Orders
 
         public DeliveryMethodService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper) 
         {
-            _repository = unitOfWork.deliveryMethodRepository;
+            _repository = unitOfWork.DeliveryMethodRepository;
         }
         /// <inheritdoc/>
         public async Task<IEnumerable<DeliveryMethodResponse>> GetAllAsync()

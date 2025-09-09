@@ -181,7 +181,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="404">
         /// Not Found – The basket or item does not exist.
         /// </response>
-        [HttpPut("{basketId}/items/{productId}/decrease")]
+        [HttpPatch("{basketId}/items/{productId}/decrease")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
@@ -242,7 +242,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="400">Returned if the basket id format is invalid.</response>
         /// <response code="404">Returned if the basket or item is not found.</response>
         /// <response code="200">Returned with the updated basket.</response>
-        [HttpPut("{basketId}/items/{productId}/increase")]
+        [HttpPatch("{basketId}/items/{productId}/increase")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]

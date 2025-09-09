@@ -1,6 +1,7 @@
 ﻿using EStoreX.Core.RepositoryContracts.Account;
 using EStoreX.Core.RepositoryContracts.Basket;
 using EStoreX.Core.RepositoryContracts.Categories;
+using EStoreX.Core.RepositoryContracts.Discounts;
 using EStoreX.Core.RepositoryContracts.Favourites;
 using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.RepositoryContracts.Products;
@@ -20,7 +21,8 @@ namespace EStoreX.Core.RepositoryContracts.Common
         IFavouriteRepository FavouriteRepository { get; }
         IRatingRepository RatingRepository { get; }
         IBrandRepository BrandRepository { get; }
-        IDeliveryMethodRepository deliveryMethodRepository { get; }
+        IDeliveryMethodRepository DeliveryMethodRepository { get; }
+        IDiscountRepository DiscountRepository { get; }
         Task<int> CompleteAsync();
     }
 }

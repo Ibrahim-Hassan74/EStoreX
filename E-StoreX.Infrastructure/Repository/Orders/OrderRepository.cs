@@ -2,7 +2,7 @@
 using EStoreX.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using EStoreX.Core.RepositoryContracts.Orders;
-using EStoreX.Core.Repository.Common;
+using EStoreX.Infrastructure.Repository.Common;
 
 namespace EStoreX.Infrastructure.Repository.Orders
 {
