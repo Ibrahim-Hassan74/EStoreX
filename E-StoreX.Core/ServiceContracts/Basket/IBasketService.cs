@@ -75,7 +75,6 @@ namespace EStoreX.Core.ServiceContracts.Basket
         /// if the basket and product exist; otherwise, <c>null</c>.
         /// </returns>
         Task<CustomerBasketDTO?> IncreaseItemQuantityAsync(string basketId, Guid productId);
-
-
+        Task<CustomerBasketDTO?> ApplyDiscountAsync(string basketId, string discountCode);
     }
 }

@@ -1,5 +1,8 @@
-﻿namespace EStoreX.Core.Enums
+﻿using System.Text.Json.Serialization;
+
+namespace EStoreX.Core.Enums
 {
+    [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum DiscountType
     {
         Global = 0,

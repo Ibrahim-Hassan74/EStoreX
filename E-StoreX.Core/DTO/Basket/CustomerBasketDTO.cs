@@ -6,6 +6,9 @@ namespace EStoreX.Core.DTO.Basket
     public class CustomerBasketDTO : BaseEntity<string>
     {
         public List<BasketItem> BasketItems { get; set; } = new List<BasketItem>();
+        public decimal DiscountValue { get; set; } = 0m;
+        public decimal Percentage { get; set; } = 0m;
+        public decimal Total { get; set; } = 0m;
         public CustomerBasketDTO()
         {
 

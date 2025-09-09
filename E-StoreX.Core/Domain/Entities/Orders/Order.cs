@@ -6,7 +6,16 @@ namespace EStoreX.Core.Domain.Entities.Orders
 {
     public class Order : BaseEntity<Guid>
     {
-        public Order(string buyerEmail, decimal subTotal, ShippingAddress shippingAddress, DeliveryMethod deliveryMethod, IEnumerable<OrderItem> orderItems, string paymentIntentId)
+        public Order(
+        string buyerEmail,
+        decimal subTotal,
+        ShippingAddress shippingAddress,
+        DeliveryMethod deliveryMethod,
+        IEnumerable<OrderItem> orderItems,
+        string paymentIntentId,
+        string? discountCode = null,
+        Guid? discountId = null
+    )
         {
             BuyerEmail = buyerEmail;
             SubTotal = subTotal;
@@ -14,6 +23,8 @@ namespace EStoreX.Core.Domain.Entities.Orders
             DeliveryMethod = deliveryMethod;
             OrderItems = orderItems;
             PaymentIntentId = paymentIntentId;
+            DiscountCode = discountCode;
+            DiscountId = discountId;
         }
         public Order() { }
         public string BuyerEmail { get; set; }
@@ -25,6 +36,8 @@ namespace EStoreX.Core.Domain.Entities.Orders
         public string PaymentIntentId { get; set; }
         public Status Status { get; set; } = Status.Pending;
         public ApplicationUser Buyer { get; set; }
+        public string? DiscountCode { get; set; }
+        public Guid? DiscountId { get; set; }
         public decimal GetTotal()
         {
             return SubTotal + (DeliveryMethod?.Price ?? 0);

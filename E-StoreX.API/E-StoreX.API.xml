@@ -370,7 +370,7 @@
             </summary>
             <param name="discountService">Service for handling discount-related operations.</param>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Create(EStoreX.Core.DTO.Discount.Request.DiscountRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Create(DiscountRequest)">
             <summary>
             Creates a new discount.
             </summary>
@@ -379,7 +379,7 @@
             <response code="200">Discount created successfully.</response>
             <response code="400">Invalid discount details were provided.</response>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Update(System.Guid,EStoreX.Core.DTO.Discount.Request.DiscountRequest)">
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Update(System.Guid,DiscountRequest)">
             <summary>
             Updates an existing discount.
             </summary>

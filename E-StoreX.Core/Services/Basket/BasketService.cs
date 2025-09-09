@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using Domain.Entities.Baskets;
 using EStoreX.Core.DTO.Basket;
+using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.ServiceContracts.Basket;
 using EStoreX.Core.Services.Common;
+using Org.BouncyCastle.Bcpg;
 
 namespace EStoreX.Core.Services.Basket
 {
@@ -107,6 +109,7 @@ namespace EStoreX.Core.Services.Basket
                 CustomerBasket? basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(guestBasket);
                 return _mapper.Map<CustomerBasketDTO>(basketResponse);
             }
+
             if (guestBasket == null && userBasket != null)
             {
                 return _mapper.Map<CustomerBasketDTO>(userBasket);
@@ -146,7 +149,14 @@ namespace EStoreX.Core.Services.Basket
                 basket.BasketItems.Remove(item);
             }
 
+            basket.Total = basket.BasketItems.Sum(x => x.Price * x.Qunatity);
+
             var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            if (basket.DiscountId.HasValue && !string.IsNullOrEmpty(basket.DiscountCode))
+            {
+                var res = await ApplyDiscountAsync(basket.Id, basket.DiscountCode);
+                if (res != null) return res;
+            }
             return _mapper.Map<CustomerBasketDTO>(updatedBasket);
         }
 
@@ -171,7 +181,14 @@ namespace EStoreX.Core.Services.Basket
                 return _mapper.Map<CustomerBasketDTO>(basket);
             }
 
+            basket.Total = basket.BasketItems.Sum(x => x.Price * x.Qunatity);
             var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+
+            if (basket.DiscountId.HasValue && !string.IsNullOrEmpty(basket.DiscountCode))
+            {
+                var res = await ApplyDiscountAsync(basket.Id, basket.DiscountCode);
+                if (res != null) return res;
+            }
             return _mapper.Map<CustomerBasketDTO>(updatedBasket);
         }
 
@@ -187,7 +204,14 @@ namespace EStoreX.Core.Services.Basket
 
             basket.BasketItems.Remove(item);
 
+            basket.Total = basket.BasketItems.Sum(x => x.Price * x.Qunatity);
+
             var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            if (basket.DiscountId.HasValue && !string.IsNullOrEmpty(basket.DiscountCode))
+            {
+                var res = await ApplyDiscountAsync(basket.Id, basket.DiscountCode);
+                if (res != null) return res;
+            }
             return _mapper.Map<CustomerBasketDTO>(updatedBasket);
         }
         /// <inheritdoc/>
@@ -222,20 +246,70 @@ namespace EStoreX.Core.Services.Basket
                 {
                     existingBasket.BasketItems.Add(newItem);
                 }
+                existingBasket.Total += (newItem.Price * newItem.Qunatity);
 
                 var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(existingBasket);
+                if (existingBasket.DiscountId.HasValue && !string.IsNullOrEmpty(existingBasket.DiscountCode))
+                {
+                    var res = await ApplyDiscountAsync(existingBasket.Id, existingBasket.DiscountCode);
+                    if (res != null) return res;
+                }
                 return _mapper.Map<CustomerBasketDTO>(updatedBasket);
             }
             else
             {
                 var newBasket = new CustomerBasket(request.BasketId)
                 {
-                    BasketItems = new List<BasketItem> { newItem }
+                    BasketItems = new List<BasketItem> { newItem },
+                    Total = (newItem.Price * newItem.Qunatity)
                 };
 
                 var basketResponse = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(newBasket);
                 return _mapper.Map<CustomerBasketDTO>(basketResponse);
             }
+        }
+
+        public async Task<CustomerBasketDTO?> ApplyDiscountAsync(string basketId, string discountCode)
+        {
+            var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);
+            if (basket == null) return null;
+
+            var discount = await _unitOfWork.DiscountRepository.GetByCodeAsync(discountCode);
+            if (discount == null || discount.Status != DiscountStatus.Active) return null;
+
+            if (discount.CurrentUsageCount >= discount.MaxUsageCount) return null;
+
+            decimal eligibleTotal = 0m;
+            foreach (var item in basket.BasketItems)
+            {
+                var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id, x => x.Category, x => x.Brand);
+                if (product == null) continue;
+                bool applies = discount.DiscountType switch
+                {
+                    DiscountType.Product => discount.ProductId == product.Id,
+                    DiscountType.Category => discount.CategoryId == product.CategoryId,
+                    DiscountType.Brand => discount.BrandId == product.BrandId,
+                    DiscountType.Global => true,
+                    _ => false
+                };
+
+                if (applies)
+                {
+                    eligibleTotal += item.Price * item.Qunatity;
+                }
+            }
+
+            if (eligibleTotal == 0) return null;
+
+            var discountAmount = eligibleTotal * (discount.Percentage / 100);
+
+            basket.DiscountCode = discount.Code;
+            basket.DiscountId = discount.Id;
+            basket.DiscountValue = discountAmount;
+            basket.Percentage = discount.Percentage;
+
+            var updatedBasket = await _unitOfWork.CustomerBasketRepository.UpdateBasketAsync(basket);
+            return _mapper.Map<CustomerBasketDTO>(updatedBasket);
         }
 
     }

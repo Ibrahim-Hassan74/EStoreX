@@ -32,6 +32,9 @@ namespace Domain.Entities.Product
         public DateTime StartDate { get; set; } = DateTime.UtcNow;
 
         public DateTime? EndDate { get; set; }
+        public int MaxUsageCount { get; set; } = 100;
+
+        public int CurrentUsageCount { get; set; } = 0;
 
         [NotMapped]
         public DiscountStatus Status
@@ -42,6 +45,9 @@ namespace Domain.Entities.Product
                     return DiscountStatus.NotStarted;
 
                 if (EndDate.HasValue && EndDate.Value < DateTime.UtcNow)
+                    return DiscountStatus.Expired;
+
+                if (CurrentUsageCount >= MaxUsageCount)
                     return DiscountStatus.Expired;
 
                 return DiscountStatus.Active;

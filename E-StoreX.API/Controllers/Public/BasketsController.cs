@@ -258,6 +258,18 @@ namespace E_StoreX.API.Controllers.Public
             return Ok(updatedBasket);
         }
 
+        [HttpPost("{basketId}/apply-discount/{code}")]
+        [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ApplyDiscount(string basketId, string code)
+        {
+            var basket = await _basketService.ApplyDiscountAsync(basketId, code);
+            if (basket == null)
+                return NotFound(ApiResponseFactory.NotFound("Basket or Discount not found"));
+
+            return Ok(basket);
+        }
+
 
     }
 }
