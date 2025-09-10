@@ -379,11 +379,12 @@
             This controller is intended for administrators only.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.#ctor(EStoreX.Core.ServiceContracts.Discount.IDiscountService)">
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.#ctor(EStoreX.Core.ServiceContracts.Discount.IDiscountService,EStoreX.Core.ServiceContracts.Common.IExportService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Admin.DiscountsController"/> class.
             </summary>
-            <param name="discountService">Service for handling discount-related operations.</param>
+            <param name="discountService">Service responsible for managing discount operations, including creation, update, deletion, and validation.</param>
+            <param name="exportService">Service responsible for exporting discount data in various formats (CSV, Excel, PDF).</param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.Create(DiscountRequest)">
             <summary>
@@ -610,6 +611,34 @@
             Example request:  
             GET /api/discount/upcoming  
             </remarks>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.ExportActiveDiscounts(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all currently active discounts in the specified format (CSV, Excel, or PDF).  
+            Use this endpoint to download active discounts for reporting or analysis purposes.  
+            </summary>
+            <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.ExportUpcomingDiscounts(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all upcoming (not yet started) discounts in the specified format (CSV, Excel, or PDF).  
+            Use this endpoint to download upcoming discounts for planning and promotional purposes.  
+            </summary>
+            <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.ExportExpiredDiscounts(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all expired discounts in the specified format (CSV, Excel, or PDF).  
+            Use this endpoint to review past discounts for auditing or historical analysis.  
+            </summary>
+            <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.DiscountsController.ExportAllDiscounts(EStoreX.Core.Enums.ExportType)">
+            <summary>
+            Exports all discounts (active, upcoming, and expired) in the specified format (CSV, Excel, or PDF).  
+            Restricted to <b>Admin users</b> for reporting or auditing purposes.  
+            </summary>
+            <param name="type">The type of export format (Csv, Excel, Pdf).</param>
         </member>
         <member name="T:E_StoreX.API.Controllers.Admin.OrdersController">
             <summary>

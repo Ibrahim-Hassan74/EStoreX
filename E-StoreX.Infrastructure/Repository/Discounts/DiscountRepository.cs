@@ -15,7 +15,7 @@ namespace EStoreX.Infrastructure.Repositories.Discounts
         {
             _context = context;
         }
-
+        /// <inheritdoc/>
         public async Task<Discount?> GetByCodeAsync(string code)
         {
             return await _context.Discounts
@@ -25,42 +25,57 @@ namespace EStoreX.Infrastructure.Repositories.Discounts
                 .FirstOrDefaultAsync(d => d.Code == code);
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<Discount>> GetActiveDiscountsAsync()
         {
             return await _context.Discounts
                 .Include(d => d.Product)
                 .Include(d => d.Category)
                 .Include(d => d.Brand)
-                .Where(d => d.Status == DiscountStatus.Active)
+                .Where(d =>
+                    d.StartDate <= DateTime.UtcNow &&
+                    (!d.EndDate.HasValue || d.EndDate.Value >= DateTime.UtcNow) &&
+                    d.CurrentUsageCount < d.MaxUsageCount)
                 .ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<Discount>> GetExpiredDiscountsAsync()
         {
             return await _context.Discounts
                 .Include(d => d.Product)
                 .Include(d => d.Category)
                 .Include(d => d.Brand)
-                .Where(d => d.Status == DiscountStatus.Expired)
+                .Where(d =>
+                    (d.EndDate.HasValue && d.EndDate.Value < DateTime.UtcNow) ||
+                    d.CurrentUsageCount >= d.MaxUsageCount)
                 .ToListAsync();
         }
 
+        /// <inheritdoc/>
         public async Task<IEnumerable<Discount>> GetNotStartedDiscountsAsync()
         {
             return await _context.Discounts
                 .Include(d => d.Product)
                 .Include(d => d.Category)
                 .Include(d => d.Brand)
-                .Where(d => d.Status == DiscountStatus.NotStarted)
+                .Where(d => d.StartDate > DateTime.UtcNow)
                 .ToListAsync();
         }
+
+        /// <inheritdoc/>
         public async Task<Discount?> GetActiveDiscountByCodeAsync(string code)
         {
             return await _context.Discounts
                 .Include(d => d.Product)
                 .Include(d => d.Category)
                 .Include(d => d.Brand)
-                .FirstOrDefaultAsync(d => d.Code == code && d.Status == DiscountStatus.Active);
+                .FirstOrDefaultAsync(d =>
+                    d.Code == code &&
+                    d.StartDate <= DateTime.UtcNow &&
+                    (!d.EndDate.HasValue || d.EndDate.Value >= DateTime.UtcNow) &&
+                    d.CurrentUsageCount < d.MaxUsageCount
+                );
         }
 
     }

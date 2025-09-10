@@ -2,6 +2,9 @@
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Discount.Request;
 using EStoreX.Core.DTO.Discounts.Responses;
+using EStoreX.Core.Enums;
+using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Discount;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +18,17 @@ namespace E_StoreX.API.Controllers.Admin
     public class DiscountsController : AdminControllerBase
     {
         private readonly IDiscountService _discountService;
+        private readonly IExportService _exportService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DiscountsController"/> class.
         /// </summary>
-        /// <param name="discountService">Service for handling discount-related operations.</param>
-        public DiscountsController(IDiscountService discountService)
+        /// <param name="discountService">Service responsible for managing discount operations, including creation, update, deletion, and validation.</param>
+        /// <param name="exportService">Service responsible for exporting discount data in various formats (CSV, Excel, PDF).</param>
+        public DiscountsController(IDiscountService discountService, IExportService exportService)
         {
             _discountService = discountService;
+            _exportService = exportService;
         }
 
         /// <summary>
@@ -333,6 +339,85 @@ namespace E_StoreX.API.Controllers.Admin
         {
             var result = await _discountService.GetNotStartedDiscountsAsync();
             return StatusCode(result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Exports all currently active discounts in the specified format (CSV, Excel, or PDF).  
+        /// Use this endpoint to download active discounts for reporting or analysis purposes.  
+        /// </summary>
+        /// <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        [HttpGet("export/active/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ExportActiveDiscounts(ExportType type)
+        {
+            var discounts = await _discountService.GetActiveDiscountsAsync() as ApiResponseWithData<List<DiscountResponse>>;
+            if (discounts is null) 
+                return NotFound(ApiResponseFactory.NotFound());
+            return ExportDiscountsFile(discounts.Data, type, "active");
+        }
+
+        /// <summary>
+        /// Exports all upcoming (not yet started) discounts in the specified format (CSV, Excel, or PDF).  
+        /// Use this endpoint to download upcoming discounts for planning and promotional purposes.  
+        /// </summary>
+        /// <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        [HttpGet("export/upcoming/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ExportUpcomingDiscounts(ExportType type)
+        {
+            var discounts = await _discountService.GetNotStartedDiscountsAsync() as ApiResponseWithData<List<DiscountResponse>>;
+            if (discounts is null)
+                return NotFound(ApiResponseFactory.NotFound());
+            return ExportDiscountsFile(discounts.Data, type, "upcoming");
+        }
+
+        /// <summary>
+        /// Exports all expired discounts in the specified format (CSV, Excel, or PDF).  
+        /// Use this endpoint to review past discounts for auditing or historical analysis.  
+        /// </summary>
+        /// <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        [HttpGet("export/expired/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ExportExpiredDiscounts(ExportType type)
+        {
+            var discounts = await _discountService.GetExpiredDiscountsAsync() as ApiResponseWithData<List<DiscountResponse>>;
+            if (discounts is null)
+                return NotFound(ApiResponseFactory.NotFound()); ;
+            return ExportDiscountsFile(discounts.Data, type, "expired");
+        }
+
+        /// <summary>
+        /// Exports all discounts (active, upcoming, and expired) in the specified format (CSV, Excel, or PDF).  
+        /// Restricted to <b>Admin users</b> for reporting or auditing purposes.  
+        /// </summary>
+        /// <param name="type">The type of export format (Csv, Excel, Pdf).</param>
+        [HttpGet("export/all/{type}")]
+        [ProducesResponseType(typeof(FileContentResult), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ExportAllDiscounts(ExportType type)
+        {
+            var discounts = await _discountService.GetAllDiscountsAsync() as ApiResponseWithData<List<DiscountResponse>>;
+            if (discounts is null)
+                return NotFound(ApiResponseFactory.NotFound());
+            return ExportDiscountsFile(discounts.Data, type, "all");
+        }
+
+        private IActionResult ExportDiscountsFile(List<DiscountResponse> discounts, ExportType type, string suffix)
+        {
+            return type switch
+            {
+                ExportType.Csv => File(_exportService.ExportToCsv(discounts), "text/csv", $"discounts_{suffix}.csv"),
+                ExportType.Excel => File(_exportService.ExportToExcel(discounts), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", $"discounts_{suffix}.xlsx"),
+                ExportType.Pdf => File(_exportService.ExportToPdf(discounts), "application/pdf", $"discounts_{suffix}.pdf"),
+                _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
+            };
         }
     }
 }
