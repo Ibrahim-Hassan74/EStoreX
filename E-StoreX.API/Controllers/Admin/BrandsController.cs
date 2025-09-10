@@ -10,8 +10,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_StoreX.API.Controllers.Admin
 {
     /// <summary>
-    /// Controller for managing brands (Admin only) in API version 2.0.
+    /// Provides administrative operations for managing product brands in the E-StoreX platform.
     /// </summary>
+    /// <remarks>
+    /// This controller is restricted to <b>Admin users</b> only and supports API version 2.0.  
+    /// It allows creating, updating, deleting, and retrieving brands, as well as assigning them to categories.  
+    /// <para>
+    /// Inherits from <see cref="AdminControllerBase"/>.  
+    /// </para>
+    /// </remarks>
     [ApiVersion(2.0)]
     public class BrandsController : AdminControllerBase
     {

@@ -122,7 +122,7 @@ namespace EStoreX.Core.Services.Common
             return true;
         }
 
-
+        /// <inheritdoc/>
         public async Task<(decimal unitPrice, decimal discountAmount)> GetDiscountedPriceAsync(MyProduct product, int quantity, CustomerBasket basket)
         {
             if (basket.DiscountId == null)

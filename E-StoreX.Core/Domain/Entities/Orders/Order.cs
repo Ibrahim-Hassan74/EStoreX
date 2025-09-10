@@ -15,8 +15,8 @@ namespace EStoreX.Core.Domain.Entities.Orders
         string paymentIntentId,
         string? discountCode = null,
         Guid? discountId = null,
-        decimal discountValue 
-    )
+        decimal discountValue = 0m
+        )
         {
             BuyerEmail = buyerEmail;
             SubTotal = subTotal;

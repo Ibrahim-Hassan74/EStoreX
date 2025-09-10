@@ -76,7 +76,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <summary>
         /// Retrieves a specific order by its ID for the currently authenticated user.
         /// </summary>
-        /// <param name="id">The unique identifier of the order.</param>
+        /// <param name="Id">The unique identifier of the order.</param>
         /// <returns>
         /// Returns <see cref="OrderResponse"/> if the order exists and belongs to the user; 
         /// otherwise, returns <c>null</c>.

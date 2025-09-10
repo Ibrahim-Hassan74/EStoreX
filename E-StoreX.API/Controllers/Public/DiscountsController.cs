@@ -24,25 +24,25 @@ namespace E_StoreX.API.Controllers.Public
         {
             _discountService = discountService;
         }
-        /// <summary>
-        /// Applies a discount code to a specific product.
-        /// </summary>
-        /// <param name="request">The request containing the product ID and discount code.</param>
-        /// <returns>
-        /// The result of the discount application, including the discounted price if valid.
-        /// </returns>
-        /// <response code="200">Discount applied successfully.</response>
-        /// <response code="400">Invalid or inactive discount code.</response>
-        /// <response code="404">Product not found.</response>
-        [HttpPost("apply")]
-        [ProducesResponseType(typeof(ApiResponseWithData<AppliedDiscountResponse>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Apply([FromBody] ApplyDiscountRequest request)
-        {
-            var result = await _discountService.ApplyDiscountToProductAsync(request.ProductId, request.Code);
-            return StatusCode(result.StatusCode, result);
-        }
+        ///// <summary>
+        ///// Applies a discount code to a specific product.
+        ///// </summary>
+        ///// <param name="request">The request containing the product ID and discount code.</param>
+        ///// <returns>
+        ///// The result of the discount application, including the discounted price if valid.
+        ///// </returns>
+        ///// <response code="200">Discount applied successfully.</response>
+        ///// <response code="400">Invalid or inactive discount code.</response>
+        ///// <response code="404">Product not found.</response>
+        //[HttpPost("apply")]
+        //[ProducesResponseType(typeof(ApiResponseWithData<AppliedDiscountResponse>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        //[ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> Apply([FromBody] ApplyDiscountRequest request)
+        //{
+        //    var result = await _discountService.ApplyDiscountToProductAsync(request.ProductId, request.Code);
+        //    return StatusCode(result.StatusCode, result);
+        //}
 
         /// <summary>
         /// Validates a discount code to check if it is active and usable.

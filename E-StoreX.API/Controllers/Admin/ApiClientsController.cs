@@ -12,11 +12,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_StoreX.API.Controllers.Admin
 {
     /// <summary>
-    /// api clients controller  
+    /// Provides administrative operations for managing API clients in the E-StoreX platform.
     /// </summary>
-    /// <remarks>This controller inherits from <see cref="AdminControllerBase"/> and is intended for use in
-    /// administrative scenarios where order-related operations are required. It serves as a base for implementing
-    /// actions related to order management.</remarks>
+    /// <remarks>
+    /// This controller is restricted to <b>Admin users</b> only and supports API version 2.0.  
+    /// It is responsible for managing API client configurations, authentication keys, and permissions.  
+    /// <para>
+    /// Inherits from <see cref="AdminControllerBase"/>.  
+    /// </para>
+    /// </remarks>
     [ApiVersion(2.0)]
     public class ApiClientsController : AdminControllerBase
     {

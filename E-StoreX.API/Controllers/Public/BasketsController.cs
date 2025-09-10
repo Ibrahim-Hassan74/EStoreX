@@ -257,10 +257,27 @@ namespace E_StoreX.API.Controllers.Public
 
             return Ok(updatedBasket);
         }
+        /// <summary>
+        /// Applies a discount code to a customer's basket.
+        /// </summary>
+        /// <param name="basketId">The unique identifier of the basket to which the discount will be applied.</param>
+        /// <param name="code">The discount code provided by the customer.</param>
+        /// <returns>
+        /// Returns <see cref="CustomerBasketDTO"/> with the updated basket if the discount is successfully applied.  
+        /// Returns <see cref="ApiResponse"/> with 404 status if the basket or discount code is not found.
+        /// </returns>
+        /// <response code="200">The basket with the discount successfully applied.</response>
+        /// <response code="404">Basket or discount not found.</response>
+        /// <remarks>
+        /// This endpoint requires authentication.  
+        /// Example request:  
+        /// POST /api/basket/{basketId}/apply-discount/{code}
+        /// </remarks>
 
         [HttpPost("{basketId}/apply-discount/{code}")]
         [ProducesResponseType(typeof(CustomerBasketDTO), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [Authorize]
         public async Task<IActionResult> ApplyDiscount(string basketId, string code)
         {
             var basket = await _basketService.ApplyDiscountAsync(basketId, code);

@@ -75,6 +75,15 @@ namespace EStoreX.Core.ServiceContracts.Basket
         /// if the basket and product exist; otherwise, <c>null</c>.
         /// </returns>
         Task<CustomerBasketDTO?> IncreaseItemQuantityAsync(string basketId, Guid productId);
+        /// <summary>
+        /// Applies a discount code to the specified customer's basket.
+        /// </summary>
+        /// <param name="basketId">The unique identifier of the basket where the discount should be applied.</param>
+        /// <param name="discountCode">The discount code provided by the customer.</param>
+        /// <returns>
+        /// A <see cref="CustomerBasketDTO"/> representing the updated basket with the discount applied,  
+        /// or <c>null</c> if the basket or discount code is not found.
+        /// </returns>
         Task<CustomerBasketDTO?> ApplyDiscountAsync(string basketId, string discountCode);
     }
 }

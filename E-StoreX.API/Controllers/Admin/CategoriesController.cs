@@ -12,11 +12,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace E_StoreX.API.Controllers.Admin
 {
     /// <summary>
-    /// Controller for managing product categories in the E-StoreX application.
+    /// Provides administrative operations for managing product categories in the E-StoreX platform.
     /// </summary>
     /// <remarks>
-    /// This controller inherits from <see cref="AdminControllerBase"/> and is intended 
-    /// for use in administrative scenarios where category-related operations are required.
+    /// This controller is intended for <b>admin users only</b> and includes endpoints
+    /// for creating, updating, deleting, assigning brands, and exporting categories.
+    /// <para>
+    /// Version: 2.0  
+    /// Inherits from <see cref="AdminControllerBase"/>.
+    /// </para>
     /// </remarks>
     [ApiVersion(2.0)]
 
@@ -25,10 +29,10 @@ namespace E_StoreX.API.Controllers.Admin
         private readonly ICategoriesService _categoriesService;
         private readonly IExportService _exportService;
         /// <summary>
-        /// Constructor for CategoriesController.
+        /// Initializes a new instance of the <see cref="CategoriesController"/> class.
         /// </summary>
-        /// <param name="categoriesService">Service to manage categories.</param>
-        /// <param name="exportService">Service to manage files.</param>
+        /// <param name="categoriesService">Service for managing categories.</param>
+        /// <param name="exportService">Service for exporting categories to files.</param>
         public CategoriesController(ICategoriesService categoriesService, IExportService exportService)
         {
             _categoriesService = categoriesService;

@@ -270,7 +270,7 @@ namespace EStoreX.Core.Services.Basket
                 return _mapper.Map<CustomerBasketDTO>(basketResponse);
             }
         }
-
+        /// <inheritdoc/>
         public async Task<CustomerBasketDTO?> ApplyDiscountAsync(string basketId, string discountCode)
         {
             var basket = await _unitOfWork.CustomerBasketRepository.GetBasketAsync(basketId);
