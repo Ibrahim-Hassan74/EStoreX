@@ -14,7 +14,8 @@ namespace EStoreX.Core.Domain.Entities.Orders
         IEnumerable<OrderItem> orderItems,
         string paymentIntentId,
         string? discountCode = null,
-        Guid? discountId = null
+        Guid? discountId = null,
+        decimal discountValue 
     )
         {
             BuyerEmail = buyerEmail;
@@ -25,6 +26,7 @@ namespace EStoreX.Core.Domain.Entities.Orders
             PaymentIntentId = paymentIntentId;
             DiscountCode = discountCode;
             DiscountId = discountId;
+            DiscountValue = discountValue;
         }
         public Order() { }
         public string BuyerEmail { get; set; }
@@ -38,6 +40,7 @@ namespace EStoreX.Core.Domain.Entities.Orders
         public ApplicationUser Buyer { get; set; }
         public string? DiscountCode { get; set; }
         public Guid? DiscountId { get; set; }
+        public decimal DiscountValue { get; set; } = 0m;
         public decimal GetTotal()
         {
             return SubTotal + (DeliveryMethod?.Price ?? 0);

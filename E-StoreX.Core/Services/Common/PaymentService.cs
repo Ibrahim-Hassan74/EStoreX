@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.ServiceContracts.Common;
 using Stripe;
+using MyProduct = Domain.Entities.Product.Product;
 
 namespace EStoreX.Core.Services.Common
 {
@@ -36,6 +37,7 @@ namespace EStoreX.Core.Services.Common
                 if (deliveryMethod is not null)
                     shippingPrice = deliveryMethod.Price;
             }
+            decimal total = 0m;
             foreach (var item in basket.BasketItems)
             {
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
@@ -45,6 +47,8 @@ namespace EStoreX.Core.Services.Common
                     throw new Exception($"Not enough stock for product {product.Name}");
 
                 item.Price = product.NewPrice;
+                var (unitPrice, discountAmount) = await GetDiscountedPriceAsync(product, item.Qunatity, basket);
+                total += unitPrice * item.Qunatity;
             }
 
             //PaymentIntentService service = new PaymentIntentService();
@@ -53,7 +57,7 @@ namespace EStoreX.Core.Services.Common
             {
                 var options = new PaymentIntentCreateOptions
                 {
-                    Amount = (long)(basket.BasketItems.Sum(x => x.Qunatity * x.Price * 100) + shippingPrice * 100),
+                    Amount = (long)((total + shippingPrice) * 100),
                     Currency = "USD",
                     PaymentMethodTypes = new List<string> { "card" },
                 };
@@ -65,7 +69,7 @@ namespace EStoreX.Core.Services.Common
             {
                 var options = new PaymentIntentUpdateOptions
                 {
-                    Amount = (long)(basket.BasketItems.Sum(x => x.Qunatity * x.Price * 100) + shippingPrice * 100),
+                    Amount = (long)((total + shippingPrice) * 100),
                 };
                 _intent = await _paymentIntentService.UpdateAsync(basket.PaymentIntentId, options);
             }
@@ -103,9 +107,54 @@ namespace EStoreX.Core.Services.Common
                 await _unitOfWork.ProductRepository.UpdateAsync(product);
             }
 
+            if (order.DiscountId.HasValue)
+            {
+                var discount = await _unitOfWork.DiscountRepository.GetByIdAsync(order.DiscountId.Value);
+                if (discount is not null)
+                {
+                    discount.CurrentUsageCount++;
+                    await _unitOfWork.DiscountRepository.UpdateAsync(discount);
+                }
+            }
+
             order.Status = Status.PaymentReceived;
             await _unitOfWork.CompleteAsync();
             return true;
+        }
+
+
+        public async Task<(decimal unitPrice, decimal discountAmount)> GetDiscountedPriceAsync(MyProduct product, int quantity, CustomerBasket basket)
+        {
+            if (basket.DiscountId == null)
+                return (product.NewPrice, 0m);
+
+            var discount = await _unitOfWork.DiscountRepository.GetByIdAsync(basket.DiscountId.Value);
+            if (discount == null || discount.Status != DiscountStatus.Active)
+                return (product.NewPrice, 0m);
+
+            var now = DateTime.UtcNow;
+            if (discount.StartDate > now || (discount.EndDate.HasValue && discount.EndDate.Value < now))
+                return (product.NewPrice, 0m);
+
+            bool applies = discount.DiscountType switch
+            {
+                DiscountType.Product => discount.ProductId == product.Id,
+                DiscountType.Category => discount.CategoryId == product.CategoryId,
+                DiscountType.Brand => discount.BrandId == product.BrandId,
+                DiscountType.Global => true,
+                _ => false
+            };
+
+            if (!applies)
+                return (product.NewPrice, 0m);
+
+            var discountedUnitPrice = product.NewPrice - (product.NewPrice * (discount.Percentage / 100m));
+            var discountAmount = (product.NewPrice - discountedUnitPrice) * quantity;
+
+            return (
+                Math.Round(discountedUnitPrice, 2, MidpointRounding.AwayFromZero),
+                Math.Round(discountAmount, 2, MidpointRounding.AwayFromZero)
+            );
         }
 
 

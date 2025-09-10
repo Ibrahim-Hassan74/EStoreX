@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Baskets;
+using Domain.Entities.Product;
 
 namespace EStoreX.Core.ServiceContracts.Common
 {
@@ -28,5 +29,6 @@ namespace EStoreX.Core.ServiceContracts.Common
         /// <param name="paymentIntentId">The Stripe PaymentIntent ID associated with the order.</param>
         /// <returns>true or false if not found.</returns>
         Task<bool> UpdateOrderSuccessAsync(string? paymentIntentId);
+        Task<(decimal unitPrice, decimal discountAmount)> GetDiscountedPriceAsync(Product product, int quantity, CustomerBasket basket);
     }
 }

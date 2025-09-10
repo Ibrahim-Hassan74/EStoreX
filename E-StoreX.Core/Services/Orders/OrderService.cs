@@ -40,28 +40,34 @@ namespace EStoreX.Core.Services.Orders
                 throw new InvalidOperationException("Basket not found");
             }
             var orderItems = new List<OrderItem>();
+            var subTotal = 0m;
+            decimal totalDiscount = 0m;
             foreach (var item in basket.BasketItems)
             {
                 var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
                 if(product is null)
                     throw new InvalidOperationException($"Product with ID {item.Id} not found");
 
-                var orderItem = new OrderItem
-                (
-                    product.NewPrice,
+                var (unitPrice, discountAmount) = await _paymentService.GetDiscountedPriceAsync(product, item.Qunatity, basket);
+
+                var orderItem = new OrderItem(
+                    unitPrice,
                     item.Qunatity,
                     item.Id,
                     item.Image,
                     product.Name ?? "Unknown Product"
                 );
+
                 orderItems.Add(orderItem);
+                subTotal += unitPrice * item.Qunatity;
+                totalDiscount += discountAmount;
             }
 
             var deliveryMethod = await _orderRepository.GetDeliveryMethodByIdAsync(order.DeliveryMethodId);
             if (deliveryMethod == null)
                 throw new InvalidOperationException("Delivery method not found");
 
-            var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
+            //var subTotal = orderItems.Sum(item => item.Price * item.Quantity);
             var shippingAddress = _mapper.Map<ShippingAddress>(order.ShippingAddress);
 
             var existingOrder = await _orderRepository.GetOrderByPaymentIntentIdAsync(basket.PaymentIntentId);
@@ -73,7 +79,18 @@ namespace EStoreX.Core.Services.Orders
                 await _paymentService.CreateOrUpdatePaymentIntentAsync(basket.Id, deliveryMethod.Id);
             }
 
-            var orderEntity = new Order(buyerEmail, subTotal, shippingAddress, deliveryMethod, orderItems, basket.PaymentIntentId);
+            var orderEntity = new Order(
+                buyerEmail,
+                subTotal,
+                shippingAddress,
+                deliveryMethod,
+                orderItems,
+                basket.PaymentIntentId,
+                basket.DiscountCode,
+                basket.DiscountId,
+                totalDiscount
+            ); 
+
             var createdOrder = await _orderRepository.AddAsync(orderEntity);
             await _unitOfWork.CompleteAsync();
 

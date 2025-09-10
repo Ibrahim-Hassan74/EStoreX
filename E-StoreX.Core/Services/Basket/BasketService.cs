@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities.Baskets;
+using Domain.Entities.Product;
 using EStoreX.Core.DTO.Basket;
 using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts.Common;
@@ -26,6 +27,7 @@ namespace EStoreX.Core.Services.Basket
             return _mapper.Map<CustomerBasketDTO>(basketResponse);
         }
 
+        #region Old AddItemToBasketAsync
         /// <inheritdoc/>
         //public async Task<CustomerBasketDTO?> AddItemToBasketAsync(CustomerBasketDTO basket)
         //{
@@ -87,7 +89,7 @@ namespace EStoreX.Core.Services.Basket
         //        return _mapper.Map<CustomerBasketDTO>(basketResponse);
         //    }
         //}
-
+        #endregion
 
         /// <inheritdoc/>
         public async Task<bool> DeleteBasketAsync(string id)
@@ -282,7 +284,7 @@ namespace EStoreX.Core.Services.Basket
             decimal eligibleTotal = 0m;
             foreach (var item in basket.BasketItems)
             {
-                var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id, x => x.Category, x => x.Brand);
+                var product = await _unitOfWork.ProductRepository.GetByIdAsync(item.Id);
                 if (product == null) continue;
                 bool applies = discount.DiscountType switch
                 {
@@ -301,7 +303,7 @@ namespace EStoreX.Core.Services.Basket
 
             if (eligibleTotal == 0) return null;
 
-            var discountAmount = eligibleTotal * (discount.Percentage / 100);
+            var discountAmount = Math.Round(eligibleTotal * (discount.Percentage / 100m), 2, MidpointRounding.AwayFromZero);
 
             basket.DiscountCode = discount.Code;
             basket.DiscountId = discount.Id;
