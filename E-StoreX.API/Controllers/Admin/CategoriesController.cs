@@ -185,5 +185,76 @@ namespace E_StoreX.API.Controllers.Admin
                 _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
             };
         }
+        /// <summary>
+        /// Deletes a specific category image by its ID.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="photoId">The unique identifier of the photo to delete.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the image was deleted successfully;  
+        /// <c>404 Not Found</c> if the category or the photo was not found;  
+        /// <c>500 Internal Server Error</c> if an unexpected error occurs.
+        /// </returns>
+        /// <response code="200">Image deleted successfully.</response>
+        /// <response code="404">Category or image not found.</response>
+        /// <response code="500">Unexpected server error.</response>
+        [HttpDelete("{categoryId:guid}/images/{photoId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteCategoryImage(Guid categoryId, Guid photoId)
+        {
+            var response = await _categoriesService.DeleteCategoryImageAsync(categoryId, photoId);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        /// <summary>
+        /// Adds images to the specified category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="files">The list of image files to upload.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the images were added successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the category does not exist.
+        /// </returns>
+        /// <response code="200">Images added successfully.</response>
+        /// <response code="400">No files were provided.</response>
+        /// <response code="404">Category not found.</response>
+        [HttpPost("{categoryId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AddCategoryImages(Guid categoryId, [FromForm] List<IFormFile> files)
+        {
+            var response = await _categoriesService.AddCategoryImagesAsync(categoryId, files);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        /// <summary>
+        /// Updates all images of the specified category.
+        /// </summary>
+        /// <remarks>
+        /// This will remove all existing images of the category and replace them with the newly uploaded ones.
+        /// </remarks>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="files">The list of new image files to upload.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the images were updated successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the category does not exist.
+        /// </returns>
+        /// <response code="200">Images updated successfully.</response>
+        /// <response code="400">No files were provided.</response>
+        /// <response code="404">Category not found.</response>
+        [HttpPatch("{categoryId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateCategoryImages(Guid categoryId, [FromForm] List<IFormFile> files)
+        {
+            var response = await _categoriesService.UpdateCategoryImagesAsync(categoryId, files);
+            return StatusCode(response.StatusCode, response);
+        }
     }
 }

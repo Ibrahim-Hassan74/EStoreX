@@ -1,21 +1,28 @@
 ﻿using AutoMapper;
-using EStoreX.Core.Helper;
 using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.DTO.Categories.Responses;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts.Categories;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.ServiceContracts.Categories;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.Services.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.Services.Categories
 {
     public class CategoriesService : BaseService, ICategoriesService
     {
         private readonly ICategoryRepository _categoryRepository;
-        public CategoriesService(IMapper mapper, IUnitOfWork unitOfWork) : base(unitOfWork, mapper)
+        private readonly IEntityImageManager<Category> _imageManager;
+        private readonly IImageService _imageService;
+        public CategoriesService(IMapper mapper, IUnitOfWork unitOfWork, IEntityImageManager<Category> imageManager, IImageService imageService) : base(unitOfWork, mapper)
         {
             _categoryRepository = _unitOfWork.CategoryRepository;
+            _imageManager = imageManager;
+            _imageService = imageService;
         }
 
         public async Task<CategoryResponse> CreateCategoryAsync(CategoryRequest categoryRequest)
@@ -101,5 +108,92 @@ namespace EStoreX.Core.Services.Categories
         {
             return await _categoryRepository.UnassignBrandAsync(cb);
         }
+        /// <inheritdoc/>
+        public async Task<ApiResponse> GetCategoryImagesAsync(Guid categoryId)
+        {
+            return await _imageManager.GetImagesAsync(
+                categoryId,
+                async (uow, id) => await uow.CategoryRepository.GetByIdAsync(id, c => c.Photos),
+                category => category.Photos
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> DeleteCategoryImageAsync(Guid categoryId, Guid photoId)
+        {
+            return await _imageManager.DeleteImageAsync(
+                categoryId,
+                photoId,
+                async (uow, id) => await uow.CategoryRepository.GetByIdAsync(id, c => c.Photos),
+                category => category.Photos
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> AddCategoryImagesAsync(Guid categoryId, List<IFormFile> files)
+        {
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(categoryId, c => c.Photos);
+            if (category == null)
+                return ApiResponseFactory.NotFound("Category not found.");
+
+            var folderName = category.Name.Replace(" ", "");
+
+            return await _imageManager.AddImagesAsync(
+                categoryId,
+                files,
+                folderName,
+                async (uow, id) => await uow.CategoryRepository.GetByIdAsync(id, c => c.Photos),
+                (entity, imagePaths) =>
+                {
+                    foreach (var path in imagePaths)
+                    {
+                        entity.Photos.Add(new Photo
+                        {
+                            CategoryId = categoryId,
+                            ImageName = path
+                        });
+                    }
+                }
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> UpdateCategoryImagesAsync(Guid categoryId, List<IFormFile> files)
+        {
+            var category = await _unitOfWork.CategoryRepository.GetByIdAsync(categoryId, c => c.Photos);
+            if (category == null)
+                return ApiResponseFactory.NotFound("Category not found.");
+
+            if (files == null || files.Count == 0)
+                return ApiResponseFactory.BadRequest("No files provided.");
+
+            // Delete old images
+            foreach (var photo in category.Photos.ToList())
+            {
+                _imageService.DeleteImageAsync(photo.ImageName);
+                category.Photos.Remove(photo);
+            }
+
+            var folderName = category.Name.Replace(" ", "").ToLowerInvariant();
+
+            var formFileCollection = new FormFileCollection();
+            foreach (var file in files)
+                formFileCollection.Add(file);
+
+            var imagePaths = await _imageService.AddImageAsync(formFileCollection, $"Categories/{folderName}");
+
+            foreach (var path in imagePaths)
+            {
+                category.Photos.Add(new Photo
+                {
+                    ImageName = path,
+                    CategoryId = categoryId
+                });
+            }
+
+            await _unitOfWork.CompleteAsync();
+            return ApiResponseFactory.Success("Images updated successfully.");
+        }
+
     }
 }

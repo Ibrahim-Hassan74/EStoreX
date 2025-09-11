@@ -311,6 +311,54 @@
             <response code="400">Unsupported export type requested.</response>
             <response code="401">If the user is not authenticated.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.DeleteCategoryImage(System.Guid,System.Guid)">
+            <summary>
+            Deletes a specific category image by its ID.
+            </summary>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <param name="photoId">The unique identifier of the photo to delete.</param>
+            <returns>
+            <c>200 OK</c> if the image was deleted successfully;  
+            <c>404 Not Found</c> if the category or the photo was not found;  
+            <c>500 Internal Server Error</c> if an unexpected error occurs.
+            </returns>
+            <response code="200">Image deleted successfully.</response>
+            <response code="404">Category or image not found.</response>
+            <response code="500">Unexpected server error.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.AddCategoryImages(System.Guid,System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Adds images to the specified category.
+            </summary>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <param name="files">The list of image files to upload.</param>
+            <returns>
+            <c>200 OK</c> if the images were added successfully;  
+            <c>400 Bad Request</c> if no files were provided;  
+            <c>404 Not Found</c> if the category does not exist.
+            </returns>
+            <response code="200">Images added successfully.</response>
+            <response code="400">No files were provided.</response>
+            <response code="404">Category not found.</response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.CategoriesController.UpdateCategoryImages(System.Guid,System.Collections.Generic.List{Microsoft.AspNetCore.Http.IFormFile})">
+            <summary>
+            Updates all images of the specified category.
+            </summary>
+            <remarks>
+            This will remove all existing images of the category and replace them with the newly uploaded ones.
+            </remarks>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <param name="files">The list of new image files to upload.</param>
+            <returns>
+            <c>200 OK</c> if the images were updated successfully;  
+            <c>400 Bad Request</c> if no files were provided;  
+            <c>404 Not Found</c> if the category does not exist.
+            </returns>
+            <response code="200">Images updated successfully.</response>
+            <response code="400">No files were provided.</response>
+            <response code="404">Category not found.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Admin.DeliveryMethodController">
             <summary>
             DeliveryMethodController handles admin operations related to delivery methods.
@@ -1668,6 +1716,18 @@
             </summary>
             <param name="categoryId">The unique identifier of the category.</param>
             <returns>List of brands associated with the category.</returns>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.CategoriesController.GetCategoryImages(System.Guid)">
+            <summary>
+            Retrieves all images associated with a specific category.
+            </summary>
+            <param name="categoryId">The unique identifier of the category.</param>
+            <returns>
+            <c>200 OK</c> with a list of category images;  
+            <c>404 Not Found</c> if the category does not exist or has no images.
+            </returns>
+            <response code="200">Category images retrieved successfully.</response>
+            <response code="404">No images found for the given category.</response>
         </member>
         <member name="T:E_StoreX.API.Controllers.Public.CustomControllerBase">
             <summary>

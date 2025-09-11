@@ -6,8 +6,12 @@ namespace Domain.Entities.Product
     public class Photo : BaseEntity<Guid>
     {
         public string ImageName { get; set; }
-        public Guid ProductId { get; set; }
+        public Guid? ProductId { get; set; }
         [ForeignKey(nameof(ProductId))]
-        public virtual Product Product { get; set; }
+        public virtual Product? Product { get; set; }
+        public Guid? CategoryId { get; set; }
+        [ForeignKey(nameof(CategoryId))]
+        public virtual Category? Category { get; set; }
     }
+
 }

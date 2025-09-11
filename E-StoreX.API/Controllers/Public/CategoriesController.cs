@@ -2,6 +2,7 @@
 using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Categories;
 using Microsoft.AspNetCore.Mvc;
@@ -76,5 +77,25 @@ namespace E_StoreX.API.Controllers.Public
             var brands = await _categoriesService.GetBrandsByCategoryIdAsync(categoryId);
             return Ok(brands);
         }
+
+        /// <summary>
+        /// Retrieves all images associated with a specific category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <returns>
+        /// <c>200 OK</c> with a list of category images;  
+        /// <c>404 Not Found</c> if the category does not exist or has no images.
+        /// </returns>
+        /// <response code="200">Category images retrieved successfully.</response>
+        /// <response code="404">No images found for the given category.</response>
+        [HttpGet("{categoryId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponseWithData<List<PhotoInfo>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetCategoryImages(Guid categoryId)
+        {
+            var response = await _categoriesService.GetCategoryImagesAsync(categoryId);
+            return StatusCode(response.StatusCode, response);
+        }
+
     }
 }

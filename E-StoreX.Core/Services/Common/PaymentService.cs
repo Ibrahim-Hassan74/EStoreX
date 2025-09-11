@@ -104,6 +104,7 @@ namespace EStoreX.Core.Services.Common
                     throw new InvalidOperationException($"Not enough stock for product {product.Name}");
 
                 product.QuantityAvailable -= item.Quantity;
+                product.SalesCount += item.Quantity;
                 await _unitOfWork.ProductRepository.UpdateAsync(product);
             }
 

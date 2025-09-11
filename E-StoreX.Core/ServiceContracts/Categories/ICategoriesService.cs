@@ -1,6 +1,8 @@
 ﻿using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.DTO.Categories.Responses;
+using EStoreX.Core.DTO.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.ServiceContracts.Categories
 {
@@ -87,5 +89,9 @@ namespace EStoreX.Core.ServiceContracts.Categories
         /// <c>true</c> if the unassignment was successful; otherwise, <c>false</c>.
         /// </returns>
         Task<bool> UnassignBrandFromCategoryAsync(CategoryBrand cb);
+        Task<ApiResponse> GetCategoryImagesAsync(Guid categoryId);
+        Task<ApiResponse> DeleteCategoryImageAsync(Guid categoryId, Guid photoId);
+        Task<ApiResponse> AddCategoryImagesAsync(Guid categoryId, List<IFormFile> files);
+        Task<ApiResponse> UpdateCategoryImagesAsync(Guid categoryId, List<IFormFile> files);
     }
 }

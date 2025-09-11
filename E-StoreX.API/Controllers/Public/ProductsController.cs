@@ -79,7 +79,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="200">Product images retrieved successfully.</response>
         /// <response code="404">No images found for the given product.</response>
         [HttpGet("{productId:guid}/images")]
-        [ProducesResponseType(typeof(ApiResponseWithData<List<(string, Guid)>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseWithData<List<PhotoInfo>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetProductImages(Guid productId)
         {

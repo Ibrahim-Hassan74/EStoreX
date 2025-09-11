@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Product;
 using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.ServiceContracts.Common;
@@ -27,7 +28,7 @@ namespace EStoreX.Core.Services.Common
             if (entity == null)
                 return ApiResponseFactory.NotFound($"{typeof(TEntity).Name} not found.");
 
-            var images = getImages(entity).Select(p => new { p.ImageName, p.Id }).ToList();
+            var images = getImages(entity).Select(p => new PhotoInfo() { ImageName = p.ImageName, Id = p.Id }).ToList();
             return ApiResponseFactory.Success("Images retrieved successfully.", images);
         }
 

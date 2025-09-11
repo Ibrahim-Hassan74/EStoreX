@@ -153,7 +153,7 @@ namespace EStoreX.Core.Services.Products
             if (product == null)
                 return ApiResponseFactory.NotFound("Product not found.");
 
-            var folderName = product.Name.Replace(" ", "_");
+            var folderName = product.Name.Replace(" ", "");
 
             return await _imageManager.AddImagesAsync(
                 productId,
