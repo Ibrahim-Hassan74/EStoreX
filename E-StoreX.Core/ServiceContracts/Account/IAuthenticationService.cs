@@ -1,8 +1,9 @@
-﻿using EStoreX.Core.DTO.Common;
-using EStoreX.Core.DTO.Orders.Requests;
+﻿using Domain.Entities.Common;
 using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
-using Domain.Entities.Common;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Orders.Requests;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.ServiceContracts.Account
 {
@@ -206,6 +207,53 @@ namespace EStoreX.Core.ServiceContracts.Account
         /// </list>
         /// </returns>
         Task<ApiResponse> ResendConfirmationEmailAsync(string email);
+        /// <summary>
+        /// Uploads or replaces the authenticated user's profile photo.
+        /// </summary>
+        /// <param name="userId">
+        /// The unique identifier of the user whose photo is being uploaded.
+        /// </param>
+        /// <param name="file">
+        /// The image file to be uploaded as the user's profile photo.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="ApiResponse"/> indicating the result of the upload operation.
+        /// </returns>
+        /// <response code="200">
+        /// Photo uploaded successfully. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – No file provided or invalid file format. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        /// <response code="401">
+        /// Unauthorized – User is not authenticated. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – User does not exist. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        Task<ApiResponse> UploadUserPhotoAsync(Guid userId, IFormFile file);
+        /// <summary>
+        /// Deletes the authenticated user's profile photo.
+        /// </summary>
+        /// <param name="userId">
+        /// The unique identifier of the user whose photo is being deleted.
+        /// </param>
+        /// <returns>
+        /// Returns an <see cref="ApiResponse"/> indicating the result of the delete operation.
+        /// </returns>
+        /// <response code="200">
+        /// Photo deleted successfully. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – User has no photo to delete. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        /// <response code="401">
+        /// Unauthorized – User is not authenticated. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – User does not exist. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        Task<ApiResponse> DeleteUserPhotoAsync(Guid userId);
 
     }
 }

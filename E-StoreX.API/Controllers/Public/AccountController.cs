@@ -312,7 +312,7 @@ namespace E_StoreX.API.Controllers.Public
         /// Unauthorized – The user is not authenticated. Returns <see cref="ApiResponse"/>.
         /// </response>
         [Authorize]
-        [HttpPut("update-address")]
+        [HttpPatch("update-address")]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
@@ -451,7 +451,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="404">
         /// Not Found – User does not exist. Returns <see cref="ApiErrorResponse"/>.
         /// </response>
-        [HttpPut("update-profile")]
+        [HttpPatch("update-profile")]
         [Authorize]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
@@ -597,6 +597,76 @@ namespace E_StoreX.API.Controllers.Public
             return StatusCode(response.StatusCode, response);
         }
 
+        /// <summary>
+        /// Uploads (or replaces) the authenticated user's profile photo.
+        /// </summary>
+        /// <param name="dto">
+        /// The image file to upload. Only one file is allowed.
+        /// </param>
+        /// <returns>
+        /// Returns detailed result of the upload operation.
+        /// </returns>
+        /// <response code="200">
+        /// Photo uploaded successfully. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – No file provided. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        /// <response code="401">
+        /// Unauthorized – User is not authenticated. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – User does not exist. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        [HttpPatch("upload-photo")]
+        [Authorize]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UploadUserPhoto([FromForm] UploadUserPhotoDto dto)
+        {
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdFromToken))
+                return StatusCode(StatusCodes.Status401Unauthorized, ApiResponseFactory.Unauthorized());
+
+            var result = await _authService.UploadUserPhotoAsync(Guid.Parse(userIdFromToken), dto.File);
+            return StatusCode(result.StatusCode, result);
+        }
+
+        /// <summary>
+        /// Deletes the authenticated user's profile photo.
+        /// </summary>
+        /// <returns>
+        /// Returns detailed result of the delete operation.
+        /// </returns>
+        /// <response code="200">
+        /// Photo deleted successfully. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="400">
+        /// Bad Request – User has no photo to delete. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        /// <response code="401">
+        /// Unauthorized – User is not authenticated. Returns <see cref="ApiResponse"/>.
+        /// </response>
+        /// <response code="404">
+        /// Not Found – User does not exist. Returns <see cref="ApiErrorResponse"/>.
+        /// </response>
+        [HttpDelete("delete-photo")]
+        [Authorize]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> DeleteUserPhoto()
+        {
+            var userIdFromToken = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdFromToken))
+                return StatusCode(StatusCodes.Status401Unauthorized, ApiResponseFactory.Unauthorized());
+
+            var result = await _authService.DeleteUserPhotoAsync(Guid.Parse(userIdFromToken));
+            return StatusCode(result.StatusCode, result);
+        }
 
     }
 }

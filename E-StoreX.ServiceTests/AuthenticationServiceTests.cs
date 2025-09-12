@@ -36,6 +36,8 @@ namespace E_StoreX.ServiceTests
         private readonly Mock<IMapper> _mapperMock;
         private readonly AuthenticationService _authenticationService;
         private readonly Mock<IAuthenticationService> _authenticationServiceMock;
+        private readonly Mock<IEntityImageManager<ApplicationUser>> _imageManagerMock;
+        private readonly Mock<IImageService> _imageServiceMock;
 
         public AuthenticationServiceTests()
         {
@@ -62,6 +64,8 @@ namespace E_StoreX.ServiceTests
             _userManagementServiceMock = new Mock<IUserManagementService>();
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _mapperMock = new Mock<IMapper>();
+            _imageManagerMock = new Mock<IEntityImageManager<ApplicationUser>>();
+            _imageServiceMock = new Mock<IImageService>();
 
             _authenticationService = new AuthenticationService(
                 _userManagerMock.Object,
@@ -72,7 +76,9 @@ namespace E_StoreX.ServiceTests
                 _unitOfWorkMock.Object,
                 _mapperMock.Object,
                 _userManagementServiceMock.Object,
-                _roleManagerMock.Object
+                _roleManagerMock.Object,
+                _imageManagerMock.Object,
+                _imageServiceMock.Object
             );
         }
 

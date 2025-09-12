@@ -1486,6 +1486,49 @@
             <response code="404">No user found with the provided email.</response>
             <response code="500">An unexpected error occurred while sending the confirmation email.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.UploadUserPhoto(EStoreX.Core.DTO.Account.Requests.UploadUserPhotoDto)">
+            <summary>
+            Uploads (or replaces) the authenticated user's profile photo.
+            </summary>
+            <param name="dto">
+            The image file to upload. Only one file is allowed.
+            </param>
+            <returns>
+            Returns detailed result of the upload operation.
+            </returns>
+            <response code="200">
+            Photo uploaded successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="400">
+            Bad Request – No file provided. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – User is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="404">
+            Not Found – User does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+        </member>
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.DeleteUserPhoto">
+            <summary>
+            Deletes the authenticated user's profile photo.
+            </summary>
+            <returns>
+            Returns detailed result of the delete operation.
+            </returns>
+            <response code="200">
+            Photo deleted successfully. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="400">
+            Bad Request – User has no photo to delete. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+            <response code="401">
+            Unauthorized – User is not authenticated. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiResponse"/>.
+            </response>
+            <response code="404">
+            Not Found – User does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
+            </response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.BasketsController">
             <summary>
             API controller for managing customer baskets.

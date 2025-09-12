@@ -136,12 +136,12 @@ namespace EStoreX.Core.Services.Categories
             if (category == null)
                 return ApiResponseFactory.NotFound("Category not found.");
 
-            var folderName = category.Name.Replace(" ", "");
+            var folderName = category.Name.Replace(" ", "").ToLowerInvariant();
 
             return await _imageManager.AddImagesAsync(
                 categoryId,
                 files,
-                folderName,
+                $"Categories/folderName",
                 async (uow, id) => await uow.CategoryRepository.GetByIdAsync(id, c => c.Photos),
                 (entity, imagePaths) =>
                 {

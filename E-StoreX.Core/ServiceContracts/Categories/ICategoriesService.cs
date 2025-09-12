@@ -89,9 +89,53 @@ namespace EStoreX.Core.ServiceContracts.Categories
         /// <c>true</c> if the unassignment was successful; otherwise, <c>false</c>.
         /// </returns>
         Task<bool> UnassignBrandFromCategoryAsync(CategoryBrand cb);
+        /// <summary>
+        /// Retrieves all images associated with a specific category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> containing the list of category images if found;  
+        /// otherwise, a <c>404 Not Found</c> response.
+        /// </returns>
         Task<ApiResponse> GetCategoryImagesAsync(Guid categoryId);
+
+        /// <summary>
+        /// Deletes a specific category image by its ID.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="photoId">The unique identifier of the photo to delete.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating whether the image was deleted successfully;  
+        /// <c>404 Not Found</c> if the category or image was not found.
+        /// </returns>
         Task<ApiResponse> DeleteCategoryImageAsync(Guid categoryId, Guid photoId);
+
+        /// <summary>
+        /// Adds images to the specified category.
+        /// </summary>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="files">The list of image files to upload.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating whether the images were added successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the category does not exist.
+        /// </returns>
         Task<ApiResponse> AddCategoryImagesAsync(Guid categoryId, List<IFormFile> files);
+
+        /// <summary>
+        /// Updates all images of the specified category.
+        /// </summary>
+        /// <remarks>
+        /// This will remove all existing images of the category and replace them with the newly uploaded ones.
+        /// </remarks>
+        /// <param name="categoryId">The unique identifier of the category.</param>
+        /// <param name="files">The list of new image files to upload.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating whether the images were updated successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the category does not exist.
+        /// </returns>
         Task<ApiResponse> UpdateCategoryImagesAsync(Guid categoryId, List<IFormFile> files);
+
     }
 }

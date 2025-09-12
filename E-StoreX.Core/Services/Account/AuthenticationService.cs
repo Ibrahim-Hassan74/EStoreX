@@ -1,22 +1,24 @@
 ﻿using AutoMapper;
-using System.Text;
+using Domain.Entities.Common;
+using Domain.Entities.Product;
+using EStoreX.Core.Domain.IdentityEntities;
+using EStoreX.Core.DTO.Account.Requests;
+using EStoreX.Core.DTO.Account.Responses;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Orders.Requests;
 using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
-using System.Security.Claims;
-using EStoreX.Core.DTO.Common;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using EStoreX.Core.DTO.Account.Requests;
-using Microsoft.AspNetCore.WebUtilities;
-using EStoreX.Core.DTO.Account.Responses;
-using EStoreX.Core.DTO.Orders.Requests;
-using EStoreX.Core.Domain.IdentityEntities;
-using Domain.Entities.Common;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.ServiceContracts.Account;
 using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.Services.Common;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
+using System.Text;
 
 namespace EStoreX.Core.Services.Account
 {
@@ -29,10 +31,12 @@ namespace EStoreX.Core.Services.Account
         private readonly IJwtService _jwtService;
         private readonly IUserManagementService _userManagementService;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly IImageService _imageService;
+        private readonly IEntityImageManager<ApplicationUser> _imageManager;
 
         public AuthenticationService(UserManager<ApplicationUser> userManager, IEmailSenderService emailSender,
             SignInManager<ApplicationUser> signInManager,
-            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper, IUserManagementService userManagementService, RoleManager<ApplicationRole> roleManager) : base(unitOfWork, mapper)
+            IHttpContextAccessor httpContextAccessor, IJwtService jwtService, IUnitOfWork unitOfWork, IMapper mapper, IUserManagementService userManagementService, RoleManager<ApplicationRole> roleManager, IEntityImageManager<ApplicationUser> imageManager, IImageService imageService) : base(unitOfWork, mapper)
         {
             _userManager = userManager;
             _emailSender = emailSender;
@@ -41,6 +45,8 @@ namespace EStoreX.Core.Services.Account
             _jwtService = jwtService;
             _userManagementService = userManagementService;
             _roleManager = roleManager;
+            _imageManager = imageManager;
+            _imageService = imageService;
         }
         /// <inheritdoc/>
         public async Task<ApiResponse> RegisterAsync(RegisterDTO registerDTO)
@@ -590,6 +596,64 @@ namespace EStoreX.Core.Services.Account
             await SendEmail(user);
 
             return ApiResponseFactory.Success("Confirmation email resent successfully.");
+        }
+
+        public async Task<ApiResponse> UploadUserPhotoAsync(Guid userId, IFormFile file)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Photo)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+                return ApiResponseFactory.NotFound("User not found.");
+
+            if (file == null)
+                return ApiResponseFactory.BadRequest("No file provided.");
+
+            if (user.Photo != null)
+            {
+                _imageService.DeleteImageAsync(user.Photo.ImageName);
+                await _unitOfWork.PhotoRepository.DeleteAsync(user.Photo.Id);
+                user.Photo = null;
+            }
+
+            var folderName = user.UserName.Replace(" ", "").ToLowerInvariant();
+
+            var formFileCollection = new FormFileCollection { file };
+            var imagePaths = await _imageService.AddImageAsync(formFileCollection, $"Users/{folderName}");
+
+            user.Photo = new Photo
+            {
+                ImageName = imagePaths.First(),
+                UserId = userId
+            };
+
+            await _unitOfWork.CompleteAsync();
+            await _userManager.UpdateAsync(user);
+
+            return ApiResponseFactory.Success("User photo uploaded successfully.");
+        }
+
+        public async Task<ApiResponse> DeleteUserPhotoAsync(Guid userId)
+        {
+            var user = await _userManager.Users
+                .Include(u => u.Photo)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null)
+                return ApiResponseFactory.NotFound("User not found.");
+
+            if (user.Photo == null)
+                return ApiResponseFactory.BadRequest("User has no photo to delete.");
+
+            _imageService.DeleteImageAsync(user.Photo.ImageName);
+            await _unitOfWork.PhotoRepository.DeleteAsync(user.Photo.Id);
+            user.Photo = null;
+
+            await _unitOfWork.CompleteAsync();
+            await _userManager.UpdateAsync(user);
+
+            return ApiResponseFactory.Success("User photo deleted successfully.");
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Common;
+using EStoreX.Core.Domain.IdentityEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Domain.Entities.Product
@@ -15,6 +16,9 @@ namespace Domain.Entities.Product
         public Guid? BrandId { get; set; }
         [ForeignKey(nameof(BrandId))]
         public virtual Brand? Brand { get; set; }
+        public Guid? UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public virtual ApplicationUser? User { get; set; }
     }
 
 }

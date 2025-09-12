@@ -78,9 +78,53 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// The task result contains a collection of <see cref="CategoryResponse"/> objects linked to the brand.
         /// </returns>
         Task<IEnumerable<CategoryResponse>> GetCategoriesByBrandIdAsync(Guid brandId);
+        /// <summary>
+        /// Retrieves all images associated with a specific brand.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> containing the list of brand images if found;  
+        /// otherwise, a <c>404 Not Found</c> response.
+        /// </returns>
         Task<ApiResponse> GetBrandImagesAsync(Guid brandId);
+
+        /// <summary>
+        /// Deletes a specific brand image by its ID.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <param name="photoId">The unique identifier of the photo to delete.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating whether the image was deleted successfully;  
+        /// <c>404 Not Found</c> if the brand or image was not found.
+        /// </returns>
         Task<ApiResponse> DeleteBrandImageAsync(Guid brandId, Guid photoId);
+
+        /// <summary>
+        /// Adds images to the specified brand.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <param name="files">The list of image files to upload.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating whether the images were added successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the brand does not exist.
+        /// </returns>
         Task<ApiResponse> AddBrandImagesAsync(Guid brandId, List<IFormFile> files);
+
+        /// <summary>
+        /// Updates all images of the specified brand.
+        /// </summary>
+        /// <remarks>
+        /// This will remove all existing images of the brand and replace them with the newly uploaded ones.
+        /// </remarks>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <param name="files">The list of new image files to upload.</param>
+        /// <returns>
+        /// An <see cref="ApiResponse"/> indicating whether the images were updated successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the brand does not exist.
+        /// </returns>
         Task<ApiResponse> UpdateBrandImagesAsync(Guid brandId, List<IFormFile> files);
+
     }
 }

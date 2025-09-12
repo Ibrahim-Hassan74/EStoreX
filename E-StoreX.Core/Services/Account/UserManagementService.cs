@@ -1,13 +1,14 @@
 ﻿using AutoMapper;
-using EStoreX.Core.Enums;
-using EStoreX.Core.Helper;
-using EStoreX.Core.DTO.Common;
-using Microsoft.AspNetCore.Identity;
+using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
-using EStoreX.Core.Domain.IdentityEntities;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Enums;
+using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace EStoreX.Core.Services.Account
 {
@@ -70,7 +71,7 @@ namespace EStoreX.Core.Services.Account
 
             return result.Succeeded
                 ? ApiResponseFactory.Success("Role assigned successfully.")
-                : ApiResponseFactory.Failure("Failed to assign role.",400, result.Errors.Select(error => error.Description).ToArray());
+                : ApiResponseFactory.Failure("Failed to assign role.", 400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -85,7 +86,7 @@ namespace EStoreX.Core.Services.Account
 
             return result.Succeeded
                 ? ApiResponseFactory.Success("Role removed successfully.")
-                : ApiResponseFactory.Failure("Failed to remove role.",400, result.Errors.Select(error => error.Description).ToArray());
+                : ApiResponseFactory.Failure("Failed to remove role.", 400, result.Errors.Select(error => error.Description).ToArray());
         }
 
         /// <inheritdoc/>
@@ -164,7 +165,7 @@ namespace EStoreX.Core.Services.Account
 
             var currentUser = await _userManager.FindByIdAsync(currentUserId);
             if (currentUser == null)
-                return ApiResponseFactory.Failure("Unauthorized.",404);
+                return ApiResponseFactory.Failure("Unauthorized.", 404);
 
             var targetRoles = await _userManager.GetRolesAsync(targetUser);
             var currentRoles = await _userManager.GetRolesAsync(currentUser);
@@ -188,7 +189,7 @@ namespace EStoreX.Core.Services.Account
 
             return result.Succeeded
                 ? ApiResponseFactory.Success("User deleted successfully.")
-                : ApiResponseFactory.Failure("Failed to delete user.",400, result.Errors.Select(e => e.Description).ToArray());
+                : ApiResponseFactory.Failure("Failed to delete user.", 400, result.Errors.Select(e => e.Description).ToArray());
         }
 
 
@@ -227,7 +228,8 @@ namespace EStoreX.Core.Services.Account
         /// <inheritdoc/>
         public async Task<List<ApplicationUserResponse>> GetAllUsersAsync()
         {
-            var users = _userManager.Users.ToList();
+            var users = await _userManager.Users.Include(u => u.Photo).ToListAsync();
+
             var responses = _mapper.Map<List<ApplicationUserResponse>>(users);
 
             foreach (var response in responses)
@@ -242,7 +244,7 @@ namespace EStoreX.Core.Services.Account
         /// <inheritdoc/>
         public async Task<ApplicationUserResponse?> GetUserByIdAsync(string userId)
         {
-            var user = await _userManager.FindByIdAsync(userId);
+            var user = await _userManager.Users.Include(u => u.Photo).FirstOrDefaultAsync(x => x.Id == Guid.Parse(userId));
             if (user == null) return null;
 
             var response = _mapper.Map<ApplicationUserResponse>(user);

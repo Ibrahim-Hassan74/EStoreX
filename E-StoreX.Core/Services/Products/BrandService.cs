@@ -151,12 +151,12 @@ namespace EStoreX.Core.Services.Products
             if (brand == null)
                 return ApiResponseFactory.NotFound("Brand not found.");
 
-            var folderName = brand.Name.Replace(" ", "_");
+            var folderName = brand.Name.Replace(" ", "").ToLowerInvariant();
 
             return await _imageManager.AddImagesAsync(
                 brandId,
                 files,
-                folderName,
+                $"Brands/{folderName}",
                 async (uow, id) => await uow.BrandRepository.GetByIdAsync(id, b => b.Photos),
                 (entity, imagePaths) =>
                 {
