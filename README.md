@@ -1,645 +1,260 @@
-## E-StoreX API Documentation
+# E-StoreX
 
-### Overview
+### Enterprise-Grade E-Commerce Backend API
 
-EStoreX is a RESTful API for managing products, categories, and customer baskets in an e-commerce system. This documentation outlines the endpoints available for the client, along with request/response formats and expected behaviors.
-
----
-
-# Authentication API – EStoreX
-
-This API uses **JWT-based authentication** with support for user registration, login, email confirmation, and password reset.
+E-StoreX is a **full-featured e-commerce Backend API** built with **ASP.NET Core Web API** and designed using **Clean Architecture** principles.  
+The project is structured for **scalability, maintainability, and long-term evolution**, while strictly applying **SOLID principles** and **clean separation of concerns** across layers.
 
 ---
 
-## `POST /api/account/register`
+## 🔹 Overview
 
-**Description:**  
-Register a new user. Sends a confirmation email with a token.
-
-**Request Body:**
-
-```json
-{
-  "userName": "string",
-  "email": "user@example.com",
-  "phone": "0123456789",
-  "password": "string",
-  "confirmPassword": "string"
-}
-```
-
-### Password Requirements
-
-- Minimum 8 characters
-- At least 1 uppercase letter (A–Z)
-- At least 1 lowercase letter (a–z)
-- At least 1 digit (0–9)
-- Special characters (e.g. ! @ # $ %) — optional but recommended
-
-**Responses:**
-
-- **200 OK:** Registration successful, email sent
-- **400 Bad Request:** Validation error or missing fields
-- **409 Conflict:** Email or username already in use
-
-**Example response (200):**
-
-```json
-{
-  "success": true,
-  "message": "Registration successful. Please check your email to confirm your account.",
-  "statusCode": 200
-}
-```
-
-**Example response (400):**
-
-```json
-{
-  "success": false,
-  "message": "Validation failed.",
-  "statusCode": 400,
-  "errors": [
-    "Email can't be blank",
-    "Password should be at least 8 characters",
-    "..."
-  ]
-}
-```
-
-**Example response (409):**
-
-```json
-{
-  "success": false,
-  "message": "Username or Email is already in use.",
-  "statusCode": 409,
-  "errors": ["The username or email is already taken.", "...."]
-}
-```
+E-StoreX provides a robust backend platform for an e-commerce application that supports **multiple roles** (User, Admin, SuperAdmin) with **secure authentication and authorization**.  
+It covers the complete e-commerce workflow, starting from **product management, browsing, and cart handling**, to **checkout, payments, notifications, and order lifecycle tracking**.
 
 ---
 
-## `POST /api/account/login`
+## 🔹 Key Design Goals
 
-**Description:**  
-Login using email and password. Returns JWT token on success.
+This project was developed with a strong focus on:
 
-**Request Body:**
+### Architecture
 
-```json
-{
-  "email": "user@example.com",
-  "password": "string",
-  "rememberMe": true
-}
-```
+- Clean Architecture with strict separation (Core, Infrastructure, API layers)
+- Enterprise-level design patterns like **Generic Repository** and **Unit of Work**
 
-**Responses:**
+### Data & Database
 
-- **200 OK:** Login successful with token
-- **400 Bad Request:** Validation errors
-- **401 Unauthorized:** Invalid credentials
-- **403 Forbidden:** Email not confirmed
-- **404 Not Found:** User not found
-- **423 Locked:** Account locked due to failed attempts
+- EF Core **Code First approach** with migrations
+- Strong domain-driven design influences in the Core layer
 
-**Example response (200):**
+### Security
 
-```json
-{
-  "success": true,
-  "message": "Login successful.",
-  "statusCode": 200,
-  "userName": "string",
-  "email": "string",
-  "token": "JWT_TOKEN_HERE",
-  "expiration": "2025-07-20T00:00:00Z",
-  "refreshToken": "REFRESH_TOKEN_HERE",
-  "refreshTokenExpirationDateTime": "2025-07-27T00:00:00Z"
-}
-```
+- Authentication & Authorization with **Identity + JWT**
+- OAuth integration with **Google** and **GitHub**
+- Role-based access control (User, Admin, SuperAdmin)
 
-**Example response (400):**
+### Quality & Testing
 
-```json
-{
-  "success": false,
-  "message": "Validation failed.",
-  "statusCode": 400,
-  "errors": ["Email can't be blank", "Password can't be blank"]
-}
-```
+- High test coverage through **unit and integration testing**
+- Test stack includes **xUnit, Moq, FluentAssertions, AutoFixture, Coverlet**
 
-**Example response (401):**
+### Documentation
 
-```json
-{
-  "success": false,
-  "message": "Invalid email or password.",
-  "statusCode": 401,
-  "errors": ["Incorrect email or password."]
-}
-```
+- Interactive API documentation with **Swagger**
+- User-friendly developer docs with **Redoc**
+- API versioning with **v1, v2 live** and **v3 in progress**
 
-**Example response (403):**
+### Monitoring & Logging
 
-```json
-{
-  "success": false,
-  "message": "You need to confirm your email before logging in.",
-  "statusCode": 403,
-  "errors": [
-    "You must confirm your email before logging in.",
-    "User is not allowed to login."
-  ]
-}
-```
-
-**Example response (404):**
-
-```json
-{
-  "success": false,
-  "message": "User with the provided email does not exist.",
-  "statusCode": 404,
-  "errors": ["No account found with this email."]
-}
-```
-
-**Example response (423):**
-
-```json
-{
-  "success": false,
-  "message": "Account is locked due to multiple failed login attempts. Please try again later.",
-  "statusCode": 423,
-  "errors": [
-    "Your account is temporarily locked due to multiple failed login attempts. Please try again later."
-  ]
-}
-```
+- Advanced **structured logging** with correlation IDs
+- Centralized error handling & diagnostics
+- Unified API response structure across controllers
 
 ---
 
-## `POST /api/account/forgot-password`
+## Features in Detail
 
-**Description:**  
-Initiates the password reset process by sending a reset link to the user's email.
+### Product & Catalog
 
-**Request Body:**
+- Product creation, editing, deletion, and querying
+- Category management with hierarchical support
+- Filtering, sorting, and pagination of products
+- Image and media file handling
 
-```json
-{
-  "email": "user@example.com"
-}
-```
+### Cart & Checkout
 
-**Responses:**
+- Cart persistence per user
+- Add, update, and remove items from cart
+- Quantity adjustment and discount application
+- Checkout process with order creation and payment integration
 
-- **200 OK:** Password reset link sent successfully
-- **400 Bad Request:** Email not found or not confirmed
-- **429 Too Many Requests:** Password reset already requested recently
+### Orders
 
-**Example response (200):**
+- Order placement, tracking, and history
+- Order status updates (Pending, Paid, Shipped, Completed, Cancelled)
+- Automatic email notifications on each state change
+- Integration with Stripe for secure payment handling
 
-```json
-{
-  "success": true,
-  "message": "A password reset link has been sent to your email.",
-  "statusCode": 200
-}
-```
+### Authentication & Authorization
 
-**Example response (400):**
+- User registration and login with ASP.NET Identity
+- JWT-based authentication for APIs
+- Role-based access (User, Admin, SuperAdmin)
+- External login support via Google and GitHub OAuth
+- Fine-grained access policies to secure admin endpoints
 
-```json
-{
-  "success": false,
-  "message": "Email is not confirmed.",
-  "statusCode": 400,
-  "errors": [
-    "Email not found.",
-    "Please confirm your email before resetting password."
-  ]
-}
-```
+### Payments & Notifications
 
-**Example response (429):**
+- Stripe integration for payment processing
+- MailKit/MimeKit for transactional emails (order confirmation, password reset, etc.)
+- Configurable notification templates
 
-```json
-{
-  "success": false,
-  "message": "A password reset email was already sent recently. Please wait before trying again.",
-  "statusCode": 429,
-  "errors": [
-    "A password reset email was already sent recently. Please wait before trying again."
-  ]
-}
-```
+### Infrastructure & Architecture
 
----
+- Clean separation into Core, Infrastructure, and API layers
+- Generic Repository and Unit of Work for data access
+- AutoMapper for DTO and entity mapping
+- Redis caching for performance optimization
+- EF Core Code First with migrations for database management
 
-## `GET /api/account/reset-password/verify`
+### Logging & Monitoring
 
-**Description:**  
-Verifies the validity of a reset password token.
+- Structured logging with full request/response tracking
+- Error handling middleware with unified API responses
+- Log correlation IDs for request tracing
+- Centralized logging configuration
 
-**Query Parameters:**
+### Testing
 
-```
-userId=<USER_ID>&token=<TOKEN>
-```
+- Unit tests with xUnit
+- Mocking with Moq
+- FluentAssertions for readable test assertions
+- AutoFixture for test data generation
+- Integration tests covering critical workflows
+- Code coverage analysis with Coverlet
 
-**Responses:**
+### Documentation & Versioning
 
-- **200 OK:** Token is valid
-- **400 Bad Request:** Token or user is invalid
-- **404 Not Found:** User not found
+- Interactive API exploration with Swagger
+- Developer-friendly API documentation via Redoc
+- API versioning (v1, v2 live, v3 in development)
+- Consistent API response contract across all endpoints
 
-**Example response (200):**
+### File & Report Handling
 
-```json
-{
-  "success": true,
-  "message": "Token is valid.",
-  "statusCode": 200
-}
-```
-
-**Example response (400):**
-
-```json
-{
-  "success": false,
-  "message": "Invalid or expired token.",
-  "statusCode": 400,
-  "errors": ["Invalid verification request."]
-}
-```
+- EPPlus for Excel export and import
+- iText7 for generating PDF invoices and reports
+- Downloadable reports for admins (sales, orders, users, etc.)
 
 ---
 
-## `POST /api/account/reset-password`
+## Technology Stack
 
-**Description:**  
-Resets the user's password using a valid token.
-
-**Request Body:**
-
-```json
-{
-  "userId": "guid",
-  "token": "RESET_TOKEN",
-  "newPassword": "NewStrongPass1",
-  "confirmPassword": "NewStrongPass1"
-}
-```
-
-**Responses:**
-
-- **200 OK:** Password reset successful
-- **400 Bad Request:** Token invalid or password mismatch
-- **404 Not Found:** User not found
-
-**Example response (200):**
-
-```json
-{
-  "success": true,
-  "message": "Password reset successful.",
-  "statusCode": 200
-}
-```
-
-**Example response (400):**
-
-```json
-{
-  "success": false,
-  "message": "Passwords do not match or token is invalid.",
-  "statusCode": 400,
-  "errors": ["Invalid or expired token."]
-}
-```
-
-### `POST /api/account/generate-new-jwt-token`
-
-- **Description**:  
-  Generates a **new access JWT token** using a valid **refresh token** when the old access token has expired.  
-  This helps the user stay logged in without re-entering credentials, as long as the refresh token is valid.
+- **Backend / APIs:** ASP.NET Core Web API, EF Core (SQL Server), AutoMapper
+- **Architecture:** Clean Architecture (Core, Infrastructure, API)
+- **Authentication & Authorization:** ASP.NET Identity, JWT, OAuth (Google & GitHub)
+- **Caching:** Redis (StackExchange.Redis)
+- **Payments & Notifications:** Stripe.NET, MailKit, MimeKit
+- **File & Reports:** EPPlus (Excel), iText7 (PDFs)
+- **Documentation:** Swagger, Redoc
+- **Logging & Monitoring:** Structured logging with correlation IDs
+- **Testing:** xUnit, Moq, FluentAssertions, AutoFixture, Coverlet
 
 ---
 
-### **Request Body**
+## Documentation
 
-```json
-{
-  "token": "EXPIRED_ACCESS_TOKEN",
-  "refreshToken": "VALID_REFRESH_TOKEN"
-}
-```
+- Swagger UI: [https://estorex.runasp.net/swagger/index.html](https://estorex.runasp.net/swagger/index.html)
+- Redoc: [https://estorex.runasp.net/index.html](https://estorex.runasp.net/index.html)
+- ERD: [Mermaid Chart](https://www.mermaidchart.com/app/projects/52696ff8-27e3-4df1-8322-4a77f3dbaf70/diagrams/e5581ebd-d802-4949-82d3-1bac34013ee6/version/v0.1/edit)
 
 ---
 
-### **Validation Rules**
+## Repository
 
-- `token` (string): **Required**. Must be a valid JWT, even if expired.
-- `refreshToken` (string): **Required**. Must match the one stored for the user and must not be expired.
-
----
-
-### **Responses**
-
-#### `200 OK` – **Token successfully refreshed**
-
-```json
-{
-  "success": true,
-  "message": "Token refreshed successfully.",
-  "statusCode": 200,
-  "userName": "string",
-  "email": "user@example.com",
-  "token": "NEW_JWT_ACCESS_TOKEN",
-  "expiration": "2025-07-24T12:00:00Z",
-  "refreshToken": "NEW_REFRESH_TOKEN",
-  "refreshTokenExpirationDateTime": "2025-07-24T13:00:00Z"
-}
-```
-
-#### `400 Bad Request` – **Invalid request**
-
-```json
-{
-  "success": false,
-  "message": "Invalid token or refresh token.",
-  "statusCode": 400,
-  "errors": ["Refresh token is invalid or expired."]
-}
-```
-
-#### `401 Unauthorized` – **Token tampered or invalid**
-
-```json
-{
-  "success": false,
-  "message": "Invalid token signature or structure.",
-  "statusCode": 401,
-  "errors": ["Token tampered or invalid"]
-}
-```
-
-#### `404 NotFound` – **User doesn't exist**
-
-```json
-{
-  "success": false,
-  "message": "User not found",
-  "statusCode": 404,
-  "errors": ["User does not exist."]
-}
-```
+- GitHub: [https://github.com/Ibrahim-Hassan74/EStoreX](https://github.com/Ibrahim-Hassan74/EStoreX)
 
 ---
 
-### **Notes**
+## API Access
 
-- This endpoint should be called **only when the access token expires**.
-- The new `refreshToken` returned in the response must replace the old one on the client side.
-- If the refresh token is also expired, the user must **log in again**.
+Access is restricted. Contact me to request an API key for testing and integration.
 
 ---
 
-## Notes
+## About
 
-- **JWT Token** is required for secured endpoints:  
-  `Authorization: Bearer YOUR_JWT_TOKEN`
-- **Email confirmation is mandatory** before login.
-- Redirect URLs in emails:
-  - `estorex://reset-password` for mobile apps
-  - `https://localhost:4200/reset-password` for web
-- Lockout policies apply after multiple failed login attempts.
-
-## Endpoints
-
-### Categories
-
-#### `GET /api/categories`
-
-- **Description**: Retrieve all categories.
-- **Response**:
-
-```json
-[
-  {
-    "id": "guid",
-    "name": "string",
-    "description": "string"
-  }
-]
-```
-
-#### `GET /api/categories/{id}`
-
-- **Description**: Get category by ID.
-- **Response**:
-
-```json
-{
-  "id": "guid",
-  "name": "string",
-  "description": "string"
-}
-```
-
-#### `POST /api/categories`
-
-- **Description**: Create a new category.
-- **Request Body**:
-
-```json
-{
-  "name": "string",
-  "description": "string"
-}
-```
-
-#### `PUT /api/categories/{id}`
-
-- **Description**: Update a category by ID.
-- **Request Body**:
-
-```json
-{
-  "id": "guid",
-  "name": "string",
-  "description": "string"
-}
-```
-
-#### `DELETE /api/categories/{id}`
-
-- **Description**: Delete a category by ID.
+E-StoreX demonstrates how to build a **production-ready, enterprise-grade backend** using modern best practices.  
+It goes far beyond basic CRUD operations by addressing the real challenges faced in large-scale systems and implementing advanced concepts such as:
 
 ---
 
-### Products
+### Layered Architecture with Strict Boundaries
 
-#### `GET /api/products`
+Every concern is isolated:
 
-- **Description**: Retrieve products with optional filters.
-- **Query Parameters**:
+- **Core** → contains the business logic
+- **Infrastructure** → manages external dependencies (database, file storage, email, caching)
+- **API** → handles the request/response pipeline
 
-  - `searchBy`
-  - `searchString`
-  - `minPrice`
-  - `maxPrice`
-  - `categoryId`
-  - `sortBy`
-  - `sortOrder` (ASC/DESC)
-  - `pageNumber`
-  - `pageSize`
-
-- **Response**:
-
-```json
-{
-  "currentPage": 1,
-  "pageSize": 10,
-  "totalRecords": 100,
-  "records": [
-    {
-      "id": "guid",
-      "name": "string",
-      "description": "string",
-      "newPrice": 0,
-      "oldPrice": 0,
-      "categoryName": "string",
-      "photos": [
-        {
-          "imageName": "string"
-        }
-      ]
-    }
-  ]
-}
-```
-
-#### `GET /api/products/{id}`
-
-- **Description**: Retrieve product by ID.
-
-#### `POST /api/products`
-
-- **Description**: Create a product.
-- **Request Body** (multipart/form-data):
-
-```json
-{
-  "name": "string",
-  "description": "string",
-  "newPrice": 0,
-  "oldPrice": 0,
-  "categoryId": "guid",
-  "photos": ["file"]
-}
-```
-
-- **Response**:
-
-```json
-{
-  "id": "guid",
-  "name": "string",
-  "description": "string",
-  "newPrice": 0,
-  "oldPrice": 0,
-  "categoryName": "string",
-  "photos": [
-    {
-      "imageName": "string"
-    }
-  ]
-}
-```
-
-#### `PUT /api/products/{id}`
-
-- **Description**: Update a product.
-- **Request Body** (multipart/form-data): same as `POST` but includes `id`.
-
-#### `DELETE /api/products/{id}`
-
-- **Description**: Delete a product by ID.
+This separation makes the system highly maintainable and easy to evolve.
 
 ---
 
-### Baskets
+### Asynchronous Programming with async/await
 
-#### `GET /api/baskets/{id}`
-
-- **Description**: Get a customer's basket by ID.
-- **Response**:
-
-```json
-{
-  "id": "string",
-  "basketItems": [
-    {
-      "id": "guid",
-      "name": "string",
-      "description": "string",
-      "qunatity": 1,
-      "price": 0,
-      "category": "string",
-      "image": "url"
-    }
-  ]
-}
-```
-
-#### `POST /api/baskets`
-
-- **Description**: Add or update a customer basket.
-- **Request Body**:
-
-```json
-{
-  "id": "string",
-  "basketItems": [
-    {
-      "id": "guid",
-      "name": "string",
-      "description": "string",
-      "qunatity": 1,
-      "price": 0,
-      "category": "string",
-      "image": "url"
-    }
-  ]
-}
-```
-
-#### `DELETE /api/baskets/{id}`
-
-- **Description**: Delete a customer basket by ID.
+All I/O operations (database, caching, email, payments) are implemented asynchronously.  
+This ensures scalability under high load, allowing the system to handle thousands of concurrent requests without blocking threads.
 
 ---
 
-### Errors (Testing Only)
+### Dependency Injection Throughout the Solution
 
-#### `GET /api/bug/error` - returns `500`
-
-#### `GET /api/bug/not-found` - returns `404`
-
-#### `GET /api/bug/bad-request` - returns `400`
+The project fully embraces DI to achieve loose coupling and testability.  
+Every service, repository, and external integration is registered and resolved through the built-in ASP.NET Core container, making the system flexible and easy to extend.
 
 ---
 
-## Notes
+### Centralized Error Handling and Response Standardization
 
-- IDs are represented as GUID strings.
-- The basket ID is a plain string (not GUID) representing the customer.
-- Validation errors will return status code `400`.
-- Use proper `Content-Type: multipart/form-data` for file upload endpoints.
+A global exception middleware captures all unhandled errors and converts them into a **unified response format**.  
+Clients always receive consistent error messages and HTTP status codes, improving **Developer Experience (DX)** and reducing ambiguity in integrations.
+
+---
+
+### Unified API Response Structure
+
+Regardless of the controller or endpoint, responses follow a standardized format that includes:
+
+- Data
+- Metadata
+- Error information
+
+This consistency simplifies client integration (web, mobile, or third-party apps).
+
+---
+
+### Robust Validation Layer
+
+DTOs and requests are validated using **Data Annotations** (e.g., `[Required]`, `[MaxLength]`, `[EmailAddress]`).  
+This ensures data integrity and prevents invalid operations early in the request pipeline, before the data reaches the domain logic.
+
+---
+
+### Strong Test Coverage for Reliability and Maintainability
+
+Both unit tests and integration tests cover critical paths such as:
+
+- Authentication flows
+- Order lifecycle
+- Payment operations
+
+Mocking frameworks and automated test data generation make it possible to validate logic without depending on external services.
+
+---
+
+### API Versioning and Backward Compatibility
+
+Versioned endpoints (**v1**, **v2 live**, **v3 in development**) allow the system to evolve without breaking existing clients.  
+New features are introduced progressively while keeping legacy integrations functional.
+
+---
+
+### Scalability Considerations Built-In
+
+Caching (Redis), async programming, and structured logging ensure that the system can **scale horizontally and vertically** with minimal changes.  
+Adding new services or extending existing ones does not affect other layers.
+
+---
+
+### Security First Approach
+
+Authentication and authorization are built on **Identity and JWT**, with external **OAuth providers** integrated.  
+Role-based access ensures that sensitive endpoints (like product management or order processing) are only available to authorized roles.
+
+---
+
+## Conclusion
+
+This philosophy ensures **E-StoreX** is not just a “project demo,” but a **blueprint** for building clean, scalable, and enterprise-ready applications.
