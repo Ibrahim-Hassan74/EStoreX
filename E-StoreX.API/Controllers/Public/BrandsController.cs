@@ -2,8 +2,10 @@
 using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
+using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Products;
+using EStoreX.Core.Services.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Public
@@ -14,15 +16,15 @@ namespace E_StoreX.API.Controllers.Public
     [ApiVersion(1.0)]
     public class BrandsController : CustomControllerBase
     {
-        private readonly IBrandService _brandService;
+        private readonly IBrandService _brandsService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BrandsController"/>.
         /// </summary>
-        /// <param name="brandService">Service to manage brand operations.</param>
-        public BrandsController(IBrandService brandService)
+        /// <param name="brandsService">Service to manage brand operations.</param>
+        public BrandsController(IBrandService brandsService)
         {
-            _brandService = brandService;
+            _brandsService = brandsService;
         }
 
         /// <summary>
@@ -34,7 +36,7 @@ namespace E_StoreX.API.Controllers.Public
         [ProducesResponseType(typeof(IEnumerable<Brand>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
-            var brands = await _brandService.GetAllBrandsAsync();
+            var brands = await _brandsService.GetAllBrandsAsync();
             return Ok(brands);
         }
 
@@ -50,7 +52,7 @@ namespace E_StoreX.API.Controllers.Public
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
-            var brand = await _brandService.GetBrandByIdAsync(id);
+            var brand = await _brandsService.GetBrandByIdAsync(id);
             if (brand == null)
                 return NotFound(ApiResponseFactory.NotFound("Brand not found."));
 
@@ -72,7 +74,7 @@ namespace E_StoreX.API.Controllers.Public
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetBrandByName(string name)
         {
-            var brand = await _brandService.GetBrandByNameAsync(name);
+            var brand = await _brandsService.GetBrandByNameAsync(name);
             if (brand == null)
                 return NotFound(ApiResponseFactory.NotFound($"Brand Not found: {name}"));
             return Ok(brand);
@@ -86,8 +88,26 @@ namespace E_StoreX.API.Controllers.Public
         [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), StatusCodes.Status200OK)]
         public async Task<ActionResult<IEnumerable<CategoryResponse>>> GetCategoriesByBrand(Guid brandId)
         {
-            var categories = await _brandService.GetCategoriesByBrandIdAsync(brandId);
+            var categories = await _brandsService.GetCategoriesByBrandIdAsync(brandId);
             return Ok(categories);
+        }
+        /// <summary>
+        /// Retrieves all images associated with a specific brand.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <returns>
+        /// <c>200 OK</c> with a list of brand images;  
+        /// <c>404 Not Found</c> if the brand does not exist or has no images.
+        /// </returns>
+        /// <response code="200">Brand images retrieved successfully.</response>
+        /// <response code="404">No images found for the given brand.</response>
+        [HttpGet("{brandId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponseWithData<List<PhotoInfo>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetBrandImages(Guid brandId)
+        {
+            var response = await _brandsService.GetBrandImagesAsync(brandId);
+            return StatusCode(response.StatusCode, response);
         }
 
     }

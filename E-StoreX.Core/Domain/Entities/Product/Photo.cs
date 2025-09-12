@@ -12,6 +12,9 @@ namespace Domain.Entities.Product
         public Guid? CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
         public virtual Category? Category { get; set; }
+        public Guid? BrandId { get; set; }
+        [ForeignKey(nameof(BrandId))]
+        public virtual Brand? Brand { get; set; }
     }
 
 }

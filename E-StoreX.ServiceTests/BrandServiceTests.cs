@@ -4,6 +4,7 @@ using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Products;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
 using EStoreX.Core.Services.Products;
 using FluentAssertions;
@@ -18,6 +19,8 @@ namespace E_StoreX.ServiceTests
         private readonly Mock<IBrandRepository> _brandRepositoryMock;
         private readonly IBrandService _brandService;
         private readonly Mock<IMapper> _mapperMock;
+        private readonly Mock<IEntityImageManager<Brand>> _entityImageManagerMock;
+        private readonly Mock<IImageService> _imageServiceMock;
 
         public BrandServiceTests()
         {
@@ -25,9 +28,11 @@ namespace E_StoreX.ServiceTests
             _fixture = new Fixture();
             _brandRepositoryMock = new Mock<IBrandRepository>();
             _mapperMock = new Mock<IMapper>();
+            _entityImageManagerMock = new Mock<IEntityImageManager<Brand>>();
+            _imageServiceMock = new Mock<IImageService>();
             _unitOfWorkMock.Setup(uow => uow.BrandRepository)
                 .Returns(_brandRepositoryMock.Object);
-            _brandService = new BrandService(_unitOfWorkMock.Object, _mapperMock.Object);
+            _brandService = new BrandService(_unitOfWorkMock.Object, _mapperMock.Object, _entityImageManagerMock.Object, _imageServiceMock.Object);
         }
 
         #region GetAllBrandsAsync Tests

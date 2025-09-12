@@ -1,5 +1,7 @@
 ﻿using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Responses;
+using EStoreX.Core.DTO.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.ServiceContracts.Products
 {
@@ -76,5 +78,9 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// The task result contains a collection of <see cref="CategoryResponse"/> objects linked to the brand.
         /// </returns>
         Task<IEnumerable<CategoryResponse>> GetCategoriesByBrandIdAsync(Guid brandId);
+        Task<ApiResponse> GetBrandImagesAsync(Guid brandId);
+        Task<ApiResponse> DeleteBrandImageAsync(Guid brandId, Guid photoId);
+        Task<ApiResponse> AddBrandImagesAsync(Guid brandId, List<IFormFile> files);
+        Task<ApiResponse> UpdateBrandImagesAsync(Guid brandId, List<IFormFile> files);
     }
 }

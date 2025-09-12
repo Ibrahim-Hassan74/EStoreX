@@ -13,5 +13,7 @@ namespace Domain.Entities.Product
         public ICollection<Product> Products { get; set; } = new List<Product>();
         [JsonIgnore]
         public ICollection<CategoryBrand> CategoryBrands { get; set; } = new List<CategoryBrand>();
+        [JsonIgnore]
+        public ICollection<Photo> Photos { get; set; } = new List<Photo>();
     }
 }

@@ -4,7 +4,9 @@ using EStoreX.Core.DTO.Categories.Requests;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.RepositoryContracts.Categories;
 using EStoreX.Core.RepositoryContracts.Common;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.Services.Categories;
+using EStoreX.Core.Services.Common;
 using FluentAssertions;
 using Moq;
 
@@ -16,13 +18,17 @@ namespace E_StoreX.ServiceTests
         private readonly Mock<IMapper> _mapperMock;
         private readonly CategoriesService _categoriesService;
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+        private readonly Mock<IEntityImageManager<Category>> _entityImageManagerMock;
+        private readonly Mock<IImageService> _imageServiceMock;
         public CategoriesServiceTests()
         {
             _unitOfWorkMock = new Mock<IUnitOfWork>();
             _mapperMock = new Mock<IMapper>();
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
+            _entityImageManagerMock = new Mock<IEntityImageManager<Category>>();
+            _imageServiceMock = new Mock<IImageService>();
             _unitOfWorkMock.Setup(u => u.CategoryRepository).Returns(_categoryRepositoryMock.Object);
-            _categoriesService = new CategoriesService(_mapperMock.Object, _unitOfWorkMock.Object);
+            _categoriesService = new CategoriesService(_mapperMock.Object, _unitOfWorkMock.Object,_entityImageManagerMock.Object,_imageServiceMock.Object);
         }
 
         #region CreateCategoryAsync Tests

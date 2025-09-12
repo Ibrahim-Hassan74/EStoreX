@@ -5,6 +5,7 @@ using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
+using EStoreX.Core.Services.Products;
 using Microsoft.AspNetCore.Mvc;
 
 namespace E_StoreX.API.Controllers.Admin
@@ -22,17 +23,17 @@ namespace E_StoreX.API.Controllers.Admin
     [ApiVersion(2.0)]
     public class BrandsController : AdminControllerBase
     {
-        private readonly IBrandService _brandService;
+        private readonly IBrandService _brandsService;
         private readonly IExportService _exportService;
 
         /// <summary>
         /// Initializes a new instance of <see cref="BrandsController"/>.
         /// </summary>
-        /// <param name="brandService">Service to manage brand operations.</param>
+        /// <param name="brandsService">Service to manage brand operations.</param>
         /// <param name="exportService">Service to manage files.</param>
-        public BrandsController(IBrandService brandService, IExportService exportService)
+        public BrandsController(IBrandService brandsService, IExportService exportService)
         {
-            _brandService = brandService;
+            _brandsService = brandsService;
             _exportService = exportService;
         }
 
@@ -53,7 +54,7 @@ namespace E_StoreX.API.Controllers.Admin
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest(ApiResponseFactory.NotFound("Brand name cannot be empty."));
 
-            var brand = await _brandService.CreateBrandAsync(name);
+            var brand = await _brandsService.CreateBrandAsync(name);
             return Ok(brand);
         }
 
@@ -77,7 +78,7 @@ namespace E_StoreX.API.Controllers.Admin
             if (string.IsNullOrWhiteSpace(newName))
                 return BadRequest(ApiResponseFactory.NotFound("New name cannot be empty."));
 
-            var updatedBrand = await _brandService.UpdateBrandAsync(id, newName);
+            var updatedBrand = await _brandsService.UpdateBrandAsync(id, newName);
 
             if (updatedBrand == null)
                 return NotFound(ApiResponseFactory.NotFound("Brand not found."));
@@ -98,7 +99,7 @@ namespace E_StoreX.API.Controllers.Admin
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var deleted = await _brandService.DeleteBrandAsync(id);
+            var deleted = await _brandsService.DeleteBrandAsync(id);
             if (!deleted)
                 return NotFound(ApiResponseFactory.NotFound("Brand not found."));
 
@@ -131,7 +132,7 @@ namespace E_StoreX.API.Controllers.Admin
 
         public async Task<IActionResult> Export(ExportType type)
         {
-            var brands = await _brandService.GetAllBrandsAsync();
+            var brands = await _brandsService.GetAllBrandsAsync();
 
             return type switch
             {
@@ -140,6 +141,77 @@ namespace E_StoreX.API.Controllers.Admin
                 ExportType.Pdf => File(_exportService.ExportToPdf(brands), "application/pdf", "brands.pdf"),
                 _ => BadRequest(ApiResponseFactory.BadRequest("Unsupported export type"))
             };
+        }
+        /// <summary>
+        /// Deletes a specific brand image by its ID.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <param name="photoId">The unique identifier of the photo to delete.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the image was deleted successfully;  
+        /// <c>404 Not Found</c> if the brand or the photo was not found;  
+        /// <c>500 Internal Server Error</c> if an unexpected error occurs.
+        /// </returns>
+        /// <response code="200">Image deleted successfully.</response>
+        /// <response code="404">Brand or image not found.</response>
+        /// <response code="500">Unexpected server error.</response>
+        [HttpDelete("{brandId:guid}/images/{photoId:guid}")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteBrandImage(Guid brandId, Guid photoId)
+        {
+            var response = await _brandsService.DeleteBrandImageAsync(brandId, photoId);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        /// <summary>
+        /// Adds images to the specified brand.
+        /// </summary>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <param name="files">The list of image files to upload.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the images were added successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the brand does not exist.
+        /// </returns>
+        /// <response code="200">Images added successfully.</response>
+        /// <response code="400">No files were provided.</response>
+        /// <response code="404">Brand not found.</response>
+        [HttpPost("{brandId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AddBrandImages(Guid brandId, [FromForm] List<IFormFile> files)
+        {
+            var response = await _brandsService.AddBrandImagesAsync(brandId, files);
+            return StatusCode(response.StatusCode, response);
+        }
+
+        /// <summary>
+        /// Updates all images of the specified brand.
+        /// </summary>
+        /// <remarks>
+        /// This will remove all existing images of the brand and replace them with the newly uploaded ones.
+        /// </remarks>
+        /// <param name="brandId">The unique identifier of the brand.</param>
+        /// <param name="files">The list of new image files to upload.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the images were updated successfully;  
+        /// <c>400 Bad Request</c> if no files were provided;  
+        /// <c>404 Not Found</c> if the brand does not exist.
+        /// </returns>
+        /// <response code="200">Images updated successfully.</response>
+        /// <response code="400">No files were provided.</response>
+        /// <response code="404">Brand not found.</response>
+        [HttpPatch("{brandId:guid}/images")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> UpdateBrandImages(Guid brandId, [FromForm] List<IFormFile> files)
+        {
+            var response = await _brandsService.UpdateBrandImagesAsync(brandId, files);
+            return StatusCode(response.StatusCode, response);
         }
     }
 }

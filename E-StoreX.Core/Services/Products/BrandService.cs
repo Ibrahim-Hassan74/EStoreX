@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
 using Domain.Entities.Product;
 using EStoreX.Core.DTO.Categories.Responses;
+using EStoreX.Core.DTO.Common;
+using EStoreX.Core.Helper;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.RepositoryContracts.Products;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
 using EStoreX.Core.Services.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace EStoreX.Core.Services.Products
 {
@@ -14,10 +18,14 @@ namespace EStoreX.Core.Services.Products
     public class BrandService : BaseService, IBrandService
     {
         private readonly IBrandRepository _brandRepository;
+        private readonly IEntityImageManager<Brand> _imageManager;
+        private readonly IImageService _imageService;
 
-        public BrandService(IUnitOfWork unitOfWork, IMapper mapper) : base(unitOfWork, mapper)
+        public BrandService(IUnitOfWork unitOfWork, IMapper mapper, IEntityImageManager<Brand> imageManager, IImageService imageService) : base(unitOfWork, mapper)
         {
             _brandRepository = _unitOfWork.BrandRepository;
+            _imageManager = imageManager;
+            _imageService = imageService;
         }
 
         /// <inheritdoc/>
@@ -115,5 +123,92 @@ namespace EStoreX.Core.Services.Products
             var categories = await _brandRepository.GetCategoriesByBrandIdAsync(brandId);
             return _mapper.Map<IEnumerable<CategoryResponse>>(categories);
         }
+        /// <inheritdoc/>
+        public async Task<ApiResponse> GetBrandImagesAsync(Guid brandId)
+        {
+            return await _imageManager.GetImagesAsync(
+                brandId,
+                async (uow, id) => await uow.BrandRepository.GetByIdAsync(id, b => b.Photos),
+                brand => brand.Photos
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> DeleteBrandImageAsync(Guid brandId, Guid photoId)
+        {
+            return await _imageManager.DeleteImageAsync(
+                brandId,
+                photoId,
+                async (uow, id) => await uow.BrandRepository.GetByIdAsync(id, b => b.Photos),
+                brand => brand.Photos
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> AddBrandImagesAsync(Guid brandId, List<IFormFile> files)
+        {
+            var brand = await _unitOfWork.BrandRepository.GetByIdAsync(brandId, b => b.Photos);
+            if (brand == null)
+                return ApiResponseFactory.NotFound("Brand not found.");
+
+            var folderName = brand.Name.Replace(" ", "_");
+
+            return await _imageManager.AddImagesAsync(
+                brandId,
+                files,
+                folderName,
+                async (uow, id) => await uow.BrandRepository.GetByIdAsync(id, b => b.Photos),
+                (entity, imagePaths) =>
+                {
+                    foreach (var path in imagePaths)
+                    {
+                        entity.Photos.Add(new Photo
+                        {
+                            BrandId = brandId,
+                            ImageName = path
+                        });
+                    }
+                }
+            );
+        }
+
+        /// <inheritdoc/>
+        public async Task<ApiResponse> UpdateBrandImagesAsync(Guid brandId, List<IFormFile> files)
+        {
+            var brand = await _unitOfWork.BrandRepository.GetByIdAsync(brandId, b => b.Photos);
+            if (brand == null)
+                return ApiResponseFactory.NotFound("Brand not found.");
+
+            if (files == null || files.Count == 0)
+                return ApiResponseFactory.BadRequest("No files provided.");
+
+            // Delete old images
+            foreach (var photo in brand.Photos.ToList())
+            {
+                _imageService.DeleteImageAsync(photo.ImageName);
+                brand.Photos.Remove(photo);
+            }
+
+            var folderName = brand.Name.Replace(" ", "").ToLowerInvariant();
+
+            var formFileCollection = new FormFileCollection();
+            foreach (var file in files)
+                formFileCollection.Add(file);
+
+            var imagePaths = await _imageService.AddImageAsync(formFileCollection, $"Brands/{folderName}");
+
+            foreach (var path in imagePaths)
+            {
+                brand.Photos.Add(new Photo
+                {
+                    ImageName = path,
+                    BrandId = brandId
+                });
+            }
+
+            await _unitOfWork.CompleteAsync();
+            return ApiResponseFactory.Success("Images updated successfully.");
+        }
+
     }
 }
