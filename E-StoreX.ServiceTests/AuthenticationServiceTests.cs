@@ -454,7 +454,7 @@ namespace E_StoreX.ServiceTests
             // Assert
             result.Success.Should().BeFalse();
             result.StatusCode.Should().Be(403);
-            _emailSenderMock.Verify(e => e.SendEmailAsync(It.Is<EmailDTO>(m => m.Email == user.Email)), Times.Once);
+            _emailSenderMock.Verify(e => e.SendEmailAsync(It.Is<EmailDTO>(m => m.Email == user.Email)), Times.Never);
         }
 
         [Fact]
@@ -600,6 +600,8 @@ namespace E_StoreX.ServiceTests
             _userManagerMock.Setup(m => m.FindByIdAsync(dto.UserId)).ReturnsAsync(user);
             _userManagerMock.Setup(m => m.IsEmailConfirmedAsync(user)).ReturnsAsync(false);
             _userManagerMock.Setup(m => m.ConfirmEmailAsync(user, dto.Token)).ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(m => m.UpdateAsync(user)).ReturnsAsync(IdentityResult.Success);
+            _userManagerMock.Setup(m => m.RemoveAuthenticationTokenAsync(user,It.IsAny<string>(), It.IsAny<string>())).ReturnsAsync(IdentityResult.Success);
 
             var result = await _authenticationService.ConfirmEmailAsync(dto);
 

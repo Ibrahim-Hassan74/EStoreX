@@ -13,7 +13,7 @@ namespace EStoreX.Core.Mapping
                 .ForMember(dest => dest.IsActive,
                     opt => opt.MapFrom(src => src.LockoutEnd == null || src.LockoutEnd < DateTime.UtcNow))
                 .ForMember(dest => dest.PhotoUrl,
-                    opt => opt.MapFrom(src => src.Photo != null ? src.Photo.ImageName : null));
+                    opt => opt.MapFrom(src => src.Photo != null ? src.Photo.ImageName : ""));
         }
     }
 }
