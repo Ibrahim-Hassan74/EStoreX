@@ -2,12 +2,13 @@
 using Domain.Entities.Product;
 using EStoreX.Core.DTO.Products.Responses;
 using EStoreX.Core.Enums;
-using EStoreX.Infrastructure.Data;
-using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore;
-using EStoreX.Infrastructure.Repository.Common;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Infrastructure.Data;
+using EStoreX.Infrastructure.Repository.Common;
+using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Repository.Products
 {
@@ -110,18 +111,37 @@ namespace Repository.Products
         {
             if (!string.IsNullOrWhiteSpace(query.SearchBy) && !string.IsNullOrWhiteSpace(query.SearchString))
             {
-                var words = query.SearchString.Split(' ');
+                //var words = query.SearchString.Split(' ');
                 switch (query.SearchBy.ToLower())
                 {
                     case "name":
-                    case "description":
-                        products = products.Where(p => words.All(w => p.Name.ToLower().Contains(w.ToLower()) 
-                        || p.Description.ToLower().Contains(w.ToLower())));
+                        products = products.Where(p =>
+                            EF.Functions.FreeText(p.Name, query.SearchString) ||
+                            ApplicationDbContext.Soundex(p.Name) == ApplicationDbContext.Soundex(query.SearchString));
                         break;
+
+                    case "description":
+                        products = products.Where(p =>
+                            EF.Functions.FreeText(p.Description, query.SearchString) ||
+                            ApplicationDbContext.Soundex(p.Description) == ApplicationDbContext.Soundex(query.SearchString));
+                        break;
+
                     case "category":
-                        products = products.Where(p => p.Category.Name.Contains(query.SearchString));
+                        products = products.Where(p =>
+                            EF.Functions.FreeText(p.Category.Name, query.SearchString) ||
+                            ApplicationDbContext.Soundex(p.Category.Name) == ApplicationDbContext.Soundex(query.SearchString));
+                        break;
+
+                    default:
+                        products = products.Where(p =>
+                            EF.Functions.FreeText(p.Name, query.SearchString) ||
+                            EF.Functions.FreeText(p.Description, query.SearchString) ||
+                            ApplicationDbContext.Soundex(p.Name) == ApplicationDbContext.Soundex(query.SearchString) ||
+                            ApplicationDbContext.Soundex(p.Description) == ApplicationDbContext.Soundex(query.SearchString));
                         break;
                 }
+
+
             }
 
             if (query.CategoryId.HasValue)
