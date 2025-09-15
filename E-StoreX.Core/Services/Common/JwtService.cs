@@ -107,7 +107,7 @@ namespace EStoreX.Core.Services.Common
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidateLifetime = false,
+                ValidateLifetime = true,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _configuration["Jwt:Issuer"],
                 ValidAudiences = _configuration.GetSection("Jwt:Audiences").Get<List<string>>(),

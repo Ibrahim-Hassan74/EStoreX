@@ -2050,6 +2050,25 @@
             attaches query parameters (userId + token), and sends a GET request with the API key header.
             </remarks>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Public.FrontendProxyController.ProxyLogin(EStoreX.Core.DTO.Account.Requests.LoginDTO)">
+            <summary>
+            Acts as a proxy endpoint that forwards a login request from the frontend to the backend API.
+            </summary>
+            <param name="request">
+            A <see cref="T:EStoreX.Core.DTO.Account.Requests.LoginDTO"/> containing the user's email and password.
+            </param>
+            <returns>
+            An <see cref="T:Microsoft.AspNetCore.Mvc.IActionResult"/> containing:
+            - 200 OK: if the login succeeded and the JWT token is returned,  
+            - 401 Unauthorized: if the credentials are invalid,  
+            - 4xx/5xx: if other errors occur (e.g. backend unavailable).  
+            </returns>
+            <remarks>
+            This method hides the API key from the frontend by sending the login request through the backend.  
+            If successful, the returned JWT token is stored securely in an HTTP-only cookie and can be used by  
+            Hangfire Dashboard or other backend services that rely on authentication.  
+            </remarks>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.OrdersController">
             <summary>
             Controller responsible for handling order-related operations.
@@ -2307,11 +2326,12 @@
             Middleware to validate API key from incoming HTTP requests.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+        <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.SecuritySettings})">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Middleware.ApiKeyMiddleware"/> class.
             </summary>
             <param name="next">The next middleware in the pipeline.</param>
+            <param name="options">options setting</param>
         </member>
         <member name="M:E_StoreX.API.Middleware.ApiKeyMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext,EStoreX.Core.ServiceContracts.Account.IApiClientService)">
             <summary>

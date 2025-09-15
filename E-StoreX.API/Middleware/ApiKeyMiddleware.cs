@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Http;
 using EStoreX.Core.ServiceContracts.Account;
 using System.Threading.Tasks;
 using EStoreX.Core.Helper;
+using EStoreX.Core.Domain.Options;
+using Microsoft.Extensions.Options;
 
 namespace E_StoreX.API.Middleware
 {
@@ -12,31 +14,22 @@ namespace E_StoreX.API.Middleware
     public class ApiKeyMiddleware
     {
         private readonly RequestDelegate _next;
-        private const string API_KEY_HEADER_NAME = "X-API-KEY";
-        private readonly List<string> allowedStaticPaths = new List<string>
-        {
-            "/reset-password", "/password-reset-success", "/password-reset-failed",
-            "/invalid-reset-link", "/index",
-            "/email-confirm-failed",
-            "/email-confirmed",
-            //"/api/account/external-login",
-            "/api/v1/account/external-login-callback",
-            //"/api/v1/account/confirm-email",
-
-            "/signin-google"
-        };
-        private readonly List<string> allowedStaticExtensions = new List<string>
-        {
-            ".html", ".js", ".css", ".png", ".jpg", ".jpeg", ".svg", ".webp"
-        };
-
+        private readonly string API_KEY_HEADER_NAME;
+        private readonly List<string> allowedStaticPaths;
+        private readonly List<string> allowedStaticExtensions;
+        private readonly SecuritySettings _securitySettings;
         /// <summary>
         /// Initializes a new instance of the <see cref="ApiKeyMiddleware"/> class.
         /// </summary>
         /// <param name="next">The next middleware in the pipeline.</param>
-        public ApiKeyMiddleware(RequestDelegate next)
+        /// <param name="options">options setting</param>
+        public ApiKeyMiddleware(RequestDelegate next, IOptions<SecuritySettings> options)
         {
             _next = next;
+            _securitySettings = options.Value;
+            allowedStaticExtensions = _securitySettings.AllowedStaticExtensions;
+            allowedStaticPaths = _securitySettings.AllowedStaticPaths;
+            API_KEY_HEADER_NAME = _securitySettings.ApiKeyHeaderName;
         }
 
         /// <summary>

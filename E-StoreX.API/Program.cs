@@ -6,8 +6,10 @@ using EStoreX.Core;
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Helper;
+using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Infrastructure;
 using EStoreX.Infrastructure.Data;
+using Hangfire;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
@@ -49,6 +51,12 @@ builder.Services.AddCors(options =>
                           .AllowCredentials());
 });
 
+builder.Services.AddHangfire(config =>
+{
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+});
+
+builder.Services.AddHangfireServer();
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -185,6 +193,9 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddSingleton<IFileProvider>(
     new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
 );
+builder.Services.Configure<SecuritySettings>(
+    builder.Configuration.GetSection("Security"));
+
 
 builder.Services.ConfigureInfrastructure(builder.Configuration);
 
@@ -223,6 +234,11 @@ app.UseStaticFiles();
 app.UseAuthentication();
 
 app.UseAuthorization();
+
+app.UseHangfireDashboard("/dashboard", new DashboardOptions
+{
+    Authorization = new[] { new HangfireAuthorizationFilter(app.Services) }
+});
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 

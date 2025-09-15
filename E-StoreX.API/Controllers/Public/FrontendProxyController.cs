@@ -1,6 +1,8 @@
 ﻿using Asp.Versioning;
 using EStoreX.Core.DTO.Account.Requests;
+using EStoreX.Core.DTO.Common;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.Json;
 
 namespace E_StoreX.API.Controllers.Public
 {
@@ -175,6 +177,69 @@ namespace E_StoreX.API.Controllers.Public
                 return Redirect("/email-confirm-failed");
             }
         }
+
+        /// <summary>
+        /// Acts as a proxy endpoint that forwards a login request from the frontend to the backend API.
+        /// </summary>
+        /// <param name="request">
+        /// A <see cref="LoginDTO"/> containing the user's email and password.
+        /// </param>
+        /// <returns>
+        /// An <see cref="IActionResult"/> containing:
+        /// - 200 OK: if the login succeeded and the JWT token is returned,  
+        /// - 401 Unauthorized: if the credentials are invalid,  
+        /// - 4xx/5xx: if other errors occur (e.g. backend unavailable).  
+        /// </returns>
+        /// <remarks>
+        /// This method hides the API key from the frontend by sending the login request through the backend.  
+        /// If successful, the returned JWT token is stored securely in an HTTP-only cookie and can be used by  
+        /// Hangfire Dashboard or other backend services that rely on authentication.  
+        /// </remarks>
+        [HttpPost("login")]
+        public async Task<IActionResult> ProxyLogin([FromBody] LoginDTO request)
+        {
+            var apiKey = _configuration["ApiSettings:XApiKey"];
+            var loginPath = _configuration["ApiSettings:BackendLoginUrl"];
+
+            var httpContext = _httpContextAccessor.HttpContext;
+            if (httpContext == null)
+                return StatusCode(StatusCodes.Status500InternalServerError, "No HttpContext");
+
+            var baseUrl = $"{httpContext.Request.Scheme}://{httpContext.Request.Host.Value}";
+            var fullApiUrl = $"{baseUrl.TrimEnd('/')}/{loginPath.TrimStart('/')}";
+
+            using var client = _httpClientFactory.CreateClient();
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, fullApiUrl)
+            {
+                Content = JsonContent.Create(request)
+            };
+            httpRequest.Headers.Add("X-API-KEY", apiKey);
+
+            var response = await client.SendAsync(httpRequest);
+            var content = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+                return StatusCode((int)response.StatusCode, content);
+
+            var loginResponse = JsonSerializer.Deserialize<ApiSuccessResponse>(content, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
+
+            if (loginResponse is null || !loginResponse.Success)
+                return Unauthorized();
+
+            httpContext.Response.Cookies.Append("token", $"Bearer {loginResponse.Token}", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.Strict,
+                Expires = loginResponse.Expiration
+            });
+
+            return Ok(new { message = "Login successful", user = loginResponse.UserName, success = loginResponse.Success });
+        }
+
 
     }
 }
