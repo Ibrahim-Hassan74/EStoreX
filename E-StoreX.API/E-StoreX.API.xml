@@ -1093,6 +1093,14 @@
             <response code="400">Unsupported export type requested.</response>
             <response code="401">If the user is not authenticated.</response>
         </member>
+        <member name="M:E_StoreX.API.Controllers.Admin.UserManagementController.GetAdmins">
+            <summary>
+            Retrieves all users who are either Admins or SuperAdmins.
+            </summary>
+            <returns>A list of Admin and SuperAdmin users.</returns>
+            <response code="200">Returns the list of users.</response>
+            <response code="404">If no Admin or SuperAdmin users were found.</response>
+        </member>
         <member name="T:E_StoreX.API.Controllers.Public.AccountController">
             <summary>
             Controller responsible for handling user authentication-related actions
@@ -2357,11 +2365,12 @@
             html rewrite middleware
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Middleware.HtmlRewriteMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate)">
+        <member name="M:E_StoreX.API.Middleware.HtmlRewriteMiddleware.#ctor(Microsoft.AspNetCore.Http.RequestDelegate,Microsoft.Extensions.Options.IOptions{EStoreX.Core.Domain.Options.HtmlRewriteOptions})">
             <summary>
             html rewrite middleware constructor
             </summary>
             <param name="next">call next middleware</param>
+            <param name="options">html redirect paths</param>
         </member>
         <member name="M:E_StoreX.API.Middleware.HtmlRewriteMiddleware.InvokeAsync(Microsoft.AspNetCore.Http.HttpContext)">
             <summary>

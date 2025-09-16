@@ -2,12 +2,7 @@
 using EStoreX.Core.ServiceContracts.Common;
 using Hangfire.Annotations;
 using Hangfire.Dashboard;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace E_StoreX.API.Filters
 {

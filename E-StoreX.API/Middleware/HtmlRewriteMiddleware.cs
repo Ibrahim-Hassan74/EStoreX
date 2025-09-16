@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using EStoreX.Core.Domain.Options;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Options;
 using System.Threading.Tasks;
 
 namespace E_StoreX.API.Middleware
@@ -11,13 +13,16 @@ namespace E_StoreX.API.Middleware
     public class HtmlRewriteMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly Dictionary<string, string> _mappings;
         /// <summary>
         /// html rewrite middleware constructor
         /// </summary>
         /// <param name="next">call next middleware</param>
-        public HtmlRewriteMiddleware(RequestDelegate next)
+        /// <param name="options">html redirect paths</param>
+        public HtmlRewriteMiddleware(RequestDelegate next, IOptions<HtmlRewriteOptions> options)
         {
             _next = next;
+            _mappings = options.Value.Mappings;
         }
         /// <summary>
         /// html rewrite middleware invoke method
@@ -27,16 +32,10 @@ namespace E_StoreX.API.Middleware
         public async Task InvokeAsync(HttpContext context)
         {
             var path = context.Request.Path.Value?.ToLower();
-            context.Request.Path = path switch
-            {
-                "/reset-password" => "/reset-password.html",
-                "/password-reset-success" => "/password-reset-success.html",
-                "/password-reset-failed" => "/password-reset-failed.html",
-                "/invalid-reset-link" => "/invalid-reset-link.html",
-                "/email-confirmed" => "/email-confirmed.html",
-                "/email-confirm-failed" => "/email-confirm-failed.html",
-                _ => context.Request.Path 
-            };
+
+            if (!string.IsNullOrEmpty(path) && _mappings.ContainsKey(path))
+                context.Request.Path = _mappings[path];
+
             await _next(context);
         }
     }

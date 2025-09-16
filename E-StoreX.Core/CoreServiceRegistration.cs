@@ -1,9 +1,12 @@
-﻿using EStoreX.Core.Domain.Options;
+﻿using EStoreX.Core.BackgroundJobs.Interfaces;
+using EStoreX.Core.BackgroundJobs.Jobs;
+using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
 using EStoreX.Core.ServiceContracts.Basket;
 using EStoreX.Core.ServiceContracts.Categories;
 using EStoreX.Core.ServiceContracts.Common;
+using EStoreX.Core.ServiceContracts.Discount;
 using EStoreX.Core.ServiceContracts.Favourites;
 using EStoreX.Core.ServiceContracts.Orders;
 using EStoreX.Core.ServiceContracts.Products;
@@ -26,7 +29,6 @@ using Stripe;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
-using EStoreX.Core.ServiceContracts.Discount;
 using MyDiscountService = EStoreX.Core.Services.Discounts.DiscountService;
 //using EStoreX.Core.Services.Common;
 
@@ -76,6 +78,8 @@ namespace EStoreX.Core
             services.AddScoped<IDeliveryMethodService, DeliveryMethodService>();
 
             services.AddScoped<IDiscountService, MyDiscountService>();
+
+            services.AddScoped<IEmailJob, EmailJob>();
 
             // JWT
             services.AddAuthentication(options =>

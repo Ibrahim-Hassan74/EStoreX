@@ -14,5 +14,6 @@ namespace EStoreX.Core.Domain.IdentityEntities
         public DateTime RefreshTokenExpirationDateTime { get; set; }
         public ICollection<Rating> Ratings { get; set; } = new List<Rating>();
         public virtual Photo? Photo { get; set; }
+        public virtual ICollection<IdentityUserRole<Guid>> UserRoles { get; set; }
     }
 }

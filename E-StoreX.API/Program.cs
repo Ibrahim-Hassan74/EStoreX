@@ -3,6 +3,7 @@ using E_StoreX.API.Filters;
 using E_StoreX.API.Middleware;
 using EStoreX.API.Filters;
 using EStoreX.Core;
+using EStoreX.Core.BackgroundJobs.Schedulers;
 using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Helper;
@@ -19,6 +20,7 @@ using OfficeOpenXml;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.RateLimiting;
+using Hangfire.Console;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -54,6 +56,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddHangfire(config =>
 {
     config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection"));
+    config.UseConsole();
 });
 
 builder.Services.AddHangfireServer();
@@ -193,8 +196,9 @@ builder.Services.AddApiVersioning(options =>
 builder.Services.AddSingleton<IFileProvider>(
     new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot"))
 );
-builder.Services.Configure<SecuritySettings>(
-    builder.Configuration.GetSection("Security"));
+
+builder.Services.Configure<SecuritySettings>(builder.Configuration.GetSection("Security"));
+builder.Services.Configure<HtmlRewriteOptions>(builder.Configuration.GetSection("HtmlRewrite"));
 
 
 builder.Services.ConfigureInfrastructure(builder.Configuration);
@@ -237,8 +241,11 @@ app.UseAuthorization();
 
 app.UseHangfireDashboard("/dashboard", new DashboardOptions
 {
-    Authorization = new[] { new HangfireAuthorizationFilter(app.Services) }
+    Authorization = new[] { new HangfireAuthorizationFilter(app.Services) },
+    AppPath = null
 });
+
+JobScheduler.ScheduleJobs();
 
 app.UseStatusCodePagesWithReExecute("/errors/{0}");
 

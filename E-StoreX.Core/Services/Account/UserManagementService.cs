@@ -6,6 +6,7 @@ using EStoreX.Core.DTO.Common;
 using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
+using iText.Commons.Actions.Contexts;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -228,18 +229,32 @@ namespace EStoreX.Core.Services.Account
         /// <inheritdoc/>
         public async Task<List<ApplicationUserResponse>> GetAllUsersAsync()
         {
-            var users = await _userManager.Users.Include(u => u.Photo).ToListAsync();
+            var users = await _userManager.Users
+                .Include(u => u.Photo) 
+                .ToListAsync();
 
-            var responses = _mapper.Map<List<ApplicationUserResponse>>(users);
+            var filteredUsers = new List<ApplicationUser>();
+            foreach (var user in users)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains(nameof(UserTypeOptions.User)))
+                {
+                    filteredUsers.Add(user);
+                }
+            }
+
+            var responses = _mapper.Map<List<ApplicationUserResponse>>(filteredUsers);
 
             foreach (var response in responses)
             {
-                var user = users.First(u => u.Id.ToString() == response.Id);
+                var user = filteredUsers.First(u => u.Id.ToString() == response.Id);
                 response.Roles = (await _userManager.GetRolesAsync(user)).ToList();
             }
 
             return responses;
         }
+
+
 
         /// <inheritdoc/>
         public async Task<ApplicationUserResponse?> GetUserByIdAsync(string userId)
@@ -250,6 +265,14 @@ namespace EStoreX.Core.Services.Account
             var response = _mapper.Map<ApplicationUserResponse>(user);
             response.Roles = (await _userManager.GetRolesAsync(user)).ToList();
             return response;
+        }
+        /// <inheritdoc/>
+        public async Task<List<ApplicationUserResponse>> GetAdminsAsync()
+        {
+            var admins = await _userManager.GetUsersInRoleAsync(nameof(UserTypeOptions.Admin));
+            var superAdmins = await _userManager.GetUsersInRoleAsync(nameof(UserTypeOptions.SuperAdmin));
+            var res = admins.Concat(superAdmins).Distinct().ToList();
+            return _mapper.Map<List<ApplicationUserResponse>>(res);
         }
     }
 }

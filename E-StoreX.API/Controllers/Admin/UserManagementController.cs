@@ -220,5 +220,23 @@ namespace E_StoreX.API.Controllers.Admin
             };
         }
 
+        /// <summary>
+        /// Retrieves all users who are either Admins or SuperAdmins.
+        /// </summary>
+        /// <returns>A list of Admin and SuperAdmin users.</returns>
+        /// <response code="200">Returns the list of users.</response>
+        /// <response code="404">If no Admin or SuperAdmin users were found.</response>
+        [HttpGet("admins")]
+        [ProducesResponseType(typeof(List<ApplicationUserResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetAdmins()
+        {
+            var admins = await _userManagementService.GetAdminsAsync();
+            if (admins == null || !admins.Any())
+                return NotFound(ApiResponseFactory.NotFound());
+            return Ok(admins);
+        }
+
+
     }
 }

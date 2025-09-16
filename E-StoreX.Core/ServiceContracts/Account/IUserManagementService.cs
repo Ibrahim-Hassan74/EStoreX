@@ -1,6 +1,7 @@
-﻿using EStoreX.Core.DTO.Common;
+﻿using EStoreX.Core.Domain.IdentityEntities;
 using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
+using EStoreX.Core.DTO.Common;
 
 namespace EStoreX.Core.ServiceContracts.Account
 {
@@ -122,6 +123,14 @@ namespace EStoreX.Core.ServiceContracts.Account
         /// permissions (StatusCode 400/403/404).
         /// </returns>
         Task<ApiResponse> RemoveRoleFromUserAsync(UpdateUserRoleDTO updateUserRoleDTO);
+        /// <summary>
+        /// Retrieves all users who are either Admins or SuperAdmins.
+        /// </summary>
+        /// <returns>
+        /// A task that represents the asynchronous operation.  
+        /// The task result contains a list of <see cref="ApplicationUser"/> objects.
+        /// </returns>
+        Task<List<ApplicationUserResponse>> GetAdminsAsync();
 
     }
 
