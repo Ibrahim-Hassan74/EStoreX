@@ -17,15 +17,30 @@ namespace EStoreX.Core.Services.Common
 
         public async Task SendEmailAsync(EmailDTO email)
         {
-            MimeMessage message = new();
+            var message = new MimeMessage();
 
             message.From.Add(new MailboxAddress("E-StoreX", _senderDetails.Email));
-            message.Subject = email.Subject;
             message.To.Add(new MailboxAddress(email.Email, email.Email));
-            message.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            message.Subject = email.Subject;
+
+            var builder = new BodyBuilder
             {
-                Text = email.HtmlMessage
+                HtmlBody = email.HtmlMessage
             };
+
+            if (email.Attachments != null && email.Attachments.Any())
+            {
+                foreach (var attachment in email.Attachments)
+                {
+                    builder.Attachments.Add(
+                        attachment.FileName,
+                        attachment.FileBytes,
+                        ContentType.Parse(attachment.ContentType)
+                    );
+                }
+            }
+
+            message.Body = builder.ToMessageBody();
 
             using (var smtp = new MailKit.Net.Smtp.SmtpClient())
             {
@@ -33,9 +48,10 @@ namespace EStoreX.Core.Services.Common
                 await smtp.AuthenticateAsync(_senderDetails.Email, _senderDetails.Password);
 
                 await smtp.SendAsync(message);
-                smtp.Disconnect(true);
+                await smtp.DisconnectAsync(true);
             }
         }
+
 
     }
 }

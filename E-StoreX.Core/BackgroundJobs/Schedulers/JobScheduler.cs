@@ -12,6 +12,17 @@ namespace EStoreX.Core.BackgroundJobs.Schedulers
                 job => job.SendWeeklyEmailsAsync(null),
                 "45 15 * * 2"
             );
+            RecurringJob.AddOrUpdate<IEmailJob>(
+                "active-discount-email-job",
+                job => job.SendActiveDiscountsEmailAsync(null),
+                Cron.Never
+            );
+            RecurringJob.AddOrUpdate<IEmailJob>(
+                "daily-sales-report-job",
+                job => job.SendDailySalesReportAsync(null),
+                "0 7 * * *"
+            );
+
         }
     }
 }

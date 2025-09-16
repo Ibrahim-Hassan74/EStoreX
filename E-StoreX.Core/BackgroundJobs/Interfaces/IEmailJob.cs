@@ -7,6 +7,8 @@ namespace EStoreX.Core.BackgroundJobs.Interfaces
         Task SendWeeklyEmailsAsync(PerformContext context);
         Task SendOrderConfirmationEmailAsync(Guid orderId, PerformContext context);
         Task SendPaymentFailedEmailAsync(Guid orderId, PerformContext context);
+        Task SendActiveDiscountsEmailAsync(PerformContext context);
+        Task SendDailySalesReportAsync(PerformContext context);
     }
 
 }

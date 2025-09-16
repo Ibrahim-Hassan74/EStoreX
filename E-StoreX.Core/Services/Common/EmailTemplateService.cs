@@ -588,7 +588,171 @@ namespace EStoreX.Core.Services.Common
 </body>
 </html>";
         }
+        public static string GetDiscountEmailTemplate(
+            string userName,
+            string discountCode,
+            decimal? percentage,       
+            DateTime expiryDate,
+            decimal exampleOrderAmount = 500)
+        {
+            string discountText = "";
+
+            if (percentage.HasValue && percentage.Value > 0)
+            {
+                var exampleSaving = exampleOrderAmount * (percentage.Value / 100);
+                discountText = $"Save {percentage.Value}% on your next order " +
+                               $"<br><small>(e.g. save {exampleSaving:C} on a {exampleOrderAmount:C} order)</small>";
+            }
+            else
+            {
+                discountText = "Special discount just for you!";
+            }
+
+            return $@"
+<html lang='en'>
+<head>
+  <meta charset='UTF-8'>
+  <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+  <style>
+    body {{
+      background-color: #f9fafb;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #1e293b;
+    }}
+    .container {{
+      max-width: 600px;
+      margin: 40px auto;
+      background: #ffffff;
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      overflow: hidden;
+    }}
+    .header {{
+      background: linear-gradient(135deg, #16a34a, #065f46);
+      padding: 28px 20px;
+      text-align: center;
+      color: #ffffff;
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }}
+    .body {{
+      padding: 32px 24px;
+    }}
+    .body h2 {{
+      margin-bottom: 16px;
+      font-size: 22px;
+      color: #0f172a;
+    }}
+    .body p {{
+      color: #475569;
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }}
+    .discount-box {{
+      text-align: center;
+      background-color: #ecfdf5;
+      border: 2px dashed #16a34a;
+      border-radius: 10px;
+      padding: 20px;
+      margin: 20px 0;
+    }}
+    .discount-box h3 {{
+      font-size: 20px;
+      color: #065f46;
+      margin: 0 0 10px 0;
+    }}
+    .discount-code {{
+      font-size: 24px;
+      font-weight: bold;
+      color: #16a34a;
+      background: #f0fdf4;
+      padding: 10px 20px;
+      border-radius: 6px;
+      display: inline-block;
+      letter-spacing: 2px;
+    }}
+    .cta {{
+      text-align: center;
+      margin: 30px 0;
+    }}
+    .cta a {{
+      display: inline-block;
+      padding: 12px 28px;
+      background-color: #16a34a;
+      color: #ffffff;
+      text-decoration: none;
+      border-radius: 6px;
+      font-weight: 600;
+      transition: background-color 0.3s ease;
+    }}
+    .cta a:hover {{
+      background-color: #15803d;
+    }}
+    .footer {{
+      padding: 16px;
+      text-align: center;
+      font-size: 13px;
+      color: #94a3b8;
+      border-top: 1px solid #e2e8f0;
+      background-color: #f8fafc;
+    }}
+  </style>
+</head>
+<body>
+  <div class='container'>
+    <div class='header'>Exclusive Discount for You 🎉</div>
+    <div class='body'>
+      <h2>Hi {userName},</h2>
+      <p>
+        As a valued member of <strong>E-StoreX</strong>, we’re excited to offer you a special discount!
+      </p>
+
+      <div class='discount-box'>
+        <h3>{discountText}</h3>
+        <div class='discount-code'>{discountCode}</div>
+        <p>Valid until: {expiryDate:MMMM dd, yyyy}</p>
+      </div>
+
+      <p>
+        Don’t miss this limited-time offer. Use the code at checkout and enjoy your savings 🚀
+      </p>
+
+      <div class='cta'>
+        <a href='https://estorex.runasp.net/'>Shop Now</a>
+      </div>
+    </div>
+    <div class='footer'>
+      &copy; {DateTime.Now.Year} E-StoreX. Developed by Ibrahim Hassan.
+    </div>
+  </div>
+</body>
+</html>";
+        }
+        public static string GetDailySalesReportTemplate(DateTime startDate, DateTime endDate)
+        {
+            return $@"
+<html>
+  <body style='font-family:Segoe UI, sans-serif; background:#f9fafb; padding:20px;'>
+    <div style='max-width:600px;margin:auto;background:#fff;border-radius:12px;padding:20px;box-shadow:0 4px 10px rgba(0,0,0,0.05)'>
+      <h2 style='color:#2563eb'>📊 Daily Sales Report</h2>
+      <p>Hello Admin,</p>
+      <p>Please find attached the sales report for the period:</p>
+      <ul>
+        <li><strong>From:</strong> {startDate:yyyy-MM-dd}</li>
+        <li><strong>To:</strong> {endDate:yyyy-MM-dd}</li>
+      </ul>
+      <p>You can download and review the Excel file attached below.</p>
+      <p style='margin-top:30px;font-size:12px;color:#94a3b8;text-align:center'>
+        &copy; {DateTime.Now.Year} E-StoreX. Developed by Ibrahim Hassan.
+      </p>
+    </div>
+  </body>
+</html>";
+        }
 
     }
-
 }
