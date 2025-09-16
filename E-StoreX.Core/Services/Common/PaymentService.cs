@@ -1,9 +1,11 @@
 ﻿using Domain.Entities.Baskets;
+using EStoreX.Core.BackgroundJobs.Interfaces;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Enums;
-using Microsoft.Extensions.Options;
 using EStoreX.Core.RepositoryContracts.Common;
 using EStoreX.Core.ServiceContracts.Common;
+using Hangfire;
+using Microsoft.Extensions.Options;
 using Stripe;
 using MyProduct = Domain.Entities.Product.Product;
 
@@ -83,7 +85,9 @@ namespace EStoreX.Core.Services.Common
             if (order is null) return false;
 
             order.Status = Status.PaymentFailed;
-            await _unitOfWork.CompleteAsync();
+            var res = await _unitOfWork.CompleteAsync();
+            if (res <= 0) return false;
+            BackgroundJob.Enqueue<IEmailJob>(job => job.SendPaymentFailedEmailAsync(order.Id, null));
             return true;
         }
         /// <inheritdoc/>
@@ -119,7 +123,9 @@ namespace EStoreX.Core.Services.Common
             }
 
             order.Status = Status.PaymentReceived;
-            await _unitOfWork.CompleteAsync();
+            var res = await _unitOfWork.CompleteAsync();
+            if (res <= 0) return false;
+            BackgroundJob.Enqueue<IEmailJob>(job => job.SendOrderConfirmationEmailAsync(order.Id, null));
             return true;
         }
 

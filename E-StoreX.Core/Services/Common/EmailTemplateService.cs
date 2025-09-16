@@ -1,4 +1,7 @@
-﻿namespace EStoreX.Core.Services.Common
+﻿using EStoreX.Core.Domain.Entities.Orders;
+using System.Text;
+
+namespace EStoreX.Core.Services.Common
 {
     public static class EmailTemplateService
     {
@@ -323,6 +326,266 @@
       </div>
     </div>
   </body>
+</html>";
+        }
+
+        public static string GetOrderConfirmationEmailTemplate(Order order)
+        {
+            var itemsBuilder = new StringBuilder();
+            foreach (var item in order.OrderItems)
+            {
+                itemsBuilder.Append($@"
+                <tr>
+                    <td>{item.ProductName}</td>
+                    <td><img src='{item.MainImage}' alt='{item.ProductName}' style='width:50px; border-radius:6px;'/></td>
+                    <td>{item.Quantity}</td>
+                    <td>{item.Price:C}</td>
+                </tr>");
+            }
+            var discountRow = string.Empty;
+            if (!string.IsNullOrEmpty(order.DiscountCode))
+            {
+                discountRow = $@"<p><strong>Discount:</strong> {order.DiscountCode} (-{order.DiscountValue:C})</p>";
+            }
+
+            return $@"
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        body {{
+            background-color: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #1e293b;
+        }}
+        .container {{
+            max-width: 650px;
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }}
+        .header {{
+            background: linear-gradient(135deg, #2563eb, #0f172a);
+            padding: 28px 20px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }}
+        .body {{
+            padding: 28px 22px;
+        }}
+        .body h2 {{
+            margin-bottom: 14px;
+            font-size: 22px;
+            color: #0f172a;
+        }}
+        .body p {{
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }}
+        table th, table td {{
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            font-size: 14px;
+            text-align: left;
+        }}
+        table th {{
+            background-color: #f1f5f9;
+        }}
+        .total {{
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+        }}
+        .footer {{
+            padding: 16px;
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>E-StoreX</div>
+        <div class='body'>
+            <h2>Thank you for your order!</h2>
+            <p>Hi {order.Buyer.DisplayName},</p>
+            <p>Your order has been successfully placed on <strong>{order.OrderDate:MMMM dd, yyyy}</strong>.</p>
+
+            <p><strong>Order ID:</strong> {order.Id}</p>
+            <p><strong>Shipping Address:</strong> {order.ShippingAddress?.Street}, {order.ShippingAddress?.City}</p>
+            <p><strong>Delivery Method:</strong> {order.DeliveryMethod?.Name} ({order.DeliveryMethod?.Price:C})</p>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Image</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {itemsBuilder}
+                </tbody>
+            </table>
+
+            {discountRow}
+
+            <p class='total'>Total: {order.GetTotal() - order.DiscountValue:C}</p>
+
+            <p>If you have any questions, just reply to this email — we’re happy to help!</p>
+        </div>
+        <div class='footer'>
+            &copy; {DateTime.Now.Year} E-StoreX. Developed by Ibrahim Hassan.
+        </div>
+    </div>
+</body>
+</html>";
+        }
+
+        public static string GetPaymentFailedEmailTemplate(Order order)
+        {
+            var itemsBuilder = new StringBuilder();
+            foreach (var item in order.OrderItems)
+            {
+                itemsBuilder.Append($@"
+                <tr>
+                    <td>{item.ProductName}</td>
+                    <td><img src='{item.MainImage}' alt='{item.ProductName}' style='width:50px; border-radius:6px;'/></td>
+                    <td>{item.Quantity}</td>
+                    <td>{item.Price:C}</td>
+                </tr>");
+            }
+
+            return $@"
+<html lang='en'>
+<head>
+    <meta charset='UTF-8'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <style>
+        body {{
+            background-color: #f9fafb;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #1e293b;
+        }}
+        .container {{
+            max-width: 650px;
+            margin: 30px auto;
+            background: #ffffff;
+            border-radius: 14px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            overflow: hidden;
+        }}
+        .header {{
+            background: #dc2626;
+            padding: 28px 20px;
+            text-align: center;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }}
+        .body {{
+            padding: 28px 22px;
+        }}
+        .body h2 {{
+            margin-bottom: 14px;
+            font-size: 22px;
+            color: #b91c1c;
+        }}
+        .body p {{
+            color: #475569;
+            font-size: 15px;
+            line-height: 1.6;
+            margin-bottom: 14px;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }}
+        table th, table td {{
+            border: 1px solid #e5e7eb;
+            padding: 10px;
+            font-size: 14px;
+            text-align: left;
+        }}
+        table th {{
+            background-color: #f1f5f9;
+        }}
+        table td img {{
+            max-width: 50px;
+            border-radius: 6px;
+        }}
+        .total {{
+            text-align: right;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 15px;
+        }}
+        .footer {{
+            padding: 16px;
+            text-align: center;
+            font-size: 13px;
+            color: #94a3b8;
+            border-top: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }}
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <div class='header'>Payment Failed ❌</div>
+        <div class='body'>
+            <h2>We're sorry, {order.BuyerEmail}.</h2>
+            <p>Your payment for order <strong>#{order.Id}</strong> on <strong>{order.OrderDate:MMMM dd, yyyy}</strong> did not go through.</p>
+            <p>Please check your payment details and try again, or use a different payment method.</p>
+
+            <h3>Order Summary</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Image</th>
+                        <th>Qty</th>
+                        <th>Price</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {itemsBuilder}
+                </tbody>
+            </table>
+
+            <p class='total'>Total: {order.GetTotal() - order.DiscountValue:C}</p>
+
+            <p>If the issue persists, please contact our support team and we’ll be happy to help you.</p>
+        </div>
+        <div class='footer'>
+            &copy; {DateTime.Now.Year} E-StoreX. Developed by Ibrahim Hassan.
+        </div>
+    </div>
+</body>
 </html>";
         }
 
