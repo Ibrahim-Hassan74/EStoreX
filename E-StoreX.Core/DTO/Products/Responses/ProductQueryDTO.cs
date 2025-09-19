@@ -5,7 +5,7 @@ namespace EStoreX.Core.DTO.Products.Responses
 {
     public class ProductQueryDTO
     {
-        public string? SearchBy { get; set; } = "";
+        public SearchByOptions SearchBy { get; set; } = SearchByOptions.None;
         public string? SearchString { get; set; } = "";
 
         public decimal? MinPrice { get; set; }

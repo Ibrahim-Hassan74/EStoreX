@@ -10,7 +10,7 @@ The project is structured for **scalability, maintainability, and long-term evol
 ## 🔹 Overview
 
 E-StoreX provides a robust backend platform for an e-commerce application that supports **multiple roles** (User, Admin, SuperAdmin) with **secure authentication and authorization**.  
-It covers the complete e-commerce workflow, starting from **product management, browsing, and cart handling**, to **checkout, payments, notifications, and order lifecycle tracking**.
+It covers the complete e-commerce workflow, starting from **product management, browsing, and cart handling**, to **checkout, payments, notifications, background jobs, and order lifecycle tracking**.
 
 ---
 
@@ -59,6 +59,7 @@ This project was developed with a strong focus on:
 
 - Product creation, editing, deletion, and querying
 - Category management with hierarchical support
+- **Fuzzy search** for smarter and more user-friendly queries
 - Filtering, sorting, and pagination of products
 - Image and media file handling
 
@@ -90,6 +91,12 @@ This project was developed with a strong focus on:
 - MailKit/MimeKit for transactional emails (order confirmation, password reset, etc.)
 - Configurable notification templates
 
+### Background Jobs
+
+- **Hangfire** for background job scheduling and processing
+- Supports delayed jobs, recurring tasks, and retries
+- Used for sending emails, cleaning up old data, and scheduled maintenance
+
 ### Infrastructure & Architecture
 
 - Clean separation into Core, Infrastructure, and API layers
@@ -105,36 +112,15 @@ This project was developed with a strong focus on:
 - Log correlation IDs for request tracing
 - Centralized logging configuration
 
-### Testing
-
-- Unit tests with xUnit
-- Mocking with Moq
-- FluentAssertions for readable test assertions
-- AutoFixture for test data generation
-- Integration tests covering critical workflows
-- Code coverage analysis with Coverlet
-
-### Documentation & Versioning
-
-- Interactive API exploration with Swagger
-- Developer-friendly API documentation via Redoc
-- API versioning (v1, v2 live, v3 in development)
-- Consistent API response contract across all endpoints
-
-### File & Report Handling
-
-- EPPlus for Excel export and import
-- iText7 for generating PDF invoices and reports
-- Downloadable reports for admins (sales, orders, users, etc.)
-
 ---
 
 ## Technology Stack
 
 - **Backend / APIs:** ASP.NET Core Web API, EF Core (SQL Server), AutoMapper
 - **Architecture:** Clean Architecture (Core, Infrastructure, API)
-- **Authentication & Authorization:** ASP.NET Identity, JWT, OAuth (Google & GitHub)
-- **Caching:** Redis (StackExchange.Redis)
+- **Authentication & Authorization:** Identity, JWT, OAuth (Google & GitHub)
+- **Caching & Search:** Redis (StackExchange.Redis), Fuzzy search implementation
+- **Background Jobs:** Hangfire
 - **Payments & Notifications:** Stripe.NET, MailKit, MimeKit
 - **File & Reports:** EPPlus (Excel), iText7 (PDFs)
 - **Documentation:** Swagger, Redoc

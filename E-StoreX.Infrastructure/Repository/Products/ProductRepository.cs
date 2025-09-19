@@ -109,39 +109,37 @@ namespace Repository.Products
 
         private IQueryable<Product> ApplyFiltering(IQueryable<Product> products, ProductQueryDTO query)
         {
-            if (!string.IsNullOrWhiteSpace(query.SearchBy) && !string.IsNullOrWhiteSpace(query.SearchString))
+            if (!string.IsNullOrWhiteSpace(query.SearchString))
             {
-                //var words = query.SearchString.Split(' ');
-                switch (query.SearchBy.ToLower())
+                switch (query.SearchBy)
                 {
-                    case "name":
+                    case SearchByOptions.Name:
                         products = products.Where(p =>
                             EF.Functions.FreeText(p.Name, query.SearchString) ||
                             ApplicationDbContext.Soundex(p.Name) == ApplicationDbContext.Soundex(query.SearchString));
                         break;
 
-                    case "description":
+                    case SearchByOptions.Description:
                         products = products.Where(p =>
                             EF.Functions.FreeText(p.Description, query.SearchString) ||
                             ApplicationDbContext.Soundex(p.Description) == ApplicationDbContext.Soundex(query.SearchString));
                         break;
 
-                    case "category":
-                        products = products.Where(p =>
-                            EF.Functions.FreeText(p.Category.Name, query.SearchString) ||
-                            ApplicationDbContext.Soundex(p.Category.Name) == ApplicationDbContext.Soundex(query.SearchString));
+                    case SearchByOptions.Category:
+                        products = products.Where(p => p.Category.Name.Contains(query.SearchString));
                         break;
 
+                    case SearchByOptions.Brand:
+                        products = products.Where(p => p.Brand.Name.Contains(query.SearchString));
+                        break;
+                    case SearchByOptions.None:
                     default:
-                        products = products.Where(p =>
-                            EF.Functions.FreeText(p.Name, query.SearchString) ||
-                            EF.Functions.FreeText(p.Description, query.SearchString) ||
-                            ApplicationDbContext.Soundex(p.Name) == ApplicationDbContext.Soundex(query.SearchString) ||
-                            ApplicationDbContext.Soundex(p.Description) == ApplicationDbContext.Soundex(query.SearchString));
+                        products = products.Where(p => EF.Functions.FreeText(p.Name, query.SearchString) ||
+                        EF.Functions.FreeText(p.Description, query.SearchString) ||
+                        ApplicationDbContext.Soundex(p.Name) == ApplicationDbContext.Soundex(query.SearchString) ||
+                        ApplicationDbContext.Soundex(p.Description) == ApplicationDbContext.Soundex(query.SearchString)); 
                         break;
                 }
-
-
             }
 
             if (query.CategoryId.HasValue)
