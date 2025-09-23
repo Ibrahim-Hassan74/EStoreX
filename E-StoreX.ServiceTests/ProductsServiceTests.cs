@@ -36,8 +36,8 @@ namespace E_StoreX.ServiceTests
             _mapperMock = new Mock<IMapper>();
             _unitOfWorkMock.Setup(u => u.ProductRepository)
                            .Returns(_productRepositoryMock.Object);
-            _productsService = new ProductsService(_unitOfWorkMock.Object, _mapperMock.Object, 
-                _imageManagerMock.Object,_imageServiceMock.Object);
+            _productsService = new ProductsService(_unitOfWorkMock.Object, _mapperMock.Object,
+                _imageManagerMock.Object, _imageServiceMock.Object);
         }
         #region Helper Methods
         private ProductAddRequest CreateValidProductAddRequest()
@@ -516,14 +516,14 @@ namespace E_StoreX.ServiceTests
 
             _productRepositoryMock
                 .Setup(r => r.GetFilteredProductsAsync(query))
-                .ReturnsAsync(products);
+                .ReturnsAsync((products, 1));
 
             _mapperMock
                 .Setup(m => m.Map<IEnumerable<ProductResponse>>(products))
                 .Returns(productResponses);
 
             // Act
-            var result = await _productsService.GetFilteredProductsAsync(query);
+            var (result, size) = await _productsService.GetFilteredProductsAsync(query);
 
             // Assert
             result.Should().NotBeNull();
@@ -558,14 +558,14 @@ namespace E_StoreX.ServiceTests
 
             _productRepositoryMock
                 .Setup(r => r.GetFilteredProductsAsync(query))
-                .ReturnsAsync(products);
+                .ReturnsAsync((products, 1));
 
             _mapperMock
                 .Setup(m => m.Map<IEnumerable<ProductResponse>>(products))
                 .Returns(new List<ProductResponse>());
 
             // Act
-            var result = await _productsService.GetFilteredProductsAsync(query);
+            var (result, size) = await _productsService.GetFilteredProductsAsync(query);
 
             // Assert
             result.Should().NotBeNull();

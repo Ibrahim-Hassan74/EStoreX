@@ -1,5 +1,6 @@
 ﻿using Domain.Entities.Baskets;
 using EStoreX.Core.BackgroundJobs.Interfaces;
+using EStoreX.Core.BackgroundJobs.Wrapper;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Enums;
 using EStoreX.Core.RepositoryContracts.Common;
@@ -17,12 +18,14 @@ namespace EStoreX.Core.Services.Common
         //private readonly IConfiguration _configuration;
         private readonly StripeSettings _stripeSettings;
         private readonly PaymentIntentService _paymentIntentService;
-        public PaymentService(IUnitOfWork unitOfWork, IOptions<StripeSettings> options, PaymentIntentService paymentIntentService)
+        private readonly IBackgroundJobClientWrapper _backgroundJobClient;
+        public PaymentService(IUnitOfWork unitOfWork, IOptions<StripeSettings> options, PaymentIntentService paymentIntentService, IBackgroundJobClientWrapper backgroundJobClient)
         {
             _unitOfWork = unitOfWork;
             //_configuration = configuration;
             _stripeSettings = options.Value;
             _paymentIntentService = paymentIntentService;
+            _backgroundJobClient = backgroundJobClient;
         }
         /// <inheritdoc/>
         public async Task<CustomerBasket> CreateOrUpdatePaymentIntentAsync(string basketId, Guid? deliveryMethodId)
@@ -87,7 +90,9 @@ namespace EStoreX.Core.Services.Common
             order.Status = Status.PaymentFailed;
             var res = await _unitOfWork.CompleteAsync();
             if (res <= 0) return false;
-            BackgroundJob.Enqueue<IEmailJob>(job => job.SendPaymentFailedEmailAsync(order.Id, null));
+            //BackgroundJob.Enqueue<IEmailJob>(job => job.SendPaymentFailedEmailAsync(order.Id, null));
+            _backgroundJobClient.Enqueue<IEmailJob>(job => job.SendPaymentFailedEmailAsync(order.Id, null));
+
             return true;
         }
         /// <inheritdoc/>
@@ -125,7 +130,9 @@ namespace EStoreX.Core.Services.Common
             order.Status = Status.PaymentReceived;
             var res = await _unitOfWork.CompleteAsync();
             if (res <= 0) return false;
-            BackgroundJob.Enqueue<IEmailJob>(job => job.SendOrderConfirmationEmailAsync(order.Id, null));
+            //BackgroundJob.Enqueue<IEmailJob>(job => job.SendOrderConfirmationEmailAsync(order.Id, null));
+            _backgroundJobClient.Enqueue<IEmailJob>(job => job.SendOrderConfirmationEmailAsync(order.Id, null));
+
             return true;
         }
 

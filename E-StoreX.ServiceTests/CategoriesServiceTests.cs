@@ -28,7 +28,7 @@ namespace E_StoreX.ServiceTests
             _entityImageManagerMock = new Mock<IEntityImageManager<Category>>();
             _imageServiceMock = new Mock<IImageService>();
             _unitOfWorkMock.Setup(u => u.CategoryRepository).Returns(_categoryRepositoryMock.Object);
-            _categoriesService = new CategoriesService(_mapperMock.Object, _unitOfWorkMock.Object,_entityImageManagerMock.Object,_imageServiceMock.Object);
+            _categoriesService = new CategoriesService(_mapperMock.Object, _unitOfWorkMock.Object, _entityImageManagerMock.Object, _imageServiceMock.Object);
         }
 
         #region CreateCategoryAsync Tests
@@ -175,16 +175,13 @@ namespace E_StoreX.ServiceTests
             };
 
             var responses = categories
-                .Select(c => new CategoryResponse(c.Id, c.Name, ""))
-                .ToList();
+                .Select(c => new CategoryResponseWithPhotos() { Id = c.Id, Name = c.Name });
 
-            _categoryRepositoryMock.Setup(r => r.GetAllAsync())
+            _categoryRepositoryMock.Setup(r => r.GetAllAsync(x => x.Photos))
                 .ReturnsAsync(categories);
 
-            _mapperMock.Setup(m => m.Map<CategoryResponse>(categories[0]))
-                .Returns(responses[0]);
-            _mapperMock.Setup(m => m.Map<CategoryResponse>(categories[1]))
-                .Returns(responses[1]);
+            _mapperMock.Setup(m => m.Map<IEnumerable<CategoryResponseWithPhotos>>(categories))
+                .Returns(responses);
 
             // Act
             var result = await _categoriesService.GetAllCategoriesAsync();
@@ -194,8 +191,7 @@ namespace E_StoreX.ServiceTests
             result.Count().Should().Be(2);
             result.First().Name.Should().Be("Category 1");
 
-            _categoryRepositoryMock.Verify(r => r.GetAllAsync(), Times.Once);
-            _mapperMock.Verify(m => m.Map<CategoryResponse>(It.IsAny<Category>()), Times.Exactly(2));
+            _categoryRepositoryMock.Verify(r => r.GetAllAsync(x => x.Photos), Times.Once);
         }
 
         [Fact]
@@ -204,7 +200,7 @@ namespace E_StoreX.ServiceTests
             // Arrange
             var categories = new List<Category>();
 
-            _categoryRepositoryMock.Setup(r => r.GetAllAsync())
+            _categoryRepositoryMock.Setup(r => r.GetAllAsync(x => x.Photos))
                 .ReturnsAsync(categories);
 
             // Act
@@ -214,7 +210,7 @@ namespace E_StoreX.ServiceTests
             result.Should().NotBeNull();
             result.Should().BeEmpty();
 
-            _categoryRepositoryMock.Verify(r => r.GetAllAsync(), Times.Once);
+            _categoryRepositoryMock.Verify(r => r.GetAllAsync(x => x.Photos), Times.Once);
             _mapperMock.Verify(m => m.Map<CategoryResponse>(It.IsAny<Category>()), Times.Never);
         }
 

@@ -1,5 +1,7 @@
 ﻿using Domain.Entities.Baskets;
 using Domain.Entities.Product;
+using EStoreX.Core.BackgroundJobs.Interfaces;
+using EStoreX.Core.BackgroundJobs.Wrapper;
 using EStoreX.Core.Domain.Entities.Orders;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Enums;
@@ -8,9 +10,11 @@ using EStoreX.Core.RepositoryContracts.Orders;
 using EStoreX.Core.RepositoryContracts.Products;
 using EStoreX.Core.Services.Common;
 using FluentAssertions;
+using Hangfire;
 using Microsoft.Extensions.Options;
 using Moq;
 using Stripe;
+using System.Linq.Expressions;
 
 namespace E_StoreX.ServiceTests
 {
@@ -22,6 +26,7 @@ namespace E_StoreX.ServiceTests
         private readonly Mock<IProductRepository> _productRepoMock;
         private readonly Mock<IOrderRepository> _orderRepoMock;
         private readonly PaymentService _paymentService;
+        private readonly Mock<IBackgroundJobClientWrapper> _backgroundJobClientMock;
 
         public PaymentServiceTests()
         {
@@ -44,8 +49,12 @@ namespace E_StoreX.ServiceTests
             _paymentIntentServiceMock.Setup(s => s.UpdateAsync(It.IsAny<string>(), It.IsAny<PaymentIntentUpdateOptions>(), null, default))
                 .ReturnsAsync(new PaymentIntent { Id = "pi_123", ClientSecret = "secret_123" });
 
+            _backgroundJobClientMock = new Mock<IBackgroundJobClientWrapper>();
+            _backgroundJobClientMock.Setup(b => b.Enqueue<IEmailJob>(It.IsAny<Expression<Action<IEmailJob>>>()))
+                .Verifiable();
+
             // Inject mock service
-            _paymentService = new PaymentService(_unitOfWorkMock.Object, _stripeSettingsOptions, _paymentIntentServiceMock.Object);
+            _paymentService = new PaymentService(_unitOfWorkMock.Object, _stripeSettingsOptions, _paymentIntentServiceMock.Object, _backgroundJobClientMock.Object);
         }
         #region CreateOrUpdatePaymentIntentAsync Tests
         [Fact]
@@ -208,6 +217,9 @@ namespace E_StoreX.ServiceTests
             var order = new Order { Id = Guid.NewGuid(), Status = Status.Pending };
             _orderRepoMock.Setup(r => r.GetOrderByPaymentIntentIdAsync("pi_123"))
                           .ReturnsAsync(order);
+            _unitOfWorkMock.Setup(u => u.CompleteAsync()).ReturnsAsync(1);
+
+            var mockBackgroundJob = new Mock<BackgroundJob>();
 
             // Act
             var result = await _paymentService.UpdateOrderFailedAsync("pi_123");
@@ -328,6 +340,8 @@ namespace E_StoreX.ServiceTests
                 .Setup(p => p.GetByIdAsync(It.IsAny<Guid>()))
                 .ReturnsAsync((Domain.Entities.Product.Product?)null);
 
+            _unitOfWorkMock.Setup(u => u.CompleteAsync()).ReturnsAsync(1);
+
             // Act
             var result = await _paymentService.UpdateOrderSuccessAsync("pi_123");
 
@@ -371,6 +385,7 @@ namespace E_StoreX.ServiceTests
             _productRepoMock
                 .Setup(p => p.GetByIdAsync(productId))
                 .ReturnsAsync(product);
+            _unitOfWorkMock.Setup(u => u.CompleteAsync()).ReturnsAsync(1);
 
             // Act
             var result = await _paymentService.UpdateOrderSuccessAsync("pi_123");

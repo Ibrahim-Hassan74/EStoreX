@@ -1,5 +1,6 @@
 ﻿using EStoreX.Core.BackgroundJobs.Interfaces;
 using EStoreX.Core.BackgroundJobs.Jobs;
+using EStoreX.Core.BackgroundJobs.Wrapper;
 using EStoreX.Core.Domain.Options;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
@@ -80,6 +81,8 @@ namespace EStoreX.Core
             services.AddScoped<IDiscountService, MyDiscountService>();
 
             services.AddScoped<IEmailJob, EmailJob>();
+
+            services.AddScoped<IBackgroundJobClientWrapper, BackgroundJobClientWrapper>();
 
             // JWT
             services.AddAuthentication(options =>
