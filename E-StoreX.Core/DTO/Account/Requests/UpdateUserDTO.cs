@@ -7,7 +7,7 @@ namespace EStoreX.Core.DTO.Account.Requests
         [Required(ErrorMessage = "User ID is required.")]
         public string UserId { get; set; } = string.Empty;
 
-        [Required(ErrorMessage = "Display Name is required.")]
+        //[Required(ErrorMessage = "Display Name is required.")]
         public string? DisplayName { get; set; } = string.Empty;
 
         [Phone(ErrorMessage = "Invalid phone number.")]

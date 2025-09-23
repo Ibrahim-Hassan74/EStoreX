@@ -20,7 +20,7 @@ namespace EStoreX.Core.ServiceContracts.Categories
         /// A task that represents the asynchronous operation, 
         /// containing a collection of <see cref="CategoryResponse"/>.
         /// </returns>
-        Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync();
+        Task<IEnumerable<CategoryResponseWithPhotos>> GetAllCategoriesAsync();
 
         /// <summary>
         /// Retrieves a category by its identifier.
@@ -30,7 +30,7 @@ namespace EStoreX.Core.ServiceContracts.Categories
         /// A task that represents the asynchronous operation, 
         /// containing the <see cref="CategoryResponse"/> if found; otherwise, <c>null</c>.
         /// </returns>
-        Task<CategoryResponse?> GetCategoryByIdAsync(Guid id);
+        Task<CategoryResponseWithPhotos?> GetCategoryByIdAsync(Guid id);
 
         /// <summary>
         /// Creates a new category.

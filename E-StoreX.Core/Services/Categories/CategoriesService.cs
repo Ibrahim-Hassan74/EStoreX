@@ -57,22 +57,22 @@ namespace EStoreX.Core.Services.Categories
             return res;
         }
 
-        public async Task<IEnumerable<CategoryResponse>> GetAllCategoriesAsync()
+        public async Task<IEnumerable<CategoryResponseWithPhotos>> GetAllCategoriesAsync()
         {
-            var categories = await _categoryRepository.GetAllAsync();
-            var res = categories.Select(x => _mapper.Map<CategoryResponse>(x)).ToList();
+            var categories = await _categoryRepository.GetAllAsync(x => x.Photos);
+            var res = _mapper.Map<IEnumerable<CategoryResponseWithPhotos>>(categories);
             return res;
         }
 
-        public async Task<CategoryResponse?> GetCategoryByIdAsync(Guid id)
+        public async Task<CategoryResponseWithPhotos?> GetCategoryByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
                 throw new ArgumentException("Category ID cannot be empty", nameof(id));
-            var category = await _categoryRepository.GetByIdAsync(id);
+            var category = await _categoryRepository.GetByIdAsync(id, x  => x.Photos);
             if (category == null)
                 return null;
 
-            return _mapper.Map<CategoryResponse>(category);
+            return _mapper.Map<CategoryResponseWithPhotos>(category);
         }
 
         public async Task<CategoryResponse> UpdateCategoryAsync(UpdateCategoryDTO updateCategoryDto)

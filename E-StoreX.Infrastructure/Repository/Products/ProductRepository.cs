@@ -92,7 +92,7 @@ namespace Repository.Products
             return res;
         }
 
-        public async Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductQueryDTO query)
+        public async Task<(IEnumerable<Product>, int)> GetFilteredProductsAsync(ProductQueryDTO query)
         {
             IQueryable<Product> products = _context.Products
                 .Include(p => p.Category)
@@ -101,9 +101,10 @@ namespace Repository.Products
 
             products = ApplyFiltering(products, query);
             products = ApplySorting(products, query);
+            var size = products.Count();
             products = ApplyPagination(products, query);
 
-            return await products.ToListAsync();
+            return (await products.ToListAsync(), size);
         }
 
 

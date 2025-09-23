@@ -41,7 +41,7 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// </summary>
         /// <param name="query">An object containing filtering, sorting, and pagination parameters for products.</param>
         /// <returns>A task that represents the asynchronous operation. The task result contains a collection of <see cref="ProductResponse"/> matching the criteria.</returns>
-        Task<IEnumerable<ProductResponse>> GetFilteredProductsAsync(ProductQueryDTO query);
+        Task<(IEnumerable<ProductResponse>, int size)> GetFilteredProductsAsync(ProductQueryDTO query);
         /// <summary>
         /// number or row in products table
         /// </summary>

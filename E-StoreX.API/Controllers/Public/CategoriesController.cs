@@ -34,7 +34,7 @@ namespace E_StoreX.API.Controllers.Public
         /// OK – Returns the list of categories.
         /// </response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<CategoryResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<CategoryResponseWithPhotos>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetCategories()
         {
             var categories = await _categoriesService.GetAllCategoriesAsync();
@@ -50,7 +50,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="404">Category not found.</response>
         /// <response code="500">Unexpected error occurred.</response>
         [HttpGet("{Id:guid}")]
-        [ProducesResponseType(typeof(CategoryResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(CategoryResponseWithPhotos), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCategoryById(Guid Id)
         {

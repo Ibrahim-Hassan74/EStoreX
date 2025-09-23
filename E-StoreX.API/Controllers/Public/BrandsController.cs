@@ -1,5 +1,6 @@
 ﻿using Asp.Versioning;
 using Domain.Entities.Product;
+using EStoreX.Core.DTO.Brands.Response;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Products.Responses;
@@ -33,7 +34,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <returns>List of all brands.</returns>
         /// <response code="200">Returns the list of brands.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<Brand>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<BrandResponse>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetAll()
         {
             var brands = await _brandsService.GetAllBrandsAsync();
@@ -48,7 +49,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="200">Brand found and returned successfully.</response>
         /// <response code="404">Brand not found.</response>
         [HttpGet("{id:guid}")]
-        [ProducesResponseType(typeof(Brand), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BrandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -70,7 +71,7 @@ namespace E_StoreX.API.Controllers.Public
         /// <response code="200">Brand found and returned successfully.</response>
         /// <response code="404">Brand with the specified name was not found.</response>
         [HttpGet("by-name/{name}")]
-        [ProducesResponseType(typeof(Brand), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(BrandResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetBrandByName(string name)
         {

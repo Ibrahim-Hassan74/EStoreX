@@ -10,7 +10,6 @@ namespace E_StoreX.API.Controllers.Admin
     /// <summary>
     /// API controller for managing ratings in the admin area.  
     /// Provides endpoints for administrators to review, moderate, and delete ratings.  
-    /// This controller is available starting from API version 2.0.
     /// </summary>
     [ApiVersion(2.0)]
     public class RatingsController : AdminControllerBase

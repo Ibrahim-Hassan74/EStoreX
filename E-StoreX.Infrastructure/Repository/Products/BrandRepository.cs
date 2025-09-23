@@ -22,7 +22,7 @@ namespace EStoreX.Infrastructure.Repository.Products
         /// <inheritdoc/>
         public async Task<Brand?> GetByNameAsync(string name)
         {
-            return await _context.Brands
+            return await _context.Brands.Include(b => b.Photos)
                                  .FirstOrDefaultAsync(b => b.Name == name);
         }
         public async Task<IEnumerable<Category>> GetCategoriesByBrandIdAsync(Guid brandId)

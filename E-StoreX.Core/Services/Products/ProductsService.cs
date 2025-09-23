@@ -109,15 +109,16 @@ namespace EStoreX.Core.Services.Products
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<ProductResponse>> GetFilteredProductsAsync(ProductQueryDTO query)
+        public async Task<(IEnumerable<ProductResponse>, int size)> GetFilteredProductsAsync(ProductQueryDTO query)
         {
             if (query == null)
             {
                 throw new ArgumentNullException(nameof(query), "Query cannot be null.");
             }
 
-            var products = await _productRepository.GetFilteredProductsAsync(query);
-            return _mapper.Map<IEnumerable<ProductResponse>>(products);
+            var (products, size) = await _productRepository.GetFilteredProductsAsync(query);
+            var productsResponse = _mapper.Map<IEnumerable<ProductResponse>>(products);
+            return (productsResponse, size);
         }
 
         /// <inheritdoc/>
@@ -222,7 +223,7 @@ namespace EStoreX.Core.Services.Products
                 SortOrder = SortOrderOptions.DESC
             };
 
-            var bestSellers = await _unitOfWork.ProductRepository.GetFilteredProductsAsync(filter);
+            var (bestSellers, totalCount) = await _unitOfWork.ProductRepository.GetFilteredProductsAsync(filter);
 
             if (!bestSellers.Any())
                 return ApiResponseFactory.NotFound("No products found.");

@@ -38,7 +38,7 @@ namespace EStoreX.Core.RepositoryContracts.Products
         /// </summary>
         /// <param name="query">Filtering, sorting, and pagination parameters.</param>
         /// <returns>A collection of <see cref="Product"/> entities that match the query.</returns>
-        Task<IEnumerable<Product>> GetFilteredProductsAsync(ProductQueryDTO query);
+        Task<(IEnumerable<Product>, int)> GetFilteredProductsAsync(ProductQueryDTO query);
     }
 }
 

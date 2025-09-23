@@ -39,9 +39,9 @@ namespace E_StoreX.API.Controllers.Public
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetAllProducts([FromQuery] ProductQueryDTO query)
         {
-            var products = await _productsService.GetFilteredProductsAsync(query);
+            var (products, totalCount) = await _productsService.GetFilteredProductsAsync(query);
 
-            var totalCount = await _productsService.CountProductsAsync();
+            //var totalCount = await _productsService.CountProductsAsync();
 
             if (!products.Any())
                 return NoContent();

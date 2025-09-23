@@ -12,6 +12,11 @@ namespace EStoreX.Core.Mapping
             CreateMap<CategoryRequest, Category>();
             CreateMap<Category, CategoryResponse>();
             CreateMap<UpdateCategoryDTO, Category>();
+            CreateMap<Category, CategoryResponseWithPhotos>()
+                .ForMember(dest => dest.Photos,
+                    opt => opt.MapFrom(src =>
+                        src.Photos != null ? src.Photos : new List<Photo>()
+                    ));
         }
     }
 }

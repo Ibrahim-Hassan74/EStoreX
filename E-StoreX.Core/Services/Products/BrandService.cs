@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Entities.Product;
+using EStoreX.Core.DTO.Brands.Response;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.Helper;
@@ -29,20 +30,22 @@ namespace EStoreX.Core.Services.Products
         }
 
         /// <inheritdoc/>
-        public async Task<IEnumerable<Brand>> GetAllBrandsAsync()
+        public async Task<IEnumerable<BrandResponse>> GetAllBrandsAsync()
         {
-            return await _brandRepository.GetAllAsync();
+
+            var res = await _brandRepository.GetAllAsync(x => x.Photos);
+            return _mapper.Map<IEnumerable<BrandResponse>>(res);
         }
 
         /// <inheritdoc/>
-        public async Task<Brand?> GetBrandByIdAsync(Guid brandId)
+        public async Task<BrandResponse?> GetBrandByIdAsync(Guid brandId)
         {
-            if(brandId == Guid.Empty)
+            if (brandId == Guid.Empty)
             {
                 throw new ArgumentException("Brand ID cannot be empty.", nameof(brandId));
             }
-
-            return await _brandRepository.GetByIdAsync(brandId);
+            var res = await _brandRepository.GetByIdAsync(brandId, x => x.Photos);
+            return _mapper.Map<BrandResponse?>(res);
         }
 
         /// <inheritdoc/>
@@ -99,7 +102,7 @@ namespace EStoreX.Core.Services.Products
         /// <inheritdoc/>
         public async Task<bool> DeleteBrandAsync(Guid brandId)
         {
-            if(brandId == Guid.Empty)
+            if (brandId == Guid.Empty)
                 throw new ArgumentException("Brand ID cannot be empty.", nameof(brandId));
 
             var brand = await _brandRepository.GetByIdAsync(brandId);
@@ -113,9 +116,10 @@ namespace EStoreX.Core.Services.Products
         }
 
         /// <inheritdoc/>
-        public async Task<Brand?> GetBrandByNameAsync(string name)
+        public async Task<BrandResponse?> GetBrandByNameAsync(string name)
         {
-            return await _brandRepository.GetByNameAsync(name);
+            var res = await _brandRepository.GetByNameAsync(name);
+            return _mapper.Map<BrandResponse?>(res);
         }
 
         public async Task<IEnumerable<CategoryResponse>> GetCategoriesByBrandIdAsync(Guid brandId)

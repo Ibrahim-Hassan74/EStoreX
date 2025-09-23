@@ -1,4 +1,5 @@
 ﻿using Domain.Entities.Product;
+using EStoreX.Core.DTO.Brands.Response;
 using EStoreX.Core.DTO.Categories.Responses;
 using EStoreX.Core.DTO.Common;
 using Microsoft.AspNetCore.Http;
@@ -18,7 +19,7 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// A task that represents the asynchronous operation.  
         /// The task result contains a collection of <see cref="Brand"/> entities.
         /// </returns>
-        Task<IEnumerable<Brand>> GetAllBrandsAsync();
+        Task<IEnumerable<BrandResponse>> GetAllBrandsAsync();
 
         /// <summary>
         /// Retrieves a specific brand by its unique identifier.
@@ -28,7 +29,7 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// A task that represents the asynchronous operation.  
         /// The task result contains the <see cref="Brand"/> if found; otherwise, <c>null</c>.
         /// </returns>
-        Task<Brand?> GetBrandByIdAsync(Guid brandId);
+        Task<BrandResponse?> GetBrandByIdAsync(Guid brandId);
 
         /// <summary>
         /// Creates a new brand with the specified name.
@@ -68,7 +69,7 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// Returns the <see cref="Brand"/> entity if found;  
         /// otherwise, returns <c>null</c>.
         /// </returns>
-        Task<Brand?> GetBrandByNameAsync(string name);
+        Task<BrandResponse?> GetBrandByNameAsync(string name);
         /// <summary>
         /// Retrieves all categories associated with a specific brand.
         /// </summary>
