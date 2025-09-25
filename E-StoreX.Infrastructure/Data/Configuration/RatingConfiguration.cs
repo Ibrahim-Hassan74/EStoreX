@@ -19,6 +19,11 @@ namespace EStoreX.Infrastructure.Data.Configuration
                 .WithMany(u => u.Ratings)
                 .HasForeignKey(r => r.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(r => r.User)
+                .WithMany(u => u.Ratings)
+                .HasForeignKey(r => r.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+ 
         }
     }
 }

@@ -18,9 +18,6 @@ namespace EStoreX.Infrastructure.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<ApplicationUser>()
-                .HasAlternateKey(u => u.Email);
-
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
         [DbFunction("SOUNDEX", IsBuiltIn = true)]

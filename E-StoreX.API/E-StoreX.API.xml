@@ -1411,7 +1411,7 @@
             Not Found – User does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
             </response>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLogin(System.String)">
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLogin(EStoreX.Core.Enums.ExternalLoginProvider)">
             <summary>
             Initiates the external login process by redirecting the user to the chosen authentication provider (e.g., Google, GitHub).
             </summary>

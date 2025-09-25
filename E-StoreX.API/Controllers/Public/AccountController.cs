@@ -6,6 +6,7 @@ using EStoreX.Core.DTO.Account.Requests;
 using EStoreX.Core.DTO.Account.Responses;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Orders.Requests;
+using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
 using Microsoft.AspNetCore.Authorization;
@@ -490,16 +491,17 @@ namespace E_StoreX.API.Controllers.Public
         [HttpGet("external-login")]
         [ProducesResponseType(StatusCodes.Status302Found)] // Redirect/Challenge
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public IActionResult ExternalLogin([FromQuery] string provider)
+        public IActionResult ExternalLogin([FromQuery] ExternalLoginProvider provider)
         {
-            if (string.IsNullOrEmpty(provider))
+            var providerName = provider.ToString();
+            if (string.IsNullOrEmpty(providerName))
                 return BadRequest(ApiResponseFactory.BadRequest("Provider is required."));
-            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), nameof(AccountController)) ?? "api/Account/external-login-callback";
+            var redirectUrl = Url.Action(nameof(ExternalLoginCallback), nameof(AccountController)) ?? "api/v1/Account/external-login-callback";
 
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            var properties = _signInManager.ConfigureExternalAuthenticationProperties(providerName, redirectUrl);
             properties.Items["prompt"] = "select_account";
 
-            return Challenge(properties, provider);
+            return Challenge(properties, providerName);
         }
 
         /// <summary>
