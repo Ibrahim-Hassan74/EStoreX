@@ -128,6 +128,22 @@ namespace EStoreX.Core.Helper
         /// </summary>
         public static ApiResponse RequestTimeout(string message = "Request Timeout", List<string>? errors = null)
             => Create(408, message, errors);
+
+        /// <summary>
+        /// Generates query parameters for authentication redirect.
+        /// </summary>
+        public static Dictionary<string, string?> BuildAuthQueryParams(ApiSuccessResponse res)
+        {
+            return new Dictionary<string, string?>
+            {
+                ["token"] = res.Token,
+                ["refreshToken"] = res.RefreshToken,
+                ["expiration"] = res.Expiration?.ToString("o"),
+                ["refreshTokenExpirationDateTime"] = res.RefreshTokenExpirationDateTime.ToString("o"),
+                ["userName"] = res.UserName,
+                ["email"] = res.Email
+            };
+        }
     }
 
 }

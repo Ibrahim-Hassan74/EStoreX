@@ -35,7 +35,7 @@ namespace E_StoreX.API.Controllers.Admin
         /// <summary>
         /// Creates a new product in the database.
         /// </summary>
-        /// <param name="productRequest">The product details to be created.</param>
+        /// <param name="productRequest">The product details to be created.</param> 
         /// <returns>
         /// Returns <see cref="OkObjectResult"/> with the created <see cref="ProductResponse"/>.  
         /// </returns>
@@ -46,7 +46,7 @@ namespace E_StoreX.API.Controllers.Admin
         [ProducesResponseType(typeof(ProductResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ProductResponse>> CreateProduct(ProductAddRequest productRequest)
+        public async Task<ActionResult<ProductResponse>> CreateProduct([FromForm] ProductAddRequest productRequest)
         {
             var createdProduct = await _productsService.CreateProductAsync(productRequest);
             return Ok(createdProduct);

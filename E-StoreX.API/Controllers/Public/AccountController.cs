@@ -9,10 +9,12 @@ using EStoreX.Core.DTO.Orders.Requests;
 using EStoreX.Core.Enums;
 using EStoreX.Core.Helper;
 using EStoreX.Core.ServiceContracts.Account;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using IAuthService = EStoreX.Core.ServiceContracts.Account.IAuthenticationService;
 
 namespace E_StoreX.API.Controllers.Public
 {
@@ -23,10 +25,10 @@ namespace E_StoreX.API.Controllers.Public
     [ApiVersion(1.0)]
     public class AccountController : CustomControllerBase
     {
-        private readonly IAuthenticationService _authService;
+        private readonly IAuthService _authService;
         private readonly IMapper _mapper;
         private readonly SignInManager<ApplicationUser> _signInManager;
-
+        private readonly IApiClientService _clientService;
         /// <summary>
         /// Initializes a new instance of the <see cref="AccountController"/> class.
         /// </summary>
@@ -40,11 +42,15 @@ namespace E_StoreX.API.Controllers.Public
         /// <param name="signInManager">
         /// sign-in manager for handling user sign-in operations,
         /// </param>
-        public AccountController(IAuthenticationService authService, IMapper mapper, SignInManager<ApplicationUser> signInManager)
+        /// <param name="clientService">
+        /// Service to validate client id and platform.
+        /// </param>
+        public AccountController(IAuthService authService, IMapper mapper, SignInManager<ApplicationUser> signInManager, IApiClientService clientService)
         {
             _authService = authService;
             _mapper = mapper;
             _signInManager = signInManager;
+            _clientService = clientService;
         }
 
         /// <summary>
@@ -475,6 +481,9 @@ namespace E_StoreX.API.Controllers.Public
         /// <param name="provider">
         /// The external authentication provider to use (e.g., "Google", "GitHub").
         /// </param>
+        /// <param name="clientId">
+        /// Unique identifier for the calling client.
+        /// </param>
         /// <returns>
         /// Returns a challenge result that redirects the user to the external provider's login page.
         /// </returns>
@@ -491,7 +500,7 @@ namespace E_StoreX.API.Controllers.Public
         [HttpGet("external-login")]
         [ProducesResponseType(StatusCodes.Status302Found)] // Redirect/Challenge
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
-        public IActionResult ExternalLogin([FromQuery] ExternalLoginProvider provider)
+        public IActionResult ExternalLogin([FromQuery] ExternalLoginProvider provider, [FromQuery] Guid clientId)
         {
             var providerName = provider.ToString();
             if (string.IsNullOrEmpty(providerName))
@@ -499,7 +508,9 @@ namespace E_StoreX.API.Controllers.Public
             var redirectUrl = Url.Action(nameof(ExternalLoginCallback), nameof(AccountController)) ?? "api/v1/Account/external-login-callback";
 
             var properties = _signInManager.ConfigureExternalAuthenticationProperties(providerName, redirectUrl);
+
             properties.Items["prompt"] = "select_account";
+            properties.Items["clientId"] = clientId.ToString();
 
             return Challenge(properties, providerName);
         }
@@ -540,7 +551,29 @@ namespace E_StoreX.API.Controllers.Public
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> ExternalLoginCallback(string remoteError = "")
         {
+            var authResult = await HttpContext.AuthenticateAsync(IdentityConstants.ExternalScheme);
+            var clientId = authResult.Properties?.Items["clientId"] ?? "";
+
+            if (!Guid.TryParse(clientId, out var id))
+                return BadRequest(ApiResponseFactory.BadRequest());
             var response = await _authService.ExternalLoginCallbackAsync(remoteError);
+
+            if (response.Success)
+            {
+                var client = await _clientService.GetClientAsync(id);
+                var res = response as ApiSuccessResponse;
+
+                var queryParams = ApiResponseFactory.BuildAuthQueryParams(res);
+
+                var redirectUrl = Microsoft.AspNetCore.WebUtilities.QueryHelpers.AddQueryString(
+                    client.CallbackUrl,
+                    queryParams
+                );
+
+                return Redirect(redirectUrl);
+            }
+
+
             return StatusCode(response.StatusCode, response);
         }
 

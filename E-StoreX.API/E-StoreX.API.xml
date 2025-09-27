@@ -832,7 +832,7 @@
             <summary>
             Creates a new product in the database.
             </summary>
-            <param name="productRequest">The product details to be created.</param>
+            <param name="productRequest">The product details to be created.</param> 
             <returns>
             Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the created <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponse"/>.  
             </returns>
@@ -1106,7 +1106,7 @@
             such as registration, login, email confirmation, and password reset for the E-StoreX API.
             </summary>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.AccountController.#ctor(EStoreX.Core.ServiceContracts.Account.IAuthenticationService,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.SignInManager{EStoreX.Core.Domain.IdentityEntities.ApplicationUser})">
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.#ctor(EStoreX.Core.ServiceContracts.Account.IAuthenticationService,AutoMapper.IMapper,Microsoft.AspNetCore.Identity.SignInManager{EStoreX.Core.Domain.IdentityEntities.ApplicationUser},EStoreX.Core.ServiceContracts.Account.IApiClientService)">
             <summary>
             Initializes a new instance of the <see cref="T:E_StoreX.API.Controllers.Public.AccountController"/> class.
             </summary>
@@ -1119,6 +1119,9 @@
             </param>
             <param name="signInManager">
             sign-in manager for handling user sign-in operations,
+            </param>
+            <param name="clientService">
+            Service to validate client id and platform.
             </param>
         </member>
         <member name="M:E_StoreX.API.Controllers.Public.AccountController.PostRegister(EStoreX.Core.DTO.Account.Requests.RegisterDTO)">
@@ -1411,12 +1414,15 @@
             Not Found – User does not exist. Returns <see cref="T:EStoreX.Core.DTO.Common.ApiErrorResponse"/>.
             </response>
         </member>
-        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLogin(EStoreX.Core.Enums.ExternalLoginProvider)">
+        <member name="M:E_StoreX.API.Controllers.Public.AccountController.ExternalLogin(EStoreX.Core.Enums.ExternalLoginProvider,System.Guid)">
             <summary>
             Initiates the external login process by redirecting the user to the chosen authentication provider (e.g., Google, GitHub).
             </summary>
             <param name="provider">
             The external authentication provider to use (e.g., "Google", "GitHub").
+            </param>
+            <param name="clientId">
+            Unique identifier for the calling client.
             </param>
             <returns>
             Returns a challenge result that redirects the user to the external provider's login page.

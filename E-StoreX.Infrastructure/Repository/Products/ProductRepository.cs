@@ -197,6 +197,12 @@ namespace Repository.Products
                         : products.OrderByDescending(p => p.Category.Name);
                     break;
 
+                case nameof(Product.SalesCount):
+                    products = isAscending
+                        ? products.OrderBy(p => p.SalesCount)
+                        : products.OrderByDescending(p => p.SalesCount);
+                    break;
+
                 default:
                     products = isAscending
                         ? products.OrderBy(p => p.NewPrice)
