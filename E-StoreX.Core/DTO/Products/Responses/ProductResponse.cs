@@ -10,7 +10,7 @@
         public string CategoryName { get; set; }
         public int QuantityAvailable { get; set; }
         public string BrandName { get; set; }
-
+        public bool IsFeatured { get; set; }
         public IEnumerable<PhotoResponse> Photos { get; set; }
 
         public ProductResponse() { } 

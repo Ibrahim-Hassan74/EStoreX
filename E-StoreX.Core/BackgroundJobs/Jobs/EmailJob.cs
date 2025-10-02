@@ -53,7 +53,7 @@ namespace EStoreX.Core.BackgroundJobs.Jobs
 
         public async Task SendOrderConfirmationEmailAsync(Guid orderId, PerformContext context)
         {
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, d => d.DeliveryMethod, u => u.Buyer);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, d => d.DeliveryMethod, u => u.Buyer, i => i.OrderItems, d => d.DeliveryMethod);
 
             if (order == null)
             {
@@ -73,7 +73,7 @@ namespace EStoreX.Core.BackgroundJobs.Jobs
         }
         public async Task SendPaymentFailedEmailAsync(Guid orderId, PerformContext context)
         {
-            var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, d => d.DeliveryMethod, u => u.Buyer);
+            var order = await _unitOfWork.OrderRepository.GetByIdAsync(orderId, d => d.DeliveryMethod, u => u.Buyer, i => i.OrderItems, d => d.DeliveryMethod);
 
             if (order == null)
             {

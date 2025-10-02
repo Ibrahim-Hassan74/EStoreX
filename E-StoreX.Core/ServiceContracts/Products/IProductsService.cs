@@ -100,7 +100,8 @@ namespace EStoreX.Core.ServiceContracts.Products
         /// or an error message if none are found.
         /// </returns>
         Task<ApiResponse> GetBestSellersAsync(int count);
-
+        Task<IEnumerable<ProductResponse>> GetFeaturedProductsAsync();
+        Task<bool> SetFeaturedStatusAsync(Guid productId, bool isFeatured);
 
     }
 }

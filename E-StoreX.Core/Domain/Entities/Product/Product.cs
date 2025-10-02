@@ -20,6 +20,7 @@ namespace Domain.Entities.Product
         [Range(0, int.MaxValue, ErrorMessage = "Quantity must be non-negative.")]
         public int QuantityAvailable { get; set; }
         public int SalesCount { get; set; }
+        public bool IsFeatured { get; set; }
         public Guid CategoryId { get; set; }
         [ForeignKey(nameof(CategoryId))]
         public virtual Category Category { get; set; }

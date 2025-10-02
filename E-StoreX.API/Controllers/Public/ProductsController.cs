@@ -107,6 +107,24 @@ namespace E_StoreX.API.Controllers.Public
             var response = await _productsService.GetBestSellersAsync(count);
             return StatusCode(response.StatusCode, response);
         }
-
+        /// <summary>
+        /// Retrieves all featured products.
+        /// </summary>
+        /// <returns>
+        /// <c>200 OK</c> with the featured products;  
+        /// <c>404 Not Found</c> if no featured products exist.
+        /// </returns>
+        /// <response code="200">Featured products retrieved successfully.</response>
+        /// <response code="404">No featured products found.</response>
+        [HttpGet("featured")]
+        [ProducesResponseType(typeof(IEnumerable<ProductResponse>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetFeaturedProducts()
+        {
+            var response = await _productsService.GetFeaturedProductsAsync();
+            if (!response.Any())
+                return NotFound(ApiResponseFactory.NotFound("No featured products found."));
+            return Ok(response);
+        }
     }
 }

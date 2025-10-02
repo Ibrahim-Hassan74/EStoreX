@@ -231,6 +231,15 @@ namespace EStoreX.Core.Services.Products
             var response = _mapper.Map<List<ProductResponse>>(bestSellers);
             return ApiResponseFactory.Success("Best sellers retrieved successfully.", response);
         }
+        public async Task<IEnumerable<ProductResponse>> GetFeaturedProductsAsync()
+        {
+            var products = await _productRepository.GetFeaturedProductsAsync();
+            return _mapper.Map<IEnumerable<ProductResponse>>(products);
+        }
 
+        public async Task<bool> SetFeaturedStatusAsync(Guid productId, bool isFeatured)
+        {
+            return await _productRepository.SetFeaturedStatusAsync(productId, isFeatured);
+        }
     }
 }

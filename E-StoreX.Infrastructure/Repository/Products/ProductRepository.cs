@@ -223,6 +223,24 @@ namespace Repository.Products
             return products.Skip(skipAmount).Take(pageSize);
         }
 
+        public async Task<IEnumerable<Product>> GetFeaturedProductsAsync()
+        {
+            return await _context.Products
+                .Include(p => p.Photos)
+                .Include(p => p.Category)
+                .Where(p => p.IsFeatured)
+                .ToListAsync();
+        }
+
+        public async Task<bool> SetFeaturedStatusAsync(Guid productId, bool isFeatured)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) return false;
+
+            product.IsFeatured = isFeatured;
+            _context.Products.Update(product);
+            return await _context.SaveChangesAsync() > 0;
+        }
 
         // You can add product-specific methods here if needed
         // For example, methods to get products by category, price range, etc.

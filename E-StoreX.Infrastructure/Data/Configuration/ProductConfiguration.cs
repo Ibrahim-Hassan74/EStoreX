@@ -13,6 +13,7 @@ namespace EStoreX.Infrastructure.Data.Configuration
             builder.Property(x => x.NewPrice).HasColumnType("decimal(18, 2)").IsRequired();
             builder.Property(x => x.OldPrice).HasColumnType("decimal(18, 2)").IsRequired();
             builder.Property(x => x.SalesCount).HasDefaultValue(0);
+            builder.Property(x => x.IsFeatured).HasDefaultValue(false);
 
             //builder.HasData(new Product
             //{

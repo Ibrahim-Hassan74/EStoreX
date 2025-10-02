@@ -210,6 +210,26 @@ namespace E_StoreX.API.Controllers.Admin
             var response = await _productsService.UpdateProductImagesAsync(productId, files);
             return StatusCode(response.StatusCode, response);
         }
-
+        /// <summary>
+        /// Updates the featured status of a product.
+        /// </summary>
+        /// <param name="id">The unique identifier of the product.</param>
+        /// <param name="isFeatured">Boolean value to set whether the product is featured or not.</param>
+        /// <returns>
+        /// <c>200 OK</c> if the product status was updated successfully;  
+        /// <c>404 Not Found</c> if the product does not exist.
+        /// </returns>
+        /// <response code="200">Product featured status updated successfully.</response>
+        /// <response code="404">Product not found or invalid ID.</response>
+        [HttpPatch("{id:guid}/featured")]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SetFeaturedStatus(Guid id, [FromQuery] bool isFeatured)
+        {
+            var result = await _productsService.SetFeaturedStatusAsync(id, isFeatured);
+            if (!result)
+                return NotFound(ApiResponseFactory.NotFound("Product not found or invalid product Id"));
+            return Ok(ApiResponseFactory.Success($"Product {(isFeatured ? "marked as featured" : "removed from featured")} successfully."));
+        }
     }
 }
