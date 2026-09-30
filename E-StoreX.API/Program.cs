@@ -48,6 +48,15 @@ app.UseRequestLocalization(localizationOptions);
 
 app.UseApiKeyMiddleware();
 
+//app.UseStaticFiles(new StaticFileOptions
+//{
+//    OnPrepareResponse = ctx =>
+//    {
+//        ctx.Context.Response.Headers.Append("Access-Control-Allow-Origin", "*");
+//        ctx.Context.Response.Headers.Append("Access-Control-Allow-Methods", "GET, OPTIONS");
+//    }
+//});
+
 app.UseCors("AllowAllOrigins");
 
 app.UseRateLimiter();
@@ -56,7 +65,9 @@ app.UseExceptionHandlingMiddleware();
 
 app.UseHtmlRewriteMiddleware();
 
+
 app.UseStaticFiles();
+
 
 app.UseAuthentication();
 
