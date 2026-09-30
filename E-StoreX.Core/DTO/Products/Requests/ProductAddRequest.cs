@@ -27,8 +27,8 @@ namespace EStoreX.Core.DTO.Products.Requests
         [Required(ErrorMessageResourceName = "RequiredBrandId", ErrorMessageResourceType = typeof(EStoreX.Core.Resources.DTO.Products.ProductValidationMessages))]
         public Guid BrandId { get; set; }
         public Guid CategoryId { get; set; }
-        [MinLength(1, ErrorMessageResourceName = "RequiredPhoto", ErrorMessageResourceType = typeof(EStoreX.Core.Resources.DTO.Products.ProductValidationMessages))]
-        public IFormFileCollection Photos { get; set; }
+        //[MinLength(1, ErrorMessageResourceName = "RequiredPhoto", ErrorMessageResourceType = typeof(EStoreX.Core.Resources.DTO.Products.ProductValidationMessages))]
+        public IFormFileCollection? Photos { get; set; }
     }
 
 }

@@ -16,7 +16,7 @@ namespace EStoreX.Core.RepositoryContracts.Products
         /// <param name="product">The product entity to be added.</param>
         /// <param name="formFiles">Collection of uploaded images for the product.</param>
         /// <returns>The created <see cref="Product"/> object with generated ID and associated photos.</returns>
-        Task<Product> AddProductAsync(Product product, IFormFileCollection formFiles);
+        Task<Product> AddProductAsync(Product product, IFormFileCollection? formFiles);
 
         /// <summary>
         /// Updates an existing product and replaces its associated image files.
@@ -24,7 +24,7 @@ namespace EStoreX.Core.RepositoryContracts.Products
         /// <param name="product">The updated product entity.</param>
         /// <param name="formFiles">Collection of new uploaded images to associate with the product.</param>
         /// <returns>The updated <see cref="Product"/> object.</returns>
-        Task<Product> UpdateProductAsync(Product product, IFormFileCollection formFiles);
+        Task<Product> UpdateProductAsync(Product product, IFormFileCollection? formFiles);
 
         /// <summary>
         /// Deletes the specified product from the data store.
