@@ -35,6 +35,22 @@ namespace EStoreX.Core.Mapping
                 .ForMember(dest => dest.Name, opt => opt.MapFrom(src => System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar" ? src.NameAr ?? src.NameEn : src.NameEn))
                 .ForMember(dest => dest.Description, opt => opt.MapFrom(src => System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar" ? src.DescriptionAr ?? src.DescriptionEn : src.DescriptionEn));
 
+            CreateMap<Product, ProductResponseWithDetails>()
+                .ForMember(dest => dest.CategoryName,
+                    opt => opt.MapFrom(src => src.Category != null ? (System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar" ? src.Category.NameAr : src.Category.NameEn) : string.Empty))
+                .ForMember(dest => dest.CategoryId, opt => opt.MapFrom(src => src.Category.Id))
+                .ForMember(dest => dest.BrandId, opt => opt.MapFrom(src => src.Brand.Id))
+                .ForMember(dest => dest.Photos,
+                    opt => opt.MapFrom(src => src.Photos))
+                .ForMember(dest => dest.QuantityAvailable, opt => opt.MapFrom(src => src.QuantityAvailable))
+                 .ForMember(dest => dest.BrandName,
+                 opt => opt.MapFrom(src => src.Brand != null ? (System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName == "ar" ? src.Brand.NameAr : src.Brand.NameEn) : string.Empty))
+                .ForMember(dest => dest.NameEn, opt => opt.MapFrom(src =>   src.NameEn))
+                .ForMember(dest => dest.NameAr, opt => opt.MapFrom(src => src.NameAr))
+
+                .ForMember(dest => dest.DescriptionEn, opt => opt.MapFrom(src => src.DescriptionEn))
+                .ForMember(dest => dest.DescriptionAr, opt => opt.MapFrom(src => src.DescriptionAr));
+
 
             CreateMap<Photo, PhotoResponse>();
 

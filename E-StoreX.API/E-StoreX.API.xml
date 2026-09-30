@@ -959,6 +959,32 @@
             <response code="200">Product featured status updated successfully.</response>
             <response code="404">Product not found or invalid ID.</response>
         </member>
+        <member name="M:EStoreX.API.Controllers.Admin.ProductsController.GetAllProducts(EStoreX.Core.DTO.Products.Responses.ProductQueryDTO)">
+            <summary>
+            Retrieves all products with optional filtering and pagination.
+            </summary>
+            <param name="query">Query parameters for filtering, searching, and pagination.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with a paginated list of <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponseWithDetails"/> objects if products exist.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NoContentResult"/> (204) if no products match the query.
+            </returns>
+            <response code="200">Successfully retrieved the list of products.</response>
+            <response code="204">No products found for the given query.</response>
+            <response code="500">Unexpected error occurred.</response>
+        </member>
+        <member name="M:EStoreX.API.Controllers.Admin.ProductsController.GetProductById(System.Guid)">
+            <summary>
+            Retrieves a product by its unique identifier.
+            </summary>
+            <param name="Id">The unique identifier of the product.</param>
+            <returns>
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.OkObjectResult"/> with the <see cref="T:EStoreX.Core.DTO.Products.Responses.ProductResponseWithDetails"/> if found.  
+            Returns <see cref="T:Microsoft.AspNetCore.Mvc.NotFoundObjectResult"/> if the product does not exist.
+            </returns>
+            <response code="200">Successfully retrieved the product.</response>
+            <response code="404">Product not found or invalid ID.</response>
+            <response code="500">Unexpected error occurred.</response>
+        </member>
         <member name="T:EStoreX.API.Controllers.Admin.RatingsController">
             <summary>
             API controller for managing ratings in the admin area.  

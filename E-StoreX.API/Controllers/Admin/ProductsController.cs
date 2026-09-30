@@ -1,4 +1,6 @@
 using Asp.Versioning;
+using E_StoreX.API.Helper;
+using EStoreX.API.Filters;
 using EStoreX.Core.DTO.Common;
 using EStoreX.Core.DTO.Products.Requests;
 using EStoreX.Core.DTO.Products.Responses;
@@ -8,7 +10,6 @@ using EStoreX.Core.ServiceContracts.Common;
 using EStoreX.Core.ServiceContracts.Products;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
-using EStoreX.API.Filters;
 
 namespace EStoreX.API.Controllers.Admin
 {
@@ -72,7 +73,7 @@ namespace EStoreX.API.Controllers.Admin
         [ProducesResponseType(typeof(ProductResponse), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(typeof(ApiErrorResponse), StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ProductResponse>> UpdateProduct([FromRoute] Guid id, [FromForm] ProductUpdateRequest productUpdateRequest)
+        public async Task<ActionResult<ProductResponse>> UpdateProduct([FromRoute] Guid id, [FromBody] ProductUpdateRequest productUpdateRequest)
         {
             if (id != productUpdateRequest.Id) return BadRequest(ApiResponseFactory.BadRequest(_localizer["IdMismatch"].Value));
 
@@ -235,6 +236,53 @@ namespace EStoreX.API.Controllers.Admin
             if (!result)
                 return NotFound(ApiResponseFactory.NotFound(_localizer["ProductNotFoundOrInvalidId"].Value));
             return Ok(ApiResponseFactory.Success(isFeatured ? _localizer["ProductMarkedAsFeatured"].Value : _localizer["ProductRemovedFromFeatured"].Value));
+        }
+        /// <summary>
+        /// Retrieves all products with optional filtering and pagination.
+        /// </summary>
+        /// <param name="query">Query parameters for filtering, searching, and pagination.</param>
+        /// <returns>
+        /// Returns <see cref="OkObjectResult"/> with a paginated list of <see cref="ProductResponseWithDetails"/> objects if products exist.  
+        /// Returns <see cref="NoContentResult"/> (204) if no products match the query.
+        /// </returns>
+        /// <response code="200">Successfully retrieved the list of products.</response>
+        /// <response code="204">No products found for the given query.</response>
+        /// <response code="500">Unexpected error occurred.</response>
+        [HttpGet]
+        [ProducesResponseType(typeof(Pagination<ProductResponseWithDetails>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<IEnumerable<ProductResponseWithDetails>>> GetAllProducts([FromQuery] ProductQueryDTO query)
+        {
+            var (products, totalCount) = await _productsService.GetFilteredProductsWithDetialsAsync(query);
+
+            //var totalCount = await _productsService.CountProductsAsync();
+
+            if (!products.Any())
+                return NoContent();
+            var result = new Pagination<ProductResponseWithDetails>(query.PageNumber, query.PageSize, totalCount, products);
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Retrieves a product by its unique identifier.
+        /// </summary>
+        /// <param name="Id">The unique identifier of the product.</param>
+        /// <returns>
+        /// Returns <see cref="OkObjectResult"/> with the <see cref="ProductResponseWithDetails"/> if found.  
+        /// Returns <see cref="NotFoundObjectResult"/> if the product does not exist.
+        /// </returns>
+        /// <response code="200">Successfully retrieved the product.</response>
+        /// <response code="404">Product not found or invalid ID.</response>
+        /// <response code="500">Unexpected error occurred.</response>
+        [HttpGet("{Id:guid}")]
+        [ProducesResponseType(typeof(ProductResponseWithDetails), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<ActionResult<ProductResponseWithDetails>> GetProductById(Guid Id)
+        {
+            var product = await _productsService.GetProductByIdWithDetailsAsync(Id);
+            return product is not null ? Ok(product) : NotFound(ApiResponseFactory.NotFound(_localizer["ProductNotFoundOrInvalidId"].Value));
         }
     }
 }

@@ -42,6 +42,8 @@ namespace EStoreX.Core.Services.Products
 
             product = await _productRepository.AddProductAsync(product, productRequest.Photos);
 
+            await _unitOfWork.CompleteAsync();
+
             return _mapper.Map<ProductResponse>(product);
         }
 
@@ -65,6 +67,14 @@ namespace EStoreX.Core.Services.Products
         }
 
         /// <inheritdoc/>
+        public async Task<IEnumerable<ProductResponseWithDetails>> GetAllProductsWithDetailsAsync()
+        {
+            var products = await _productRepository.GetAllAsync(x => x.Category, y => y.Photos, b => b.Brand);
+            var productResponses = _mapper.Map<IEnumerable<ProductResponseWithDetails>>(products);
+            return productResponses;
+        }
+
+        /// <inheritdoc/>
         public async Task<ProductResponse?> GetProductByIdAsync(Guid id)
         {
             if (id == Guid.Empty)
@@ -78,6 +88,23 @@ namespace EStoreX.Core.Services.Products
                 return null;
 
             var productResponse = _mapper.Map<ProductResponse>(product);
+            return productResponse;
+        }
+
+        /// <inheritdoc/>
+        public async Task<ProductResponseWithDetails?> GetProductByIdWithDetailsAsync(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                throw new ArgumentException(_localizer["ProductIdRequired"].Value, nameof(id));
+            }
+
+            var product = await _productRepository.GetByIdAsync(id, x => x.Category, y => y.Photos, b => b.Brand);
+
+            if (product == null)
+                return null;
+
+            var productResponse = _mapper.Map<ProductResponseWithDetails>(product);
             return productResponse;
         }
 
@@ -107,8 +134,9 @@ namespace EStoreX.Core.Services.Products
             findProduct.NewPrice = productUpdateRequest.NewPrice;
             findProduct.CategoryId = productUpdateRequest.CategoryId;
             findProduct.BrandId = productUpdateRequest.BrandId;
+            findProduct.QuantityAvailable = productUpdateRequest.QuantityAvailable;
 
-            var productResponse = await _productRepository.UpdateProductAsync(findProduct, productUpdateRequest.Photos);
+            await _unitOfWork.CompleteAsync();
 
             return _mapper.Map<ProductResponse>(findProduct);
         }
@@ -123,6 +151,19 @@ namespace EStoreX.Core.Services.Products
 
             var (products, size) = await _productRepository.GetFilteredProductsAsync(query);
             var productsResponse = _mapper.Map<IEnumerable<ProductResponse>>(products);
+            return (productsResponse, size);
+        }
+
+        /// <inheritdoc/>
+        public async Task<(IEnumerable<ProductResponseWithDetails>, int size)> GetFilteredProductsWithDetialsAsync(ProductQueryDTO query)
+        {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query), _localizer["QueryRequired"].Value);
+            }
+
+            var (products, size) = await _productRepository.GetFilteredProductsAsync(query);
+            var productsResponse = _mapper.Map<IEnumerable<ProductResponseWithDetails>>(products);
             return (productsResponse, size);
         }
 

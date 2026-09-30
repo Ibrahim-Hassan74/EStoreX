@@ -7,4 +7,12 @@
             => ImageName;
     }
 
+    public class PhotoResponseWithDetails
+    {
+        public Guid Id { get; set; }
+        public string ImageName { get; set; }
+        public override string ToString()
+            => ImageName;
+    }
+
 }

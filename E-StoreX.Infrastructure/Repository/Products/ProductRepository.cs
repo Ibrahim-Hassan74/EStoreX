@@ -24,33 +24,22 @@ namespace Repository.Products
             _imageService = imageService;
         }
 
-        public async Task<Product> AddProductAsync(Product product, IFormFileCollection formFiles)
+        public async Task<Product> AddProductAsync(Product product, IFormFileCollection? formFiles)
         {
 
             await _context.Products.AddAsync(product);
-            await _context.SaveChangesAsync();
 
-            var photosDTO = new PhotosDTO()
+            if (formFiles is not null && formFiles.Count > 0)
             {
-                ProductId = product.Id,
-                Src = product.NameEn,
-                FormFiles = formFiles
-            };
-            var photos = await _photosRepository.AddRangeAsync(photosDTO);
 
-            #region Commented out code for image handling
-            //var imagePath = await _imageService.AddImageAsync(productRequest.Photos, productRequest.NameEn);
-
-            //var photos = imagePath.Select(path => new Photo
-            //{
-            //    ImageName = path,
-            //    ProductId = product.Id,
-            //    Id = Guid.NewGuid()
-            //}).ToList();
-
-            //await _context.AddRangeAsync(photos);
-            //await _context.SaveChangesAsync();
-            #endregion
+                var photosDTO = new PhotosDTO()
+                {
+                    ProductId = product.Id,
+                    Src = product.NameEn,
+                    FormFiles = formFiles
+                };
+                var photos = await _photosRepository.AddRangeAsync(photosDTO);
+            }
 
             return product;
         }
@@ -70,11 +59,17 @@ namespace Repository.Products
             return res > 0;
         }
 
-        public async Task<Product> UpdateProductAsync(Product product, IFormFileCollection formFiles)
+        public async Task<Product> UpdateProductAsync(Product product, IFormFileCollection? formFiles)
         {
             var res = await UpdateAsync(product);
-            await _context.SaveChangesAsync();
-
+            if (res is null)
+            {
+                return null;
+            }
+            if (formFiles is null || formFiles.Count == 0)
+            {
+                return res;
+            }
             PhotosDTO photosDTO = new PhotosDTO()
             {
                 ProductId = product.Id,
@@ -101,7 +96,7 @@ namespace Repository.Products
 
             products = ApplyFiltering(products, query);
             products = ApplySorting(products, query);
-            var size = products.Count();
+            var size = await products.CountAsync();
             products = ApplyPagination(products, query);
 
             return (await products.ToListAsync(), size);
@@ -170,45 +165,6 @@ namespace Repository.Products
         {
             //var sortBy = query.SortBy ?? nameof(Product.NewPrice);
             bool isAscending = query.SortOrder == SortOrderOptions.ASC;
-
-            //switch (sortBy)
-            //{
-            //    case var s when s == nameof(Product.NameEn):
-            //        products = isAscending
-            //            ? products.OrderBy(p => p.NameEn)
-            //            : products.OrderByDescending(p => p.NameEn);
-            //        break;
-
-            //    case var s when s == nameof(Product.NewPrice) || s == "Price":
-            //        products = isAscending
-            //            ? products.OrderBy(p => p.NewPrice)
-            //            : products.OrderByDescending(p => p.NewPrice);
-            //        break;
-
-            //    case var s when s == nameof(Product.OldPrice):
-            //        products = isAscending
-            //            ? products.OrderBy(p => p.OldPrice)
-            //            : products.OrderByDescending(p => p.OldPrice);
-            //        break;
-
-            //    case "Category":
-            //        products = isAscending
-            //            ? products.OrderBy(p => p.Category.NameEn)
-            //            : products.OrderByDescending(p => p.Category.NameEn);
-            //        break;
-
-            //    case nameof(Product.SalesCount):
-            //        products = isAscending
-            //            ? products.OrderBy(p => p.SalesCount)
-            //            : products.OrderByDescending(p => p.SalesCount);
-            //        break;
-
-            //    default:
-            //        products = isAscending
-            //            ? products.OrderBy(p => p.NewPrice)
-            //            : products.OrderByDescending(p => p.NewPrice);
-            //        break;
-            //}
 
             switch (query.SortBy ?? ProductSortBy.Price)
             {

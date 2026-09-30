@@ -102,6 +102,9 @@ namespace EStoreX.Core.ServiceContracts.Products
         Task<ApiResponse> GetBestSellersAsync(int count);
         Task<IEnumerable<ProductResponse>> GetFeaturedProductsAsync();
         Task<bool> SetFeaturedStatusAsync(Guid productId, bool isFeatured);
+        Task<IEnumerable<ProductResponseWithDetails>> GetAllProductsWithDetailsAsync();
+        Task<ProductResponseWithDetails?> GetProductByIdWithDetailsAsync(Guid id);
+        Task<(IEnumerable<ProductResponseWithDetails>, int size)> GetFilteredProductsWithDetialsAsync(ProductQueryDTO query);
 
     }
 }
